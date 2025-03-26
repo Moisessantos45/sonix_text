@@ -1,0 +1,217 @@
+import 'package:flutter/material.dart';
+import 'package:sonix_text/presentation/utils/options.dart';
+
+class GradeOptionsWidget extends StatefulWidget {
+  final TextEditingController category;
+  final TextEditingController status;
+  final TextEditingController priority;
+  final TextEditingController dueDate;
+
+  const GradeOptionsWidget(
+      {super.key,
+      required this.category,
+      required this.status,
+      required this.priority,
+      required this.dueDate});
+
+  @override
+  State<GradeOptionsWidget> createState() => _GradeOptionsWidgetState();
+}
+
+class _GradeOptionsWidgetState extends State<GradeOptionsWidget> {
+  // String _selectedCategory = 'General';
+  // String _selectedStatus = 'Pending';
+  // String _selectedPriority = 'Normal';
+  DateTime _dueDate = DateTime.now().add(const Duration(days: 1));
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: _dueDate,
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2100),
+      builder: (context, child) {
+        return Theme(
+          data: ThemeData.light().copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: Color(0xFF3498DB),
+              onPrimary: Colors.white,
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+    if (picked != null && picked != _dueDate) {
+      setState(() {
+        _dueDate = picked;
+        widget.dueDate.text =
+            '${_dueDate.day}/${_dueDate.month}/${_dueDate.year}';
+      });
+    }
+  }
+
+  void initializeState() {
+    List<String> parts = widget.dueDate.text.split('/');
+    int day = int.parse(parts[0]);
+    int month = int.parse(parts[1]);
+    int year = int.parse(parts[2]);
+    _dueDate = DateTime(year, month, day);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    initializeState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: Row(
+            children: [
+              Expanded(
+                child: _buildDropdownField(
+                  icon: Icons.category_outlined,
+                  hint: 'Categoría',
+                  value: widget.category.text,
+                  items: categories,
+                  onChanged: (value) {
+                    if (value != null) {
+                      setState(() {
+                        // _selectedCategory = value;
+                        widget.category.text = value;
+                      });
+                    }
+                  },
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: _buildDateSelector(context),
+              ),
+            ],
+          ),
+        ),
+        Container(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: Row(
+            children: [
+              Expanded(
+                child: _buildDropdownField(
+                  icon: Icons.flag_outlined,
+                  hint: 'Estado',
+                  value: widget.status.text,
+                  items: statusOptions,
+                  onChanged: (value) {
+                    if (value != null) {
+                      setState(() {
+                        // _selectedStatus = value;
+                        widget.status.text = value;
+                      });
+                    }
+                  },
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: _buildDropdownField(
+                  icon: Icons.priority_high_outlined,
+                  hint: 'Prioridad',
+                  value: widget.priority.text,
+                  items: priorityOptions,
+                  onChanged: (value) {
+                    if (value != null) {
+                      setState(() {
+                        // _selectedPriority = value;
+                        widget.priority.text = value;
+                      });
+                    }
+                  },
+                ),
+              ),
+            ],
+          ),
+        )
+      ],
+    );
+  }
+
+  Widget _buildDropdownField({
+    required IconData icon,
+    required String hint,
+    required String value,
+    required List<String> items,
+    required void Function(String?) onChanged,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        color: const Color(0xFFF9FAFB),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: const Color(0xFFECF0F1)),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      child: Row(
+        children: [
+          Icon(icon, size: 18, color: const Color(0xFF95A5A6)),
+          const SizedBox(width: 8),
+          Expanded(
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton<String>(
+                value: value,
+                isDense: true,
+                isExpanded: true,
+                icon:
+                    const Icon(Icons.arrow_drop_down, color: Color(0xFF95A5A6)),
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: Color(0xFF2C3E50),
+                ),
+                onChanged: onChanged,
+                items: items.map((String item) {
+                  return DropdownMenuItem<String>(
+                    value: item,
+                    child: Text(item),
+                  );
+                }).toList(),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDateSelector(BuildContext context) {
+    return InkWell(
+      onTap: () => _selectDate(context),
+      child: Container(
+        decoration: BoxDecoration(
+          color: const Color(0xFFF9FAFB),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: const Color(0xFFECF0F1)),
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+        child: Row(
+          children: [
+            const Icon(Icons.calendar_today,
+                size: 18, color: Color(0xFF95A5A6)),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                '${_dueDate.day}/${_dueDate.month}/${_dueDate.year}',
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: Color(0xFF2C3E50),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

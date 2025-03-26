@@ -21,16 +21,16 @@ class GradeRepository {
     return data.map(EntityGrade.fromMap).toList();
   }
 
-  Future<void> addGrade(EntityGrade gradeTask) async {
-    await database.insert("gradeTask", gradeTask.toMap());
+  Future<void> add(EntityGrade gradeTask) async {
+    await database.insert("grade", gradeTask.toMap());
   }
 
-  Future<void> updateGrade(EntityGrade gradeTask) async {
+  Future<void> update(EntityGrade gradeTask) async {
     await database.update("grade", gradeTask.toMapUpdate(),
         where: "id = ?", whereArgs: [gradeTask.id]);
   }
 
-  Future<void> removeGrade(EntityGrade gradeTask) async {
+  Future<void> remove(EntityGrade gradeTask) async {
     await database.delete("grade", where: "id = ?", whereArgs: [gradeTask.id]);
   }
 }

@@ -10,26 +10,54 @@ final gradeNotifierProvider =
 
 class GradeNotifier extends StateNotifier<List<EntityGrade>> {
   final GradeRepository _repository;
+  List<EntityGrade> _allGrades = [];
+  String _currentFilter = 'All';
 
   GradeNotifier(this._repository) : super([]);
 
-  Future<void> loadTasks() async {
-    final tasks = await _repository.getGrade();
-    state = tasks;
+  Future<void> loadGrades() async {
+    _allGrades = await _repository.getGrade();
+    _applyFilter();
   }
 
-  Future<void> addTask(EntityGrade grade) async {
-    await _repository.addGrade(grade);
-    state = [...state, grade];
+  void setFilter(String filter) {
+    _currentFilter = filter;
+    _applyFilter();
   }
 
-  Future<void> updateTask(EntityGrade grade) async {
-    await _repository.updateGrade(grade);
-    state = state.map((t) => t.id == grade.id ? grade : t).toList();
+  void _applyFilter() {
+    switch (_currentFilter) {
+      case 'Pending':
+        state = _allGrades.where((grade) => grade.status == 'Pending').toList();
+        break;
+      case 'In Progress':
+        state =
+            _allGrades.where((grade) => grade.status == 'In Progress').toList();
+        break;
+      case 'Completed':
+        state =
+            _allGrades.where((grade) => grade.status == 'Completed').toList();
+        break;
+      default: // 'All'
+        state = List.from(_allGrades);
+    }
   }
 
-  Future<void> removeTask(EntityGrade grade) async {
-    await _repository.removeGrade(grade);
-    state = state.where((t) => t.id != grade.id).toList();
+  Future<void> addGrade(EntityGrade grade) async {
+    await _repository.add(grade);
+    _allGrades = [..._allGrades, grade];
+    _applyFilter();
+  }
+
+  Future<void> updateGrade(EntityGrade grade) async {
+    await _repository.update(grade);
+    _allGrades = _allGrades.map((t) => t.id == grade.id ? grade : t).toList();
+    _applyFilter();
+  }
+
+  Future<void> removeGrade(EntityGrade grade) async {
+    await _repository.remove(grade);
+    _allGrades = _allGrades.where((t) => t.id != grade.id).toList();
+    _applyFilter();
   }
 }
