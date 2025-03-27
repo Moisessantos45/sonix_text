@@ -13,24 +13,10 @@ class GradeDisplayWidget extends ConsumerStatefulWidget {
 
 class _GradeDisplayWidgetState extends ConsumerState<GradeDisplayWidget> {
   int _selectedMenu = 0;
-  bool _isInit = true;
-
-  void initGrades() async {
-    await ref.read(gradeNotifierProvider.notifier).loadGrades();
-    setState(() {
-      _isInit = false;
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    initGrades();
-  }
 
   @override
   Widget build(BuildContext context) {
-    final gradesState = ref.watch(gradeNotifierProvider);
+    final gradesState = ref.watch(gradesProvider);
     return Column(
       children: [
         SizedBox(
@@ -74,36 +60,33 @@ class _GradeDisplayWidgetState extends ConsumerState<GradeDisplayWidget> {
           ),
         ),
         const SizedBox(height: 10),
-        _isInit
-            ? const LinearProgressIndicator()
-            : Expanded(
-                child: Container(
-                  padding: const EdgeInsets.fromLTRB(20, 30, 20, 20),
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius:
-                        BorderRadius.vertical(top: Radius.circular(30)),
+        Expanded(
+          child: Container(
+            padding: const EdgeInsets.fromLTRB(20, 30, 20, 20),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+            ),
+            child: gradesState.isEmpty
+                ? const Center(
+                    child: Text(
+                      'No hay notas',
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 20,
+                      ),
+                    ),
+                  )
+                : ListView.builder(
+                    physics: const BouncingScrollPhysics(),
+                    itemCount: gradesState.length,
+                    itemBuilder: (context, index) {
+                      final grade = gradesState[index];
+                      return GradeItemWidget(grade: grade);
+                    },
                   ),
-                  child: gradesState.isEmpty
-                      ? const Center(
-                          child: Text(
-                            'No hay notas',
-                            style: TextStyle(
-                              color: Colors.grey,
-                              fontSize: 20,
-                            ),
-                          ),
-                        )
-                      : ListView.builder(
-                          physics: const BouncingScrollPhysics(),
-                          itemCount: gradesState.length,
-                          itemBuilder: (context, index) {
-                            final grade = gradesState[index];
-                            return GradeItemWidget(grade: grade);
-                          },
-                        ),
-                ),
-              )
+          ),
+        )
       ],
     );
   }

@@ -10,6 +10,8 @@ class EntityGrade {
   final String color;
   final int point;
 
+  final String table;
+
   EntityGrade({
     required this.id,
     required this.title,
@@ -21,6 +23,7 @@ class EntityGrade {
     required this.category,
     required this.color,
     required this.point,
+    this.table = 'grade',
   });
 
   Map<String, dynamic> toMap() {

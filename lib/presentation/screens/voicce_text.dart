@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sonix_text/config/show_notification.dart';
 import 'package:sonix_text/domains/entity_grade.dart';
 import 'package:sonix_text/presentation/riverpod/repository_grade.dart';
+import 'package:sonix_text/presentation/riverpod/repository_level.dart';
 import 'package:sonix_text/presentation/utils/character.dart';
 import 'package:sonix_text/presentation/widgets/options_grade.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
@@ -22,7 +23,7 @@ class _VoiceTextScreenState extends ConsumerState<VoiceTextScreen> {
   final TextEditingController titleEditingController = TextEditingController();
   final TextEditingController textEditingController = TextEditingController();
   final TextEditingController categoryEditingController =
-      TextEditingController(text: 'General');
+      TextEditingController(text: 'Tecnología');
   final TextEditingController priorityEditingController =
       TextEditingController(text: 'Normal');
   final TextEditingController statusEditingController =
@@ -102,7 +103,7 @@ class _VoiceTextScreenState extends ConsumerState<VoiceTextScreen> {
         priority: priorityEditingController.text,
         category: categoryEditingController.text,
         color: "0xFF0000FF",
-        point: 0,
+        point: 1,
       );
 
       await ref.read(gradeNotifierProvider.notifier).addGrade(grade);
@@ -115,20 +116,23 @@ class _VoiceTextScreenState extends ConsumerState<VoiceTextScreen> {
 
   Future<void> updateGrade() async {
     try {
+      final valueLevel = ref.watch(multiplyLevelProvider);
+
       final task = EntityGrade(
         id: widget.id,
         title: titleEditingController.text,
         content: textEditingController.text,
         date: DateTime.now().toString(),
-        dueDate: DateTime.now().toString(),
-        status: "pending",
-        priority: "Normal",
-        category: "Personal",
+        dueDate: dueDateEditingController.text,
+        status: statusEditingController.text,
+        priority: priorityEditingController.text,
+        category: categoryEditingController.text,
         color: "0xFF0000FF",
-        point: 0,
+        point: statusEditingController.text == "Completed" ? 1 * valueLevel : 1,
       );
 
       await ref.read(gradeNotifierProvider.notifier).updateGrade(task);
+
       clearFields();
       showNotification("Success", "Note updated successfully");
     } catch (e) {
@@ -166,6 +170,18 @@ class _VoiceTextScreenState extends ConsumerState<VoiceTextScreen> {
     super.initState();
     _initSpeech();
     getGrade();
+  }
+
+  @override
+  void dispose() {
+    _speechToText.stop();
+    titleEditingController.dispose();
+    textEditingController.dispose();
+    categoryEditingController.dispose();
+    priorityEditingController.dispose();
+    statusEditingController.dispose();
+    dueDateEditingController.dispose();
+    super.dispose();
   }
 
   @override

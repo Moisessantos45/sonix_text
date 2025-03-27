@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sonix_text/presentation/riverpod/repository_category.dart';
 import 'package:sonix_text/presentation/utils/options.dart';
 
-class GradeOptionsWidget extends StatefulWidget {
+class GradeOptionsWidget extends ConsumerStatefulWidget {
   final TextEditingController category;
   final TextEditingController status;
   final TextEditingController priority;
@@ -15,14 +17,15 @@ class GradeOptionsWidget extends StatefulWidget {
       required this.dueDate});
 
   @override
-  State<GradeOptionsWidget> createState() => _GradeOptionsWidgetState();
+  ConsumerState<GradeOptionsWidget> createState() => _GradeOptionsWidgetState();
 }
 
-class _GradeOptionsWidgetState extends State<GradeOptionsWidget> {
+class _GradeOptionsWidgetState extends ConsumerState<GradeOptionsWidget> {
   // String _selectedCategory = 'General';
   // String _selectedStatus = 'Pending';
   // String _selectedPriority = 'Normal';
   DateTime _dueDate = DateTime.now().add(const Duration(days: 1));
+  bool isInit = false;
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -51,12 +54,30 @@ class _GradeOptionsWidgetState extends State<GradeOptionsWidget> {
     }
   }
 
-  void initializeState() {
+  void initializeState() async {
+    await ref.read(categoryNotifierProvider.notifier).getCategories();
+    final categories = ref.read(categoryNotifierProvider);
+
+    if (categories.isEmpty) {
+      Navigator.pop(context);
+      return;
+    }
+
+    final validCategories = categories.map((e) => e.name).toSet().toList();
+    final currentValue = widget.category.text.trim();
+
     List<String> parts = widget.dueDate.text.split('/');
     int day = int.parse(parts[0]);
     int month = int.parse(parts[1]);
     int year = int.parse(parts[2]);
     _dueDate = DateTime(year, month, day);
+
+    setState(() {
+      if (currentValue.isEmpty || !validCategories.contains(currentValue)) {
+        widget.category.text = validCategories.first;
+      }
+      isInit = true;
+    });
   }
 
   @override
@@ -67,77 +88,81 @@ class _GradeOptionsWidgetState extends State<GradeOptionsWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          child: Row(
+    final categories =
+        ref.watch(categoryNotifierProvider).map((e) => e.name).toList();
+    return !isInit
+        ? const Center(child: CircularProgressIndicator())
+        : Column(
             children: [
-              Expanded(
-                child: _buildDropdownField(
-                  icon: Icons.category_outlined,
-                  hint: 'Categoría',
-                  value: widget.category.text,
-                  items: categories,
-                  onChanged: (value) {
-                    if (value != null) {
-                      setState(() {
-                        // _selectedCategory = value;
-                        widget.category.text = value;
-                      });
-                    }
-                  },
+              Container(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: _buildDropdownField(
+                        icon: Icons.category_outlined,
+                        hint: 'Categoría',
+                        value: widget.category.text,
+                        items: categories,
+                        onChanged: (value) {
+                          if (value != null) {
+                            setState(() {
+                              // _selectedCategory = value;
+                              widget.category.text = value;
+                            });
+                          }
+                        },
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: _buildDateSelector(context),
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: _buildDateSelector(context),
-              ),
+              Container(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: _buildDropdownField(
+                        icon: Icons.flag_outlined,
+                        hint: 'Estado',
+                        value: widget.status.text,
+                        items: statusOptions,
+                        onChanged: (value) {
+                          if (value != null) {
+                            setState(() {
+                              // _selectedStatus = value;
+                              widget.status.text = value;
+                            });
+                          }
+                        },
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: _buildDropdownField(
+                        icon: Icons.priority_high_outlined,
+                        hint: 'Prioridad',
+                        value: widget.priority.text,
+                        items: priorityOptions,
+                        onChanged: (value) {
+                          if (value != null) {
+                            setState(() {
+                              // _selectedPriority = value;
+                              widget.priority.text = value;
+                            });
+                          }
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              )
             ],
-          ),
-        ),
-        Container(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          child: Row(
-            children: [
-              Expanded(
-                child: _buildDropdownField(
-                  icon: Icons.flag_outlined,
-                  hint: 'Estado',
-                  value: widget.status.text,
-                  items: statusOptions,
-                  onChanged: (value) {
-                    if (value != null) {
-                      setState(() {
-                        // _selectedStatus = value;
-                        widget.status.text = value;
-                      });
-                    }
-                  },
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: _buildDropdownField(
-                  icon: Icons.priority_high_outlined,
-                  hint: 'Prioridad',
-                  value: widget.priority.text,
-                  items: priorityOptions,
-                  onChanged: (value) {
-                    if (value != null) {
-                      setState(() {
-                        // _selectedPriority = value;
-                        widget.priority.text = value;
-                      });
-                    }
-                  },
-                ),
-              ),
-            ],
-          ),
-        )
-      ],
-    );
+          );
   }
 
   Widget _buildDropdownField({
@@ -147,6 +172,10 @@ class _GradeOptionsWidgetState extends State<GradeOptionsWidget> {
     required List<String> items,
     required void Function(String?) onChanged,
   }) {
+    final uniqueItems = items.toSet().toList();
+    final validValue =
+        uniqueItems.contains(value) ? value : uniqueItems.firstOrNull;
+
     return Container(
       decoration: BoxDecoration(
         color: const Color(0xFFF9FAFB),
@@ -161,7 +190,7 @@ class _GradeOptionsWidgetState extends State<GradeOptionsWidget> {
           Expanded(
             child: DropdownButtonHideUnderline(
               child: DropdownButton<String>(
-                value: value,
+                value: validValue,
                 isDense: true,
                 isExpanded: true,
                 icon:
@@ -171,12 +200,13 @@ class _GradeOptionsWidgetState extends State<GradeOptionsWidget> {
                   color: Color(0xFF2C3E50),
                 ),
                 onChanged: onChanged,
-                items: items.map((String item) {
+                items: uniqueItems.map((String item) {
                   return DropdownMenuItem<String>(
                     value: item,
                     child: Text(item),
                   );
                 }).toList(),
+                hint: Text(hint),
               ),
             ),
           ),

@@ -1,10 +1,10 @@
-final List<String> categories = [
-  'General',
-  'Escolar',
-  'Trabajo',
-  'Casa',
-  'Personal'
-];
+// final List<String> categories = [
+//   'General',
+//   'Escolar',
+//   'Trabajo',
+//   'Casa',
+//   'Personal'
+// ];
 
 final List<String> statusOptions = ['Pending', 'In Progress', 'Completed'];
 List<String> listMenu = ['All', ...statusOptions];

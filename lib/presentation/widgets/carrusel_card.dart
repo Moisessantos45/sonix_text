@@ -1,17 +1,14 @@
-import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
-import 'package:sonix_text/presentation/utils/data_card.dart';
+import 'package:card_swiper/card_swiper.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sonix_text/presentation/riverpod/repository_grade.dart';
 
-class CarouselCard extends StatefulWidget {
+class CarouselCard extends ConsumerWidget {
   const CarouselCard({super.key});
 
   @override
-  State<CarouselCard> createState() => _CarouselCardState();
-}
-
-class _CarouselCardState extends State<CarouselCard> {
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final listCard = ref.watch(listCardsProvider);
     return SizedBox(
         height: 240,
         width: double.infinity,

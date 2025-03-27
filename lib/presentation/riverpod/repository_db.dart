@@ -1,36 +1,35 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sonix_text/domains/entity_grade.dart';
 import 'package:sqflite/sqflite.dart';
 
 final databaseProvider = Provider<Database>((ref) {
   throw UnimplementedError('Proveedor de base de datos no inicializado');
 });
 
-final gradeRepositoryProvider = Provider<GradeRepository>((ref) {
+final dbRepositoryProvider = Provider<DbRepository>((ref) {
   final database = ref.watch(databaseProvider);
-  return GradeRepository(database);
+  return DbRepository(database);
 });
 
-class GradeRepository {
+class DbRepository {
   final Database database;
 
-  GradeRepository(this.database);
+  DbRepository(this.database);
 
-  Future<List<EntityGrade>> getGrade() async {
-    final data = await database.rawQuery("SELECT * FROM grade");
-    return data.map(EntityGrade.fromMap).toList();
+  Future<List<Map<String, dynamic>>> getAll(String table) async {
+    final data = await database.rawQuery("SELECT * FROM $table");
+    return data;
   }
 
-  Future<void> add(EntityGrade gradeTask) async {
-    await database.insert("grade", gradeTask.toMap());
+  Future<void> add(String table, Map<String, dynamic> data) async {
+    await database.insert(table, data);
   }
 
-  Future<void> update(EntityGrade gradeTask) async {
-    await database.update("grade", gradeTask.toMapUpdate(),
-        where: "id = ?", whereArgs: [gradeTask.id]);
+  Future<void> update(
+      String table, String id, Map<String, dynamic> data) async {
+    await database.update(table, data, where: "id = ?", whereArgs: [id]);
   }
 
-  Future<void> remove(EntityGrade gradeTask) async {
-    await database.delete("grade", where: "id = ?", whereArgs: [gradeTask.id]);
+  Future<void> remove(String table, String id) async {
+    await database.delete(table, where: "id = ?", whereArgs: [id]);
   }
 }

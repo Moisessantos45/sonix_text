@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_inapp_notifications/flutter_inapp_notifications.dart';
 import 'package:sonix_text/config/db.dart';
+import 'package:sonix_text/config/router/router.dart';
 import 'package:sonix_text/presentation/riverpod/repository_db.dart';
-import 'package:sonix_text/presentation/screens/home.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,15 +23,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
+    return MaterialApp.router(
+      title: 'Sonix Text',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         brightness: Brightness.light,
         primaryColor: Colors.blue,
         useMaterial3: true,
       ),
-      home: const HomeScreen(),
+      routerConfig: appRouter,
       builder: InAppNotifications.init(),
     );
   }
