@@ -106,7 +106,7 @@ class _VoiceTextScreenState extends ConsumerState<VoiceTextScreen> {
         point: 1,
       );
 
-      await ref.read(gradeNotifierProvider.notifier).addGrade(grade);
+      await ref.read(allGradesProvider.notifier).addGrade(grade);
       clearFields();
       showNotification("Success", "Note added successfully");
     } catch (e) {
@@ -131,7 +131,7 @@ class _VoiceTextScreenState extends ConsumerState<VoiceTextScreen> {
         point: statusEditingController.text == "Completed" ? 1 * valueLevel : 1,
       );
 
-      await ref.read(gradeNotifierProvider.notifier).updateGrade(task);
+      await ref.read(allGradesProvider.notifier).updateGrade(task);
 
       clearFields();
       showNotification("Success", "Note updated successfully");
@@ -145,7 +145,7 @@ class _VoiceTextScreenState extends ConsumerState<VoiceTextScreen> {
       final id = widget.id;
       final task =
           ref.read(gradeNotifierProvider).firstWhere((t) => t.id == id);
-      await ref.read(gradeNotifierProvider.notifier).removeGrade(task);
+      await ref.read(allGradesProvider.notifier).removeGrade(task);
       clearFields();
       showNotification("Success", "Note deleted successfully");
     } catch (e) {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sonix_text/config/helper/page_router.dart';
+import 'package:sonix_text/config/service/notifications.dart';
 import 'package:sonix_text/presentation/riverpod/repository_grade.dart';
 import 'package:sonix_text/presentation/riverpod/repository_level.dart';
 import 'package:sonix_text/presentation/riverpod/repository_user.dart';
@@ -22,7 +23,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Future<void> _onInit() async {
     await ref.read(levelNotifierProvider.notifier).getLevels();
     await ref.read(userNotifierProvider.notifier).getUsers();
-    await ref.read(gradeNotifierProvider.notifier).loadGrades();
+    await ref.read(allGradesProvider.notifier).loadGrades();
   }
 
   @override
@@ -80,7 +81,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         size: 45,
                       ),
                     ),
-                  )
+                  ),
+                  IconButton(
+                      onPressed: () {
+                        NotificationsService.hideNotification(
+                          'Sonix Text',
+                          'Notificación de prueba',
+                        );
+                      },
+                      icon: Icon(Icons.notifications))
                 ],
               ))),
       body: SizedBox(

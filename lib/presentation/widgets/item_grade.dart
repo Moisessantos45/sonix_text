@@ -120,7 +120,7 @@ class GradeItemWidget extends ConsumerWidget {
     final grade = ref
         .read(gradeNotifierProvider)
         .firstWhere((element) => element.id == id);
-    await ref.read(gradeNotifierProvider.notifier).removeGrade(grade);
+    await ref.read(allGradesProvider.notifier).removeGrade(grade);
     showNotification("Delete", "Item deleted");
   }
 }
