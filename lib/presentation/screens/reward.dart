@@ -1,7 +1,10 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sonix_text/presentation/riverpod/repository_level.dart';
 import 'package:confetti/confetti.dart';
+import 'package:sonix_text/presentation/riverpod/repository_user.dart';
 
 class RewardScreen extends ConsumerStatefulWidget {
   const RewardScreen({super.key});
@@ -16,6 +19,34 @@ class _RewardScreenState extends ConsumerState<RewardScreen>
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
   late Animation<double> _glowAnimation;
+
+  Future<void> registerLevel(context) async {
+    try {
+      final users = ref.read(userProvider);
+      final currentLevel = ref.read(currentLevelProvider);
+
+      if (currentLevel != null && !currentLevel.isClaimed) {
+        final user = users.first;
+
+        await ref.read(levelNotifierProvider.notifier).updateLevel(
+              currentLevel.copyWith(
+                isClaimed: true,
+              ),
+            );
+
+        await ref.read(userNotifierProvider.notifier).updateUser(user.copyWith(
+              level: user.level + 1,
+            ));
+      }
+
+      await ref.read(levelNotifierProvider.notifier).getLevels();
+      await ref.read(userNotifierProvider.notifier).getUsers();
+      _confettiController.play();
+      Navigator.pop(context);
+    } catch (e) {
+      return;
+    }
+  }
 
   @override
   void initState() {
@@ -68,15 +99,12 @@ class _RewardScreenState extends ConsumerState<RewardScreen>
             ),
           ),
           Align(
-            alignment: Alignment.bottomCenter,
+            alignment: Alignment.topCenter,
             child: ConfettiWidget(
               confettiController: _confettiController,
-              blastDirection: -3.1416 / 2,
-              emissionFrequency: 0.3,
-              numberOfParticles: 20,
-              maxBlastForce: 100,
-              minBlastForce: 80,
-              gravity: 0.3,
+              blastDirection: -pi / 2,
+              emissionFrequency: 0.1,
+              gravity: 0.01,
             ),
           ),
           Center(
@@ -158,8 +186,7 @@ class _RewardScreenState extends ConsumerState<RewardScreen>
                 const SizedBox(height: 50),
                 ElevatedButton(
                   onPressed: () {
-                    _confettiController.play();
-                    Navigator.pop(context);
+                    registerLevel(context);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.amber,
