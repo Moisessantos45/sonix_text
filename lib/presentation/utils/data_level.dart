@@ -6,7 +6,7 @@ final List<LevelModel> listLevel = [
       id: Uuid().v4(),
       title: 'Level 1',
       level: 1,
-      point: 30,
+      point: 10,
       multiplier: 1,
       message: '¡Bienvenido! El viaje apenas comienza. 💪',
       isClaimed: false),
