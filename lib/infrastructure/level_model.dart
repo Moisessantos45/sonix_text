@@ -52,6 +52,26 @@ class LevelModel extends EntityLevel {
     };
   }
 
+  LevelModel copyWith({
+    String? id,
+    String? title,
+    int? level,
+    int? point,
+    int? multiplier,
+    String? message,
+    bool? isClaimed,
+  }) {
+    return LevelModel(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      level: level ?? this.level,
+      point: point ?? this.point,
+      multiplier: multiplier ?? this.multiplier,
+      message: message ?? this.message,
+      isClaimed: isClaimed ?? this.isClaimed,
+    );
+  }
+
   int calculatePoints(int completedTasks) {
     return completedTasks * multiplier;
   }
