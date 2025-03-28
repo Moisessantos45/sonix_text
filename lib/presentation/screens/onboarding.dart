@@ -9,6 +9,7 @@ import 'package:sonix_text/presentation/riverpod/repository_level.dart';
 import 'package:sonix_text/presentation/riverpod/repository_user.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sonix_text/presentation/utils/data_level.dart';
+import 'package:sonix_text/presentation/widgets/list_category.dart';
 import 'package:uuid/uuid.dart';
 
 class OnboardingScreen extends ConsumerStatefulWidget {
@@ -156,34 +157,16 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 ),
               ),
               const SizedBox(height: 32),
-              TextField(
-                controller: _nameController,
-                decoration: InputDecoration(
-                  labelText: 'Nombre',
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16),
-                    borderSide: BorderSide.none,
-                  ),
-                  prefixIcon: const Icon(Icons.person_outline,
-                      color: Color(0xFF3498DB)),
-                ),
+              _buildTextFormField(
+                'Nombre completo',
+                Icons.person_outline,
+                _nameController,
               ),
               const SizedBox(height: 16),
-              TextField(
-                controller: _nicknameController,
-                decoration: InputDecoration(
-                  labelText: 'Nickname',
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16),
-                    borderSide: BorderSide.none,
-                  ),
-                  prefixIcon: const Icon(Icons.alternate_email,
-                      color: Color(0xFF3498DB)),
-                ),
+              _buildTextFormField(
+                'Nickname',
+                Icons.alternate_email,
+                _nicknameController,
               ),
               const SizedBox(height: 32),
               Row(
@@ -205,32 +188,14 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 ],
               ),
               const SizedBox(height: 16),
-              Wrap(
-                spacing: 8,
-                runSpacing: 12,
-                children: [
-                  ...listCategory.map((category) => FilterChip(
-                        label: Text(category),
-                        onSelected: (selected) {
-                          setState(() {
-                            if (selected) {
-                              selectCategory.add(category);
-                              listCategory.remove(category);
-                            }
-                          });
-                        },
-                        backgroundColor: Colors.white,
-                        selectedColor: const Color(0xFF3498DB).withAlpha(15),
-                        checkmarkColor: const Color(0xFF3498DB),
-                        labelStyle: TextStyle(
-                          color: selectCategory.contains(category)
-                              ? const Color(0xFF3498DB)
-                              : const Color(0xFF2C3E50),
-                        ),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 8),
-                      )),
-                ],
+              CategoryListWidget(
+                categories: listCategory,
+                onCategory: (category) {
+                  setState(() {
+                    listCategory.remove(category);
+                    selectCategory.add(category);
+                  });
+                },
               ),
               const SizedBox(height: 16),
               Text(
@@ -241,24 +206,15 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 ),
               ),
               const SizedBox(height: 8),
-              Wrap(
-                spacing: 8,
-                runSpacing: 12,
-                children: [
-                  ...selectCategory.map((category) => Chip(
-                        label: Text(category),
-                        backgroundColor: const Color(0xFF3498DB).withAlpha(15),
-                        labelStyle: const TextStyle(color: Color(0xFF3498DB)),
-                        deleteIcon: const Icon(Icons.close,
-                            color: Color(0xFF3498DB), size: 20),
-                        onDeleted: () {
-                          setState(() {
-                            selectCategory.remove(category);
-                            listCategory.add(category);
-                          });
-                        },
-                      )),
-                ],
+              CategoryListWidget(
+                categories: selectCategory,
+                isHiddenIcon: false,
+                onCategory: (category) {
+                  setState(() {
+                    selectCategory.remove(category);
+                    listCategory.add(category);
+                  });
+                },
               ),
               const SizedBox(height: 40),
               SizedBox(
@@ -291,6 +247,23 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildTextFormField(
+      String label, IconData icon, TextEditingController controller) {
+    return TextField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: label,
+        filled: true,
+        fillColor: Colors.white,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide.none,
+        ),
+        prefixIcon: Icon(icon, color: Color(0xFF3498DB)),
       ),
     );
   }
