@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_inapp_notifications/flutter_inapp_notifications.dart';
+import 'package:sonix_text/config/service/notifications.dart';
+import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:sonix_text/config/service/start_background_service.dart';
 import 'package:sonix_text/config/db.dart';
 import 'package:sonix_text/config/router/router.dart';
@@ -9,8 +11,10 @@ import 'package:sonix_text/presentation/riverpod/repository_db.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final database = await initializeDatabase();
+  await NotificationsService.init();
+  tz.initializeTimeZones();
 
-  await startBackgroundService(database);
+  // await startBackgroundService(database);
   runApp(
     ProviderScope(
       overrides: [
