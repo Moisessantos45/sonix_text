@@ -63,7 +63,7 @@ class _CardLevelWidgetState extends ConsumerState<CardLevelWidget>
     final currentLevel = ref.watch(currentLevelProvider);
     final int nextRewardPoints = ref.watch(pointsLevelProvider);
     final int totalPoints = ref.watch(scoreProvider);
-    final bool isLevelUp = 35 >= nextRewardPoints;
+    final bool isLevelUp = totalPoints >= nextRewardPoints && currentLevel?.isClaimed == false;
 
     if (isLevelUp && !_animationController.isAnimating) {
       _animationController.repeat(reverse: true);
