@@ -42,5 +42,5 @@ final userProvider = Provider<List<UserModel>>((ref) {
 
 final leveUserProvider = Provider<int>((ref) {
   final user = ref.watch(userNotifierProvider);
-  return user.isNotEmpty ? user.first.level : 0;
+  return user.isNotEmpty ? user.first.level : 1;
 });
