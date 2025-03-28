@@ -23,7 +23,7 @@ class GradeNotifier extends StateNotifier<List<EntityGrade>> {
   Future<void> loadGrades() async {
     final rows = await _repository.getAll(_table);
     final listGrade = rows.map((json) => EntityGrade.fromMap(json)).toList();
-    _allGrades = [...listGrade];
+    _allGrades =List.from(listGrade);
     _applyFilter();
   }
 
@@ -67,6 +67,13 @@ class GradeNotifier extends StateNotifier<List<EntityGrade>> {
     _allGrades = _allGrades.where((t) => t.id != grade.id).toList();
     _applyFilter();
   }
+
+  int get totalScore {
+    return _allGrades.where((grade) => grade.status == 'Completed').fold(
+          0,
+          (sum, grade) => sum + grade.point,
+        );
+  }
 }
 
 final gradesProvider = Provider<List<EntityGrade>>((ref) {
@@ -80,10 +87,7 @@ final totalGradesProvider = Provider<int>((ref) {
 });
 
 final scoreProvider = Provider<int>((ref) {
-  final grades = ref.watch(gradeNotifierProvider);
-  return grades
-      .where((grade) => grade.status == 'Completed')
-      .fold(0, (sum, grade) => sum + grade.point);
+  return ref.watch(gradeNotifierProvider.notifier).totalScore;
 });
 
 final completedGradesProvider = Provider<int>((ref) {
