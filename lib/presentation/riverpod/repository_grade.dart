@@ -5,25 +5,52 @@ import 'package:sonix_text/presentation/riverpod/repository_db.dart';
 import 'package:sonix_text/presentation/riverpod/repository_level.dart';
 import 'package:sonix_text/presentation/utils/data_card.dart';
 
-final gradeNotifierProvider =
-    StateNotifierProvider<GradeNotifier, List<EntityGrade>>((ref) {
+final allGradesProvider =
+    StateNotifierProvider<AllGradesNotifier, List<EntityGrade>>((ref) {
   final repository = ref.watch(dbRepositoryProvider);
-
-  return GradeNotifier(repository);
+  return AllGradesNotifier(repository);
 });
 
-class GradeNotifier extends StateNotifier<List<EntityGrade>> {
+class AllGradesNotifier extends StateNotifier<List<EntityGrade>> {
   final DbRepository _repository;
-  List<EntityGrade> _allGrades = [];
-  String _currentFilter = 'All';
   final String _table = 'grade';
 
-  GradeNotifier(this._repository) : super([]);
+  AllGradesNotifier(this._repository) : super([]);
 
   Future<void> loadGrades() async {
     final rows = await _repository.getAll(_table);
     final listGrade = rows.map((json) => EntityGrade.fromMap(json)).toList();
-    _allGrades =List.from(listGrade);
+    state = List.from(listGrade);
+  }
+
+  Future<void> addGrade(EntityGrade grade) async {
+    await _repository.add(_table, grade.toMap());
+    state = [...state, grade];
+  }
+
+  Future<void> updateGrade(EntityGrade grade) async {
+    await _repository.update(_table, grade.id, grade.toMap());
+    state = state.map((t) => t.id == grade.id ? grade : t).toList();
+  }
+
+  Future<void> removeGrade(EntityGrade grade) async {
+    await _repository.remove(_table, grade.id);
+    state = state.where((t) => t.id != grade.id).toList();
+  }
+}
+
+final gradeNotifierProvider =
+    StateNotifierProvider<GradeNotifier, List<EntityGrade>>((ref) {
+  final allGrades = ref.watch(allGradesProvider);
+
+  return GradeNotifier(allGrades);
+});
+
+class GradeNotifier extends StateNotifier<List<EntityGrade>> {
+  List<EntityGrade> _allGrades;
+  String _currentFilter = 'All';
+
+  GradeNotifier(this._allGrades) : super([]) {
     _applyFilter();
   }
 
@@ -49,31 +76,6 @@ class GradeNotifier extends StateNotifier<List<EntityGrade>> {
         state = List.from(_allGrades);
     }
   }
-
-  Future<void> addGrade(EntityGrade grade) async {
-    await _repository.add(_table, grade.toMap());
-    _allGrades = [..._allGrades, grade];
-    _applyFilter();
-  }
-
-  Future<void> updateGrade(EntityGrade grade) async {
-    await _repository.update(_table, grade.id, grade.toMap());
-    _allGrades = _allGrades.map((t) => t.id == grade.id ? grade : t).toList();
-    _applyFilter();
-  }
-
-  Future<void> removeGrade(EntityGrade grade) async {
-    await _repository.remove(_table, grade.id);
-    _allGrades = _allGrades.where((t) => t.id != grade.id).toList();
-    _applyFilter();
-  }
-
-  int get totalScore {
-    return _allGrades.where((grade) => grade.status == 'Completed').fold(
-          0,
-          (sum, grade) => sum + grade.point,
-        );
-  }
 }
 
 final gradesProvider = Provider<List<EntityGrade>>((ref) {
@@ -87,7 +89,10 @@ final totalGradesProvider = Provider<int>((ref) {
 });
 
 final scoreProvider = Provider<int>((ref) {
-  return ref.watch(gradeNotifierProvider.notifier).totalScore;
+  final allGrades = ref.watch(allGradesProvider);
+  return allGrades
+      .where((grade) => grade.status == 'Completed')
+      .fold(0, (sum, grade) => sum + grade.point);
 });
 
 final completedGradesProvider = Provider<int>((ref) {
