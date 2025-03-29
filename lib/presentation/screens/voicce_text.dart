@@ -29,18 +29,20 @@ class _VoiceTextScreenState extends ConsumerState<VoiceTextScreen> {
   final TextEditingController statusEditingController =
       TextEditingController(text: 'Pending');
 
-  final DateTime _dueDate = DateTime.now().add(const Duration(days: 1));
+  String registerDate = "";
+
+  final String currentDate =
+      '${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}';
 
   final TextEditingController dueDateEditingController = TextEditingController(
       text:
           '${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}');
 
   final uuid = Uuid();
-  bool _speechEnabled = false;
   String _lastWords = '';
 
   void _initSpeech() async {
-    _speechEnabled = await _speechToText.initialize();
+    await _speechToText.initialize();
     setState(() {});
   }
 
@@ -89,6 +91,7 @@ class _VoiceTextScreenState extends ConsumerState<VoiceTextScreen> {
     priorityEditingController.text = grade.priority;
     statusEditingController.text = grade.status;
     dueDateEditingController.text = grade.dueDate;
+    registerDate = grade.date;
   }
 
   Future<void> addGrade() async {
@@ -97,7 +100,7 @@ class _VoiceTextScreenState extends ConsumerState<VoiceTextScreen> {
         id: uuid.v4(),
         title: titleEditingController.text,
         content: textEditingController.text,
-        date: '${_dueDate.day}/${_dueDate.month}/${_dueDate.year}',
+        date: currentDate,
         dueDate: dueDateEditingController.text,
         status: statusEditingController.text,
         priority: priorityEditingController.text,
@@ -122,7 +125,7 @@ class _VoiceTextScreenState extends ConsumerState<VoiceTextScreen> {
         id: widget.id,
         title: titleEditingController.text,
         content: textEditingController.text,
-        date: DateTime.now().toString(),
+        date: registerDate.isEmpty ? currentDate : registerDate,
         dueDate: dueDateEditingController.text,
         status: statusEditingController.text,
         priority: priorityEditingController.text,
@@ -162,6 +165,8 @@ class _VoiceTextScreenState extends ConsumerState<VoiceTextScreen> {
       statusEditingController.text = "Pending";
       dueDateEditingController.text = "";
       _lastWords = "";
+      registerDate = "";
+      _speechToText.stop();
     });
   }
 
