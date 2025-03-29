@@ -9,10 +9,10 @@
 
 final List<String> statusOptions = ['Pending', 'In Progress', 'Completed'];
 final List<Map<String, String>> statusFilter = [
+  {'name': 'Todos', 'value': 'All'},
   {'name': 'Pendiente', 'value': 'Pending'},
   {'name': 'En Progreso', 'value': 'In Progress'},
   {'name': 'Completo', 'value': 'Completed'},
-  {'name': 'Todos', 'value': 'All'},
 ];
 List<String> listMenu = ['All', ...statusOptions];
 final List<String> priorityOptions = ['Low', 'Normal', 'High'];
