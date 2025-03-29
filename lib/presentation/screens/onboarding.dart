@@ -9,6 +9,7 @@ import 'package:sonix_text/presentation/riverpod/repository_level.dart';
 import 'package:sonix_text/presentation/riverpod/repository_user.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sonix_text/presentation/utils/data_level.dart';
+import 'package:sonix_text/presentation/widgets/custom_text_form_field.dart';
 import 'package:sonix_text/presentation/widgets/list_category.dart';
 import 'package:uuid/uuid.dart';
 
@@ -157,16 +158,16 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 ),
               ),
               const SizedBox(height: 32),
-              _buildTextFormField(
-                'Nombre completo',
-                Icons.person_outline,
-                _nameController,
+              CustomTextFormField(
+                label: 'Nombre completo',
+                icon: Icons.person_outline,
+                controller: _nameController,
               ),
               const SizedBox(height: 16),
-              _buildTextFormField(
-                'Nickname',
-                Icons.alternate_email,
-                _nicknameController,
+              CustomTextFormField(
+                label: 'Nickname',
+                icon: Icons.alternate_email,
+                controller: _nicknameController,
               ),
               const SizedBox(height: 32),
               Row(
@@ -247,23 +248,6 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildTextFormField(
-      String label, IconData icon, TextEditingController controller) {
-    return TextField(
-      controller: controller,
-      decoration: InputDecoration(
-        labelText: label,
-        filled: true,
-        fillColor: Colors.white,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide.none,
-        ),
-        prefixIcon: Icon(icon, color: Color(0xFF3498DB)),
       ),
     );
   }
