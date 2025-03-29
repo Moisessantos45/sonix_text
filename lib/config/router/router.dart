@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:sonix_text/config/helper/shared_preferents.dart';
 import 'package:sonix_text/presentation/screens/home.dart';
 import 'package:sonix_text/presentation/screens/onboarding.dart';
+import 'package:sonix_text/presentation/screens/profile.dart';
 
 Future<bool> checkForRedirect() async {
   final sharedPreferents = SharedPreferentsManager();
@@ -39,6 +40,15 @@ final GoRouter appRouter = GoRouter(
       pageBuilder: (context, state) => CustomTransitionPage(
           key: state.pageKey,
           child: const OnboardingScreen(),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(opacity: animation, child: child);
+          }),
+    ),
+    GoRoute(
+      path: "/profile",
+      pageBuilder: (context, state) => CustomTransitionPage(
+          key: state.pageKey,
+          child: const ProfileScreen(),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             return FadeTransition(opacity: animation, child: child);
           }),
