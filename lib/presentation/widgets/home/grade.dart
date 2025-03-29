@@ -22,7 +22,7 @@ class _GradeDisplayWidgetState extends ConsumerState<GradeDisplayWidget> {
         SizedBox(
           height: 60,
           child: ListView.builder(
-            itemCount: listMenu.length,
+            itemCount: statusFilter.length,
             scrollDirection: Axis.horizontal,
             itemBuilder: (context, index) {
               return Padding(
@@ -34,7 +34,7 @@ class _GradeDisplayWidgetState extends ConsumerState<GradeDisplayWidget> {
                     });
                     ref
                         .read(gradeNotifierProvider.notifier)
-                        .setFilter(listMenu[index]);
+                        .setFilter(statusFilter[index]['value']!);
                   },
                   child: Container(
                     padding: const EdgeInsets.symmetric(
@@ -46,7 +46,7 @@ class _GradeDisplayWidgetState extends ConsumerState<GradeDisplayWidget> {
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(
-                      listMenu[index],
+                      statusFilter[index]['name']!,
                       style: TextStyle(
                         color: _selectedMenu == index
                             ? Colors.white
