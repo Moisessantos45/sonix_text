@@ -10,6 +10,7 @@ import 'package:sonix_text/presentation/screens/voicce_text.dart';
 import 'package:sonix_text/presentation/widgets/card_level.dart';
 import 'package:sonix_text/presentation/widgets/carrusel_card.dart';
 import 'package:sonix_text/presentation/widgets/home/grade.dart';
+import 'package:sonix_text/presentation/widgets/navigation_bar.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -91,34 +92,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: BottomAppBar(
-        height: 60,
-        notchMargin: 8,
-        shape: const CircularNotchedRectangle(),
-        color: Colors.white,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            IconButton(
-              icon: const Icon(Icons.home_outlined),
-              color: const Color(0xFF2C3E50),
-              iconSize: 28,
-              onPressed: () {
-                context.go("/");
-              },
-            ),
-            const SizedBox(width: 40),
-            IconButton(
-              icon: const Icon(Icons.person_outline),
-              color: const Color(0xFF2C3E50),
-              iconSize: 28,
-              onPressed: () {
-                context.go("/profile");
-              },
-            ),
-          ],
-        ),
-      ),
+      bottomNavigationBar: CustomNavigation(),
     );
   }
 }
