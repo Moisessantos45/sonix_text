@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:uuid/uuid.dart';
 import 'package:sonix_text/config/helper/shared_preferents.dart';
 import 'package:sonix_text/config/show_notification.dart';
 import 'package:sonix_text/infrastructure/category_model.dart';
@@ -7,11 +9,9 @@ import 'package:sonix_text/infrastructure/user_model.dart';
 import 'package:sonix_text/presentation/riverpod/repository_category.dart';
 import 'package:sonix_text/presentation/riverpod/repository_level.dart';
 import 'package:sonix_text/presentation/riverpod/repository_user.dart';
-import 'package:go_router/go_router.dart';
 import 'package:sonix_text/presentation/utils/data_level.dart';
 import 'package:sonix_text/presentation/widgets/custom_text_form_field.dart';
 import 'package:sonix_text/presentation/widgets/list_category.dart';
-import 'package:uuid/uuid.dart';
 
 class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({super.key});
@@ -31,6 +31,11 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     try {
       final sharedPreferents = SharedPreferentsManager();
       final uuid = Uuid();
+      if (_nameController.text.isEmpty || _nicknameController.text.isEmpty) {
+        showNotification("Error", "Por favor, completa todos los campos",
+            error: true);
+        return;
+      }
 
       for (final level in listLevel) {
         await ref.read(levelNotifierProvider.notifier).addLevel(level);
@@ -38,6 +43,11 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
       final newList =
           selectCategory.map((e) => e.toLowerCase()).toSet().toList();
+      if (newList.isEmpty) {
+        showNotification("Error", "Por favor, selecciona una categoría",
+            error: true);
+        return;
+      }
 
       for (final item in newList) {
         final categoryName =
@@ -61,10 +71,13 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
       await sharedPreferents.saveData("isRegistered", true);
 
-      showNotification("Success", "User registered successfully");
+      showNotification(
+        "Success",
+        "Usuario registrado correctamente",
+      );
       context.go('/');
     } catch (e) {
-      showNotification("Error", e.toString(), error: true);
+      showNotification("Error", "No se pudo registrar el usuario", error: true);
     }
   }
 
@@ -72,7 +85,16 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     final TextEditingController categoryController = TextEditingController();
     showDialog(
       context: context,
+      barrierColor: Colors.black.withAlpha(50),
+      barrierDismissible: true,
       builder: (context) => AlertDialog(
+        backgroundColor: Colors.white,
+        elevation: 30,
+        surfaceTintColor: Colors.white,
+        shadowColor: Colors.black.withAlpha(50),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
         title: const Text('Nueva Categoría'),
         content: TextField(
           controller: categoryController,
