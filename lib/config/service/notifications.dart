@@ -58,7 +58,7 @@ class NotificationsService {
     ));
 
     await flutterLocalNotificationsPlugin.zonedSchedule(
-      0,
+      id,
       title,
       body,
       tz.TZDateTime.from(scheduleDate, tz.local),
