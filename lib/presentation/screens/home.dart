@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sonix_text/config/helper/page_router.dart';
+import 'package:sonix_text/presentation/riverpod/repository_category.dart';
 import 'package:sonix_text/presentation/riverpod/repository_grade.dart';
 import 'package:sonix_text/presentation/riverpod/repository_level.dart';
 import 'package:sonix_text/presentation/riverpod/repository_user.dart';
@@ -24,6 +25,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     await ref.read(levelNotifierProvider.notifier).getLevels();
     await ref.read(userNotifierProvider.notifier).getUsers();
     await ref.read(allGradesProvider.notifier).loadGrades();
+    await ref.read(categoryNotifierProvider.notifier).getCategories();
   }
 
   @override
