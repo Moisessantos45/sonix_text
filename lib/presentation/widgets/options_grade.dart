@@ -54,8 +54,7 @@ class _GradeOptionsWidgetState extends ConsumerState<GradeOptionsWidget> {
     }
   }
 
-  void initializeState() async {
-    await ref.read(categoryNotifierProvider.notifier).getCategories();
+  void initializeState() {
     final categories = ref.read(categoryNotifierProvider);
 
     if (categories.isEmpty) {
@@ -98,22 +97,23 @@ class _GradeOptionsWidgetState extends ConsumerState<GradeOptionsWidget> {
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 child: Row(
                   children: [
-                    Expanded(
-                      child: _buildDropdownField(
-                        icon: Icons.category_outlined,
-                        hint: 'Categoría',
-                        value: widget.category.text,
-                        items: categories,
-                        onChanged: (value) {
-                          if (value != null) {
-                            setState(() {
-                              // _selectedCategory = value;
-                              widget.category.text = value;
-                            });
-                          }
-                        },
+                    if (categories.isNotEmpty)
+                      Expanded(
+                        child: _buildDropdownField(
+                          icon: Icons.category_outlined,
+                          hint: 'Categoría',
+                          value: widget.category.text,
+                          items: categories,
+                          onChanged: (value) {
+                            if (value != null) {
+                              setState(() {
+                                // _selectedCategory = value;
+                                widget.category.text = value;
+                              });
+                            }
+                          },
+                        ),
                       ),
-                    ),
                     const SizedBox(width: 16),
                     Expanded(
                       child: _buildDateSelector(context),
