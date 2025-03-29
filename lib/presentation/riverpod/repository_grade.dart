@@ -84,7 +84,7 @@ final gradesProvider = Provider<List<EntityGrade>>((ref) {
 });
 
 final totalGradesProvider = Provider<int>((ref) {
-  final grades = ref.watch(gradeNotifierProvider);
+  final grades = ref.watch(allGradesProvider);
   return grades.length;
 });
 
@@ -96,7 +96,7 @@ final scoreProvider = Provider<int>((ref) {
 });
 
 final completedGradesProvider = Provider<int>((ref) {
-  final grades = ref.watch(gradeNotifierProvider);
+  final grades = ref.watch(allGradesProvider);
   return grades.where((grade) => grade.status == 'Completed').length;
 });
 

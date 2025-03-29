@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:sonix_text/config/helper/page_router.dart';
 import 'package:sonix_text/config/service/notifications.dart';
 import 'package:sonix_text/presentation/riverpod/repository_grade.dart';
@@ -40,7 +41,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       key: scaffoldKey,
       backgroundColor: const Color(0xFFF5F5F5),
       appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(80),
+          preferredSize: const Size.fromHeight(50),
           child: Padding(
               padding: const EdgeInsets.all(10),
               child: AppBar(
@@ -62,35 +63,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     bottom: Radius.circular(20),
                   ),
                 ),
-                actions: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF2C3E50).withAlpha(10),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: IconButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          CustomPageRoute(page: const VoiceTextScreen()),
-                        );
-                      },
-                      icon: const Icon(
-                        Icons.add_circle_outline,
-                        color: Color(0xFF2C3E50),
-                        size: 45,
-                      ),
-                    ),
-                  ),
-                  IconButton(
-                      onPressed: () {
-                        NotificationsService.hideNotification(
-                          'Sonix Text',
-                          'Notificación de prueba',
-                        );
-                      },
-                      icon: Icon(Icons.notifications))
-                ],
               ))),
       body: SizedBox(
         width: double.infinity,
@@ -100,6 +72,47 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             CardLevelWidget(),
             Expanded(
               child: GradeDisplayWidget(),
+            ),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: const Color(0xFF3498DB),
+        onPressed: () {
+          Navigator.push(
+            context,
+            CustomPageRoute(page: const VoiceTextScreen()),
+          );
+        },
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+          size: 32,
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      bottomNavigationBar: BottomAppBar(
+        height: 60,
+        notchMargin: 8,
+        shape: const CircularNotchedRectangle(),
+        color: Colors.white,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            IconButton(
+              icon: const Icon(Icons.home_outlined),
+              color: const Color(0xFF2C3E50),
+              iconSize: 28,
+              onPressed: () {
+                context.go("/");
+              },
+            ),
+            const SizedBox(width: 40),
+            IconButton(
+              icon: const Icon(Icons.person_outline),
+              color: const Color(0xFF2C3E50),
+              iconSize: 28,
+              onPressed: () {},
             ),
           ],
         ),
