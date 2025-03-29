@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sonix_text/config/helper/page_router.dart';
+import 'package:sonix_text/presentation/screens/notifications.dart';
 
 class CustomNavigation extends StatelessWidget {
   const CustomNavigation({super.key});
@@ -38,7 +40,12 @@ class CustomNavigation extends StatelessWidget {
               const SizedBox(width: 40),
               IconButton(
                 icon: const Icon(Icons.notifications),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    CustomPageRoute(page: const NotificationsScreen()),
+                  );
+                },
               ),
               IconButton(
                 icon: const Icon(Icons.person),
