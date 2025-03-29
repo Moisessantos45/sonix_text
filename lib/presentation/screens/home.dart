@@ -112,7 +112,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               icon: const Icon(Icons.person_outline),
               color: const Color(0xFF2C3E50),
               iconSize: 28,
-              onPressed: () {},
+              onPressed: () {
+                context.go("/profile");
+              },
             ),
           ],
         ),
