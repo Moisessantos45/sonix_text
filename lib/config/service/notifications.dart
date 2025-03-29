@@ -47,7 +47,7 @@ class NotificationsService {
   }
 
   static Future<void> hideNotificationSchedule(
-      String title, String body, DateTime scheduleDate) async {
+      int id, String title, String body, DateTime scheduleDate) async {
     const NotificationDetails platformChannelSpecifics = NotificationDetails(
         android: AndroidNotificationDetails(
       'channel_id',
