@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sonix_text/presentation/widgets/manage_notifications.dart';
 import 'package:uuid/uuid.dart';
 import 'package:sonix_text/presentation/riverpod/repository_user.dart';
 import 'package:sonix_text/config/show_notification.dart';
@@ -128,6 +129,13 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   }
 
   @override
+  void dispose() {
+    _nameController.dispose();
+    _nicknameController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final categories = ref.watch(categoryNotifierProvider);
     final categoryNames = categories.map((e) => e.name).toSet().toList();
@@ -147,8 +155,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           ),
         ),
         body: SingleChildScrollView(
-          child: Padding(
+          child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 24),
+            width: double.infinity,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -157,8 +166,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   child: Column(
                     children: [
                       Container(
-                        width: 100,
-                        height: 100,
+                        width: 80,
+                        height: 80,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: const Color(0xFF3498DB).withAlpha(10),
@@ -197,6 +206,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   label: 'Apodo',
                   icon: Icons.alternate_email,
                 ),
+                const SizedBox(height: 32),
+                NotificationManager(),
                 const SizedBox(height: 32),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
