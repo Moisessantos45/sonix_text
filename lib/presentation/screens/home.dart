@@ -29,8 +29,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     if (dueSoonGrades.isEmpty) {
       return;
     }
-    int hora = 18;
-    int minuto = 15;
+    int hora = 19;
+    int minuto = 2;
     int i = 0;
 
     for (final grade in dueSoonGrades) {
