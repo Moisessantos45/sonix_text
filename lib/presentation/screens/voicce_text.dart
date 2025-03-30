@@ -81,6 +81,18 @@ class _VoiceTextScreenState extends ConsumerState<VoiceTextScreen> {
     textEditingController.text = textReplaced;
   }
 
+  bool checkText() {
+    if (textEditingController.text.trim().isEmpty ||
+        titleEditingController.text.trim().isEmpty) {
+      showNotification(
+          "Error", "El título y el contenido no pueden estar vacíos",
+          error: true);
+      return false;
+    }
+
+    return true;
+  }
+
   void getGrade() {
     if (widget.id.isEmpty) return;
     final grade =
@@ -96,6 +108,7 @@ class _VoiceTextScreenState extends ConsumerState<VoiceTextScreen> {
 
   Future<void> addGrade() async {
     try {
+      if (!checkText()) return;
       final grade = EntityGrade(
         id: uuid.v4(),
         title: titleEditingController.text,
@@ -111,14 +124,15 @@ class _VoiceTextScreenState extends ConsumerState<VoiceTextScreen> {
 
       await ref.read(allGradesProvider.notifier).addGrade(grade);
       clearFields();
-      showNotification("Success", "Note added successfully");
+      showNotification("Nota", "Nota añadida correctamente");
     } catch (e) {
-      showNotification("Error", "Error adding note", error: true);
+      showNotification("Error", "Error al añadir la nota", error: true);
     }
   }
 
   Future<void> updateGrade() async {
     try {
+      if (!checkText()) return;
       final valueLevel = ref.watch(multiplyLevelProvider);
 
       final task = EntityGrade(
@@ -137,9 +151,9 @@ class _VoiceTextScreenState extends ConsumerState<VoiceTextScreen> {
       await ref.read(allGradesProvider.notifier).updateGrade(task);
 
       clearFields();
-      showNotification("Success", "Note updated successfully");
+      showNotification("Nota", "Nota actualizada correctamente");
     } catch (e) {
-      showNotification("Error", "Error updating note", error: true);
+      showNotification("Error", "Error al actualizar la nota", error: true);
     }
   }
 
