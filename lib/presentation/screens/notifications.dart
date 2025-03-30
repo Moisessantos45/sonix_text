@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sonix_text/domains/entity_grade.dart';
 import 'package:sonix_text/presentation/riverpod/repository_grade.dart';
+import 'package:sonix_text/presentation/utils/parse_date.dart';
 
 class NotificationsScreen extends ConsumerWidget {
   const NotificationsScreen({super.key});
@@ -38,8 +38,10 @@ class NotificationsScreen extends ConsumerWidget {
               physics: const BouncingScrollPhysics(),
               itemBuilder: (context, index) {
                 final grade = dueSoonGrades[index];
-                final daysUntilDue =
-                    _parseDate(grade.dueDate).difference(DateTime.now()).inDays;
+                final daysUntilDue = parseDate(grade.dueDate)
+                        ?.difference(DateTime.now())
+                        .inDays ??
+                    0;
                 return Container(
                   height: 105,
                   margin: const EdgeInsets.only(bottom: 12),
@@ -98,39 +100,6 @@ class NotificationsScreen extends ConsumerWidget {
                 );
               },
             ),
-    );
-  }
-
-  List<EntityGrade> filterNotesDueSoon(List<EntityGrade> notes) {
-    final today = DateTime.now();
-
-    final List<EntityGrade> notesAboutToExpire = [];
-
-    for (final note in notes) {
-      final noteDueDate = _parseDate(note.dueDate);
-      if (note.status != "Completed" &&
-          noteDueDate.isAfter(today.subtract(const Duration(days: 1)))) {
-        final daysDifference = noteDueDate.difference(today).inDays;
-
-        if (daysDifference >= 0 && daysDifference <= 4) {
-          notesAboutToExpire.add(note);
-        }
-      }
-    }
-
-    return notesAboutToExpire;
-  }
-
-  DateTime _parseDate(String dateStr) {
-    final parts = dateStr.split('/');
-    if (parts.length != 3) {
-      throw FormatException('Invalid date format: $dateStr');
-    }
-
-    return DateTime(
-      int.parse(parts[2]),
-      int.parse(parts[1]),
-      int.parse(parts[0]),
     );
   }
 
