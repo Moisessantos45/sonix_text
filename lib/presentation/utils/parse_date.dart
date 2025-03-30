@@ -1,15 +1,37 @@
-DateTime parseDate(String date) {
-  // Split the date string into parts
-  List<String> parts = date.split('/');
-  if (parts.length != 3) {
-    throw FormatException('Invalid date format. Expected dd/mm/yyyy');
+import 'package:sonix_text/domains/entity_grade.dart';
+
+List<EntityGrade> filterNotesDueSoon(List<EntityGrade> notes) {
+  final today = DateTime.now();
+
+  final List<EntityGrade> notesAboutToExpire = [];
+
+  for (final note in notes) {
+    final noteDueDate = parseDate(note.dueDate);
+    if (noteDueDate == null) {
+      continue;
+    }
+    if (note.status != "Completed" &&
+        noteDueDate.isAfter(today.subtract(const Duration(days: 1)))) {
+      final daysDifference = noteDueDate.difference(today).inDays;
+
+      if (daysDifference >= 0 && daysDifference <= 4) {
+        notesAboutToExpire.add(note);
+      }
+    }
   }
 
-  // Parse the day, month, and year from the string parts
+  return notesAboutToExpire;
+}
+
+DateTime? parseDate(String date) {
+  List<String> parts = date.split('/');
+  if (parts.length != 3) {
+    return null;
+  }
+
   int day = int.parse(parts[0]);
   int month = int.parse(parts[1]);
   int year = int.parse(parts[2]);
 
-  // Create a DateTime object using the parsed values
   return DateTime(year, month, day);
 }
