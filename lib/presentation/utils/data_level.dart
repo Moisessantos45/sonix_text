@@ -1,85 +1,48 @@
 import 'package:sonix_text/infrastructure/level_model.dart';
 import 'package:uuid/uuid.dart';
+import 'dart:math';
 
-final List<LevelModel> listLevel = [
-  LevelModel(
+List<LevelModel> generateLevels(int maxTareasPorDia) {
+  int diasParaCompletar = 5;
+
+  return List.generate(20, (index) {
+    int level = index + 1;
+
+    int point = (maxTareasPorDia * diasParaCompletar * pow(level, 1.2)).toInt();
+
+    int multiplier = 1 + log(level + 1) ~/ log(2);
+
+    List<String> messages = [
+      '¡Bienvenido! El viaje apenas comienza. 💪',
+      '¡Sigues avanzando! No te detengas. 🔥',
+      '¡Increíble! Te estás volviendo un experto. 🏆',
+      '¡Wow! Tu esfuerzo está dando frutos. 🚀',
+      '¡Mitad del camino! Mantén el ritmo. 🏃‍♂️',
+      '¡Eres una máquina de productividad! 🤖',
+      '¡Nada te detiene! Sigue así. 💯',
+      '¡Nivel Pro! Eres un crack. 🔥',
+      '¡Leyenda! Estás a un paso de la grandeza. 🏅',
+      '¡Maestro absoluto! Lo has logrado. 🎖',
+      '¡Sigues superándote! Esto no tiene fin. 🚀',
+      '¡Nivel Élite! Pocos llegan hasta aquí. 🔥',
+      '¡Dominador total! Eres imparable. 💪',
+      '¡Líder absoluto! Deja tu marca. 🏆',
+      '¡Nivel Supremo! No hay límites para ti. 🚀',
+      '¡Grandioso! Eres inspiración para todos. 💯',
+      '¡Nivel Leyenda! Solo los mejores llegan. 🏅',
+      '¡Cima del Éxito! Eres inigualable. 🎖',
+      '¡Último nivel! Un verdadero campeón. 🏆',
+      '¡Felicidades! Has conquistado todos los niveles. 🎉',
+    ];
+
+    return LevelModel(
       id: Uuid().v4(),
-      title: 'Level 1',
-      level: 1,
-      point: 10,
-      multiplier: 1,
-      message: '¡Bienvenido! El viaje apenas comienza. 💪',
-      isClaimed: false),
-  LevelModel(
-      id: Uuid().v4(),
-      title: 'Level 2',
-      level: 2,
-      point: 60,
-      multiplier: 10,
-      message: '¡Sigues avanzando! No te detengas. 🔥',
-      isClaimed: false),
-  LevelModel(
-      id: Uuid().v4(),
-      title: 'Level 3',
-      level: 3,
-      point: 90,
-      multiplier: 20,
-      message: '¡Increíble! Te estás volviendo un experto. 🏆',
-      isClaimed: false),
-  LevelModel(
-      id: Uuid().v4(),
-      title: 'Level 4',
-      level: 4,
-      point: 120,
-      multiplier: 30,
-      message: '¡Wow! Tu esfuerzo está dando frutos. 🚀',
-      isClaimed: false),
-  LevelModel(
-      id: Uuid().v4(),
-      title: 'Level 5',
-      level: 5,
-      point: 150,
-      multiplier: 50,
-      message: '¡Mitad del camino! Mantén el ritmo. 🏃‍♂️',
-      isClaimed: false),
-  LevelModel(
-      id: Uuid().v4(),
-      title: 'Level 6',
-      level: 6,
-      point: 220,
-      multiplier: 75,
-      message: '¡Eres una máquina de productividad! 🤖',
-      isClaimed: false),
-  LevelModel(
-      id: Uuid().v4(),
-      title: 'Level 7',
-      level: 7,
-      point: 300,
-      multiplier: 100,
-      message: '¡Nada te detiene! Sigue así. 💯',
-      isClaimed: false),
-  LevelModel(
-      id: Uuid().v4(),
-      title: 'Level 8',
-      level: 8,
-      point: 400,
-      multiplier: 150,
-      message: '¡Nivel Pro! Eres un crack. 🔥',
-      isClaimed: false),
-  LevelModel(
-      id: Uuid().v4(),
-      title: 'Level 9',
-      level: 9,
-      point: 500,
-      multiplier: 200,
-      message: '¡Leyenda! Estás a un paso de la grandeza. 🏅',
-      isClaimed: false),
-  LevelModel(
-      id: Uuid().v4(),
-      title: 'Level 10',
-      level: 10,
-      point: 600,
-      multiplier: 300,
-      message: '¡Maestro absoluto! Lo has logrado. 🎖',
-      isClaimed: false),
-];
+      title: 'Level $level',
+      level: level,
+      point: point,
+      multiplier: multiplier,
+      message: messages[index],
+      isClaimed: false,
+    );
+  });
+}
