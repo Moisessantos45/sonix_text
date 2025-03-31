@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sonix_text/presentation/widgets/add_category_dialog.dart';
 import 'package:uuid/uuid.dart';
 import 'package:sonix_text/config/helper/shared_preferents.dart';
 import 'package:sonix_text/config/show_notification.dart';
@@ -26,6 +27,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   final TextEditingController _nicknameController = TextEditingController();
   final List<String> listCategory = ["Tecnología", "Deportes", "Cine"];
   final List<String> selectCategory = [];
+  int gradeDay = 1;
 
   Future<void> registerUser() async {
     try {
@@ -37,6 +39,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         return;
       }
 
+      final listLevel = generateLevels(gradeDay);
       for (final level in listLevel) {
         await ref.read(levelNotifierProvider.notifier).addLevel(level);
       }
@@ -82,44 +85,25 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   }
 
   void _showAddCategoryDialog() {
-    final TextEditingController categoryController = TextEditingController();
-    showDialog(
+    AddCategoryDialog.show(
+        context: context,
+        onAddCategory: (value) {
+          setState(() {
+            selectCategory.add(value);
+          });
+        });
+  }
+
+  void _showAddAmoutDialog() {
+    AddCategoryDialog.show(
       context: context,
-      barrierColor: Colors.black.withAlpha(50),
-      barrierDismissible: true,
-      builder: (context) => AlertDialog(
-        backgroundColor: Colors.white,
-        elevation: 30,
-        surfaceTintColor: Colors.white,
-        shadowColor: Colors.black.withAlpha(50),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        title: const Text('Nueva Categoría'),
-        content: TextField(
-          controller: categoryController,
-          decoration: const InputDecoration(
-            hintText: 'Nombre de la categoría',
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancelar'),
-          ),
-          TextButton(
-            onPressed: () {
-              if (categoryController.text.isNotEmpty) {
-                setState(() {
-                  selectCategory.add(categoryController.text);
-                });
-                Navigator.pop(context);
-              }
-            },
-            child: const Text('Agregar'),
-          ),
-        ],
-      ),
+      onAddCategory: (value) {
+        setState(() {
+          gradeDay = int.tryParse(value) ?? 1;
+        });
+      },
+      title: 'Cantidad de notas por día',
+      hintText: 'Cantidad de notas por día',
     );
   }
 
@@ -205,6 +189,25 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                   ),
                   IconButton(
                     onPressed: _showAddCategoryDialog,
+                    icon: const Icon(Icons.add_circle, size: 28),
+                    color: const Color(0xFF3498DB),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'Cual es tu maximo de notas por dia',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF2C3E50),
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: _showAddAmoutDialog,
                     icon: const Icon(Icons.add_circle, size: 28),
                     color: const Color(0xFF3498DB),
                   ),
