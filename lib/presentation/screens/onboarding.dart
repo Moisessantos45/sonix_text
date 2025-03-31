@@ -68,7 +68,11 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           id: uuid.v4(),
           name: _nameController.text,
           nickname: _nicknameController.text.trim(),
-          level: 1);
+          level: 1,
+          hora: 0,
+          minuto: 0,
+          activeNotifications: false,
+          avatar: '92574792835600d793');
 
       await ref.read(userNotifierProvider.notifier).addUser(user);
 
