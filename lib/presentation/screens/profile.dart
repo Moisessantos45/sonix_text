@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sonix_text/presentation/widgets/add_category_dialog.dart';
 import 'package:sonix_text/presentation/widgets/manage_notifications.dart';
 import 'package:uuid/uuid.dart';
 import 'package:sonix_text/presentation/riverpod/repository_user.dart';
@@ -26,43 +27,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   final uuid = Uuid();
 
   void _showAddCategoryDialog() {
-    final TextEditingController categoryController = TextEditingController();
-    showDialog(
-      context: context,
-      barrierColor: Colors.black.withAlpha(50),
-      barrierDismissible: true,
-      builder: (context) => AlertDialog(
-        backgroundColor: Colors.white,
-        elevation: 30,
-        surfaceTintColor: Colors.white,
-        shadowColor: Colors.black.withAlpha(50),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        title: const Text('Nueva Categoría'),
-        content: TextField(
-          controller: categoryController,
-          decoration: const InputDecoration(
-            hintText: 'Nombre de la categoría',
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancelar'),
-          ),
-          TextButton(
-            onPressed: () {
-              if (categoryController.text.isNotEmpty) {
-                addCategory(categoryController.text);
-                Navigator.pop(context);
-              }
-            },
-            child: const Text('Agregar'),
-          ),
-        ],
-      ),
-    );
+    AddCategoryDialog.show(
+        context: context,
+        onAddCategory: (value) {
+          addCategory(value);
+        });
   }
 
   void initializeState() async {
