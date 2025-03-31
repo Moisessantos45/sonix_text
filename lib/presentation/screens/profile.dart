@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sonix_text/presentation/utils/validate_string.dart';
 import 'package:sonix_text/presentation/widgets/add_category_dialog.dart';
+import 'package:sonix_text/presentation/widgets/avatar.dart';
 import 'package:sonix_text/presentation/widgets/manage_notifications.dart';
 import 'package:uuid/uuid.dart';
 import 'package:sonix_text/presentation/riverpod/repository_user.dart';
@@ -25,6 +27,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _nicknameController = TextEditingController();
   final uuid = Uuid();
+  String avatar = '92574792835600d793';
 
   void _showAddCategoryDialog() {
     AddCategoryDialog.show(
@@ -39,11 +42,20 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     if (user.isNotEmpty) {
       _nameController.text = user.first.name;
       _nicknameController.text = user.first.nickname;
+      avatar = user.first.avatar;
     }
   }
 
   Future<void> updateUser() async {
     try {
+      final validate = isValidString(_nameController.text) &&
+          isValidString(_nicknameController.text);
+
+      if (!validate) {
+        showNotification("Error", "Algunos campos son inválidos", error: true);
+        return;
+      }
+
       final user = ref.read(userProvider);
       if (user.isNotEmpty) {
         final updatedUser = user.first.copyWith(
@@ -134,22 +146,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 Center(
                   child: Column(
                     children: [
-                      Container(
-                        width: 80,
-                        height: 80,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: const Color(0xFF3498DB).withAlpha(10),
-                          border: Border.all(
-                            color: const Color(0xFF3498DB),
-                            width: 2,
-                          ),
-                        ),
-                        child: const Icon(
-                          Icons.person_outline,
-                          size: 50,
-                          color: Color(0xFF3498DB),
-                        ),
+                      AvatarWidget(
+                        avatar: avatar,
+                        onSelect: (p0) => {},
                       ),
                       const SizedBox(height: 16),
                       const Text(
