@@ -115,8 +115,12 @@ class _VoiceTextScreenState extends ConsumerState<VoiceTextScreen> {
     );
 
     DateTime fechaActual = DateTime.now();
-    isChangeStatus =
-        dateTime.isBefore(fechaActual) || grade.status == "Completed";
+    DateTime fechaActualSinHora =
+        DateTime(fechaActual.year, fechaActual.month, fechaActual.day);
+    DateTime dateTimeSinHora =
+        DateTime(dateTime.year, dateTime.month, dateTime.day);
+    isChangeStatus = dateTimeSinHora.isBefore(fechaActualSinHora) ||
+        grade.status == "Completed";
   }
 
   Future<void> addGrade() async {
@@ -124,8 +128,8 @@ class _VoiceTextScreenState extends ConsumerState<VoiceTextScreen> {
       if (!checkText()) return;
       final grade = EntityGrade(
         id: uuid.v4(),
-        title: titleEditingController.text,
-        content: textEditingController.text,
+        title: titleEditingController.text.trim(),
+        content: textEditingController.text.trim(),
         date: currentDate,
         dueDate: dueDateEditingController.text,
         status: statusEditingController.text,
@@ -150,8 +154,8 @@ class _VoiceTextScreenState extends ConsumerState<VoiceTextScreen> {
 
       final task = EntityGrade(
         id: widget.id,
-        title: titleEditingController.text,
-        content: textEditingController.text,
+        title: titleEditingController.text.trim(),
+        content: textEditingController.text.trim(),
         date: registerDate.isEmpty ? currentDate : registerDate,
         dueDate: dueDateEditingController.text,
         status: statusEditingController.text,
