@@ -20,7 +20,7 @@ class UserModel extends EntityUser {
       level: map['level'],
       hora: map['hora'] ?? 0,
       minuto: map['minuto'] ?? 0,
-      activeNotifications: map['active_notifications'] ?? false,
+      activeNotifications: map['active_notifications'] == 'true',
       avatar: map['avatar'] ?? '92574792835600d793',
     );
   }
