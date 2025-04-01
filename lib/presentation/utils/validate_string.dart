@@ -1,6 +1,10 @@
 bool isValidString(String cadena) {
-  final RegExp regex =
-      RegExp(r'^[a-zA-Z0-9áéíóúüÁÉÍÓÚÜñÑ]+( [a-zA-Z0-9áéíóúüÁÉÍÓÚÜñÑ]+)*$');
+  final String trimmed = cadena.trim();
 
-  return cadena.isNotEmpty && cadena.trim() == cadena && regex.hasMatch(cadena);
+  final RegExp regex = RegExp(
+      r'^[a-zA-Z0-9áéíóúüÁÉÍÓÚÜñÑ.,?!¿¡:;_\-]+( [a-zA-Z0-9áéíóúüÁÉÍÓÚÜñÑ.,?!¿¡:;_\-]+)*$');
+
+  return trimmed.isNotEmpty &&
+      trimmed.trim() == trimmed &&
+      regex.hasMatch(trimmed);
 }
