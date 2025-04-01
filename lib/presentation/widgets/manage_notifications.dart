@@ -3,7 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sonix_text/config/service/notifications.dart';
 import 'package:sonix_text/config/show_notification.dart';
+import 'package:sonix_text/infrastructure/user_model.dart';
 import 'package:sonix_text/presentation/riverpod/repository_grade.dart';
+import 'package:sonix_text/presentation/riverpod/repository_user.dart';
 import 'package:sonix_text/presentation/utils/parse_date.dart';
 
 class NotificationManager extends ConsumerStatefulWidget {
@@ -20,30 +22,48 @@ class _NotificationManagerState extends ConsumerState<NotificationManager> {
   int i = 0;
   bool isSwitched = false;
 
+  void initializeState() async {
+    final user = ref.read(userProvider);
+    if (user.isNotEmpty) {
+      setState(() {
+        isSwitched = user.first.activeNotifications;
+        hora = user.first.hora;
+        minuto = user.first.minuto;
+      });
+    }
+  }
+
   Future<void> _scheduleNotifications() async {
-    if (!isSwitched) {
-      await NotificationsService.cancelAll();
-
-      showNotification(
-          "Notificaciones", "Las notificaciones han sido desactivadas");
-      return;
-    }
-
-    if (hora <= 0 || hora > 24 || minuto <= 0 || minuto > 59) {
-      showNotification("Error",
-          "La hora y el minuto deben estar en el rango correcto (0-23 y 0-59)",
-          error: true);
-      return;
-    }
-
-    final grades = ref.read(allGradesProvider);
-    final dueSoonGrades = filterNotesDueSoon(grades);
-
-    if (dueSoonGrades.isEmpty) {
-      return;
-    }
-
     try {
+      final user = ref.read(userProvider);
+      if (user.isEmpty) {
+        throw Exception("No hay usuario");
+      }
+
+      final updatedUser = user.first.copyWith(
+        activeNotifications: isSwitched,
+      );
+
+      if (!isSwitched) {
+        await NotificationsService.cancelAll();
+
+        await _updateUser(updatedUser.copyWith(activeNotifications: false));
+
+        showNotification(
+            "Notificaciones", "Las notificaciones han sido desactivadas");
+        return;
+      }
+
+      if (hora <= 0 || hora > 24 || minuto <= 0 || minuto > 59) {
+        showNotification("Error",
+            "La hora y el minuto deben estar en el rango correcto (0-23 y 0-59)",
+            error: true);
+        return;
+      }
+
+      final dueSoonGrades = filterNotesDueSoon(ref.read(allGradesProvider));
+      if (dueSoonGrades.isEmpty) return;
+
       for (final grade in dueSoonGrades) {
         DateTime fecha = parseDate(grade.dueDate) ?? DateTime.now();
 
@@ -61,6 +81,9 @@ class _NotificationManagerState extends ConsumerState<NotificationManager> {
         i++;
       }
 
+      await _updateUser(updatedUser.copyWith(
+          minuto: minuto, hora: hora, activeNotifications: true));
+
       showNotification("Notificaciones",
           "Las notificaciones han sido programadas correctamente");
     } catch (e) {
@@ -74,6 +97,16 @@ class _NotificationManagerState extends ConsumerState<NotificationManager> {
       });
       return;
     }
+  }
+
+  Future<void> _updateUser(UserModel updatedUser) async {
+    await ref.read(userNotifierProvider.notifier).updateUser(updatedUser);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    initializeState();
   }
 
   @override
