@@ -5,7 +5,9 @@ import 'package:sonix_text/domains/entity_grade.dart';
 import 'package:sonix_text/presentation/riverpod/repository_grade.dart';
 import 'package:sonix_text/presentation/riverpod/repository_level.dart';
 import 'package:sonix_text/presentation/utils/character.dart';
+import 'package:sonix_text/presentation/utils/validate_string.dart';
 import 'package:sonix_text/presentation/widgets/options_grade.dart';
+import 'package:sonix_text/presentation/widgets/options_grade_static.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:uuid/uuid.dart';
@@ -28,6 +30,7 @@ class _VoiceTextScreenState extends ConsumerState<VoiceTextScreen> {
       TextEditingController(text: 'Normal');
   final TextEditingController statusEditingController =
       TextEditingController(text: 'Pending');
+  bool isChangeStatus = false;
 
   String registerDate = "";
 
@@ -82,11 +85,11 @@ class _VoiceTextScreenState extends ConsumerState<VoiceTextScreen> {
   }
 
   bool checkText() {
-    if (textEditingController.text.trim().isEmpty ||
-        titleEditingController.text.trim().isEmpty) {
-      showNotification(
-          "Error", "El título y el contenido no pueden estar vacíos",
-          error: true);
+    final validString = isValidString(textEditingController.text) &&
+        isValidString(titleEditingController.text);
+
+    if (!validString) {
+      showNotification("Error", "Algunos campos no son válidos", error: true);
       return false;
     }
 
@@ -104,6 +107,16 @@ class _VoiceTextScreenState extends ConsumerState<VoiceTextScreen> {
     statusEditingController.text = grade.status;
     dueDateEditingController.text = grade.dueDate;
     registerDate = grade.date;
+    final splitDueteDate = grade.dueDate.split('/');
+    DateTime dateTime = DateTime(
+      int.parse(splitDueteDate[2]),
+      int.parse(splitDueteDate[1]),
+      int.parse(splitDueteDate[0]),
+    );
+
+    DateTime fechaActual = DateTime.now();
+    isChangeStatus =
+        dateTime.isBefore(fechaActual) || grade.status == "Completed";
   }
 
   Future<void> addGrade() async {
@@ -236,6 +249,7 @@ class _VoiceTextScreenState extends ConsumerState<VoiceTextScreen> {
             children: [
               TextField(
                 controller: titleEditingController,
+                readOnly: isChangeStatus,
                 style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.w600,
@@ -248,17 +262,25 @@ class _VoiceTextScreenState extends ConsumerState<VoiceTextScreen> {
                 ),
               ),
               const Divider(height: 20, color: Color(0xFFECF0F1)),
-              GradeOptionsWidget(
-                category: categoryEditingController,
-                status: statusEditingController,
-                priority: priorityEditingController,
-                dueDate: dueDateEditingController,
-              ),
+              isChangeStatus
+                  ? GradeOptionsDisplay(
+                      category: categoryEditingController.text,
+                      status: statusEditingController.text,
+                      priority: priorityEditingController.text,
+                      dueDate: dueDateEditingController.text,
+                    )
+                  : GradeOptionsWidget(
+                      category: categoryEditingController,
+                      status: statusEditingController,
+                      priority: priorityEditingController,
+                      dueDate: dueDateEditingController,
+                    ),
               const Divider(height: 20, color: Color(0xFFECF0F1)),
               Expanded(
                 child: TextField(
                   controller: textEditingController,
                   maxLines: null,
+                  readOnly: isChangeStatus,
                   style: const TextStyle(
                     fontSize: 16,
                     color: Color(0xFF2C3E50),
