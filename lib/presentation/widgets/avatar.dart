@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:avatar_plus/avatar_plus.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sonix_text/config/show_notification.dart';
+import 'package:sonix_text/presentation/riverpod/repository_user.dart';
 
-class AvatarWidget extends StatefulWidget {
-  final Function(String) onSelect;
+class AvatarWidget extends ConsumerStatefulWidget {
+  final Function(String)? onSelect;
   final String avatar;
 
   const AvatarWidget({
@@ -12,11 +15,30 @@ class AvatarWidget extends StatefulWidget {
   });
 
   @override
-  State<AvatarWidget> createState() => _AvatarWidgetState();
+  ConsumerState<AvatarWidget> createState() => _AvatarWidgetState();
 }
 
-class _AvatarWidgetState extends State<AvatarWidget> {
-  // https://multiavatar.com en esta pagina encontramos avatares gratuitos
+class _AvatarWidgetState extends ConsumerState<AvatarWidget> {
+  Future<void> changeAvatar(String avatar) async {
+    try {
+      final user = ref.read(userProvider);
+      if (user.isEmpty) {
+        throw Exception("No hay usuario");
+      }
+      final updatedUser = user.first.copyWith(
+        avatar: avatar,
+      );
+
+      await ref.read(userNotifierProvider.notifier).updateUser(updatedUser);
+      showNotification(
+        "Éxito",
+        "Avatar cambiado correctamente",
+      );
+    } catch (e) {
+      showNotification("Error", "No se pudo cambiar el avatar", error: true);
+    }
+  }
+
   void _showAddAvatar() {
     showDialog(
       context: context,
@@ -58,7 +80,7 @@ class _AvatarWidgetState extends State<AvatarWidget> {
             TextButton(
               onPressed: () {
                 if (newAvatar.trim().isNotEmpty) {
-                  widget.onSelect(newAvatar.trim());
+                  changeAvatar(newAvatar.trim());
                   Navigator.pop(context);
                 }
               },
