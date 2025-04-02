@@ -68,4 +68,30 @@ class EntityGrade {
       point: map['point'],
     );
   }
+
+  EntityGrade copyWith({
+    String? id,
+    String? title,
+    String? content,
+    String? date,
+    String? dueDate,
+    String? status,
+    String? priority,
+    String? category,
+    String? color,
+    int? point,
+  }) {
+    return EntityGrade(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      content: content ?? this.content,
+      date: date ?? this.date,
+      dueDate: dueDate ?? this.dueDate,
+      status: status ?? this.status,
+      priority: priority ?? this.priority,
+      category: category ?? this.category,
+      color: color ?? this.color,
+      point: point ?? this.point,
+    );
+  }
 }
