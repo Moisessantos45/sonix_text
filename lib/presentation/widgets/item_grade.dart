@@ -150,28 +150,47 @@ class GradeItemWidget extends ConsumerWidget {
           Expanded(
             child: DropdownButtonHideUnderline(
               child: DropdownButton<String>(
-                value: validValue,
-                isDense: true,
-                isExpanded: true,
-                icon:
-                    const Icon(Icons.arrow_drop_down, color: Color(0xFF95A5A6)),
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.white,
-                  fontWeight: FontWeight.w500,
-                ),
-                onChanged: onChanged,
-                dropdownColor: Colors.white,
-                focusColor: Colors.white,
-                borderRadius: BorderRadius.circular(10),
-                items: uniqueItems.map((String item) {
-                  return DropdownMenuItem<String>(
-                    value: item,
-                    child: Text(item),
-                  );
-                }).toList(),
-                hint: Text(hint),
-              ),
+                  value: validValue,
+                  isDense: true,
+                  isExpanded: true,
+                  icon: const Icon(Icons.arrow_drop_down,
+                      color: Color(0xFF95A5A6)),
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  onChanged: onChanged,
+                  dropdownColor: Colors.white,
+                  focusColor: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                  items: uniqueItems.map((String item) {
+                    return DropdownMenuItem<String>(
+                      value: item,
+                      child: Text(
+                        item,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Color(color),
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                  hint: Text(hint,
+                      style: const TextStyle(
+                        color: Colors.white,
+                      )),
+                  selectedItemBuilder: (BuildContext context) {
+                    return uniqueItems.map<Widget>((String item) {
+                      return Text(
+                        item,
+                        style: const TextStyle(
+                          color: Colors.white,
+                        ),
+                      );
+                    }).toList();
+                  }),
             ),
           ),
         ],
