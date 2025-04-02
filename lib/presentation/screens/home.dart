@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sonix_text/config/helper/page_router.dart';
+import 'package:sonix_text/config/service/notifications.dart';
 import 'package:sonix_text/presentation/riverpod/repository_category.dart';
 import 'package:sonix_text/presentation/riverpod/repository_grade.dart';
 import 'package:sonix_text/presentation/riverpod/repository_level.dart';
 import 'package:sonix_text/presentation/riverpod/repository_user.dart';
 import 'package:sonix_text/presentation/screens/voicce_text.dart';
+import 'package:sonix_text/presentation/utils/parse_date.dart';
 import 'package:sonix_text/presentation/widgets/card_level.dart';
 import 'package:sonix_text/presentation/widgets/carrusel_card.dart';
 import 'package:sonix_text/presentation/widgets/home/grade.dart';
@@ -21,11 +23,56 @@ class HomeScreen extends ConsumerStatefulWidget {
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
+  Future<void> _scheduleNotifications() async {
+    int i = 0;
+    try {
+      final user = ref.read(userProvider);
+      if (user.isEmpty) {
+        return;
+      }
+
+      final updatedUser = user.first;
+      if (updatedUser.activeNotifications == true) {
+        return;
+      }
+
+      final hora = updatedUser.hora;
+      final minuto = updatedUser.minuto;
+
+      final dueSoonGrades = filterNotesDueSoon(ref.read(allGradesProvider));
+      if (dueSoonGrades.isEmpty) return;
+
+      for (final grade in dueSoonGrades) {
+        DateTime fecha = parseDate(grade.dueDate) ?? DateTime.now();
+
+        DateTime fechaConHora =
+            DateTime(fecha.year, fecha.month, fecha.day, hora, minuto);
+
+        await NotificationsService.cancel(i);
+
+        await NotificationsService.hideNotificationSchedule(
+          i,
+          "La nota ${grade.title}",
+          'La nota ${grade.title} se vence en ${grade.dueDate}',
+          fechaConHora,
+        );
+        i++;
+      }
+    } catch (e) {
+      await NotificationsService.cancelAll();
+      setState(() {
+        i = 0;
+      });
+      return;
+    }
+  }
+
   Future<void> _onInit() async {
     await ref.read(levelNotifierProvider.notifier).getLevels();
     await ref.read(userNotifierProvider.notifier).getUsers();
     await ref.read(allGradesProvider.notifier).loadGrades();
     await ref.read(categoryNotifierProvider.notifier).getCategories();
+    await _scheduleNotifications();
   }
 
   @override
