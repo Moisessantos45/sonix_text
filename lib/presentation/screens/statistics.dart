@@ -18,7 +18,7 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
   @override
   Widget build(BuildContext context) {
     final grades = ref.watch(allGradesProvider);
-    
+
     return Scaffold(
         backgroundColor: const Color(0xFFF5F5F5),
         appBar: AppBar(
@@ -54,10 +54,20 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
                       ),
                     ),
                     const SizedBox(height: 50),
-                    SizedBox(
-                      height: constraints.maxHeight * 0.55,
-                      child: PieChartWidget(),
-                    ),
+                    grades.isEmpty
+                        ? const Center(
+                            child: Text(
+                              'No hay notas registradas',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Color(0xFF7F8C8D),
+                              ),
+                            ),
+                          )
+                        : SizedBox(
+                            height: constraints.maxHeight * 0.55,
+                            child: PieChartWidget(),
+                          ),
                     const SizedBox(height: 20),
                     const Text(
                       'Notas por dia',
@@ -67,10 +77,20 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
                         color: Color(0xFF2C3E50),
                       ),
                     ),
-                    SizedBox(
-                      height: constraints.maxHeight * 0.4,
-                      child: BarChartWidget(grades: [...grades]),
-                    ),
+                    grades.isEmpty
+                        ? const Center(
+                            child: Text(
+                              'No hay notas registradas',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Color(0xFF7F8C8D),
+                              ),
+                            ),
+                          )
+                        : SizedBox(
+                            height: constraints.maxHeight * 0.4,
+                            child: BarChartWidget(grades: [...grades]),
+                          ),
                     const SizedBox(height: 20),
                   ],
                 ),
