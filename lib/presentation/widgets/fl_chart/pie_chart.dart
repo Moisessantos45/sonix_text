@@ -74,7 +74,7 @@ class _PieChartWidgetState extends ConsumerState<PieChartWidget> {
                   height: 4,
                 ),
                 Indicator(
-                  color: AppColors.contentColorPurple,
+                  color: AppColors.contentColorGreen,
                   text: 'Completed',
                   isSquare: true,
                 ),
