@@ -31,6 +31,7 @@ class _VoiceTextScreenState extends ConsumerState<VoiceTextScreen> {
   final TextEditingController statusEditingController =
       TextEditingController(text: 'Pending');
   bool isChangeStatus = false;
+  int selectedColor = 0xFF4fc3f7;
 
   String registerDate = "";
 
@@ -85,11 +86,21 @@ class _VoiceTextScreenState extends ConsumerState<VoiceTextScreen> {
   }
 
   bool checkText() {
-    final validString = isValidString(textEditingController.text) &&
-        isValidString(titleEditingController.text);
+    final validString = isValidString(titleEditingController.text);
 
     if (!validString) {
       showNotification("Error", "Algunos campos no son válidos", error: true);
+      return false;
+    }
+
+    if (titleEditingController.text.isEmpty) {
+      showNotification("Error", "El título no puede estar vacío", error: true);
+      return false;
+    }
+
+    if (textEditingController.text.isEmpty) {
+      showNotification("Error", "El contenido no puede estar vacío",
+          error: true);
       return false;
     }
 
@@ -135,7 +146,7 @@ class _VoiceTextScreenState extends ConsumerState<VoiceTextScreen> {
         status: statusEditingController.text,
         priority: priorityEditingController.text,
         category: categoryEditingController.text,
-        color: "0xFF0000FF",
+        color: selectedColor,
         point: 1,
       );
 
@@ -161,7 +172,7 @@ class _VoiceTextScreenState extends ConsumerState<VoiceTextScreen> {
         status: statusEditingController.text,
         priority: priorityEditingController.text,
         category: categoryEditingController.text,
-        color: "0xFF0000FF",
+        color: selectedColor,
         point: statusEditingController.text == "Completed" ? 1 * valueLevel : 1,
       );
 
@@ -278,6 +289,11 @@ class _VoiceTextScreenState extends ConsumerState<VoiceTextScreen> {
                       status: statusEditingController,
                       priority: priorityEditingController,
                       dueDate: dueDateEditingController,
+                      onTapColor: (color) {
+                        setState(() {
+                          selectedColor = color;
+                        });
+                      },
                     ),
               const Divider(height: 20, color: Color(0xFFECF0F1)),
               Expanded(
