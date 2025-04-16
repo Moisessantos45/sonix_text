@@ -59,3 +59,30 @@ extension ColorExtension on Color {
     return (x * 255.0).round() & 0xff;
   }
 }
+
+final List<int> colorList = [
+  0xFF4fc3f7, // azul claro
+  0xFFa7ffeb, // verde menta claro
+  0xFF00e676, // verde brillante
+  0xFF81d4fa, // azul cielo claro
+  0xFFb2fef7, // celeste muy suave
+  0xFF1de9b6, // verde aqua
+  0xFF64ffda, // turquesa claro
+  0xFF00bfa5, // verde azulado
+  0xFF69f0ae, // verde primavera
+  0xFF18ffff, // cian brillante
+  0xFF40c4ff, // azul vibrante
+  0xFF80d8ff, // azul muy claro
+  0xFFb9f6ca, // verde pastel
+  0xFF00e5ff, // cian intenso
+  0xFF76ff03, // verde lima neón
+  0xFFf06292, // rosa suave vibrante
+  0xFFffd54f, // amarillo suave y brillante
+  0xFFba68c8, // morado claro
+  0xFFff8a65, // naranja suave
+  0xFFf44336, // rojo vibrante
+  0xFFffeb3b, // amarillo neón
+  0xFFe57373, // rojo coral
+  0xFFce93d8, // lavanda claro
+  0xFFff5252, // rojo neón
+];
