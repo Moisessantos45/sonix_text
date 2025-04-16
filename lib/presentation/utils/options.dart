@@ -16,4 +16,4 @@ final List<Map<String, String>> statusFilter = [
 ];
 List<String> listMenu = ['All', ...statusOptions];
 final List<String> priorityOptions = ['Low', 'Normal', 'High'];
-final List<int> statusColors = [0xFFE57373, 0xFF81C784, 0xFF64B5F6];
+final List<int> statusColors = [0xFFf44336, 0xFFffd54f, 0xFF00e676];
