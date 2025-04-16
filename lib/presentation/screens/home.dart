@@ -6,6 +6,7 @@ import 'package:sonix_text/presentation/riverpod/repository_category.dart';
 import 'package:sonix_text/presentation/riverpod/repository_grade.dart';
 import 'package:sonix_text/presentation/riverpod/repository_level.dart';
 import 'package:sonix_text/presentation/riverpod/repository_user.dart';
+import 'package:sonix_text/presentation/screens/notifications.dart';
 import 'package:sonix_text/presentation/screens/voicce_text.dart';
 import 'package:sonix_text/presentation/utils/parse_date.dart';
 import 'package:sonix_text/presentation/widgets/card_level.dart';
@@ -102,6 +103,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     letterSpacing: 0.5,
                   ),
                 ),
+                actions: [
+                  IconButton(
+                    icon: const Icon(Icons.notifications),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        CustomPageRoute(page: const NotificationsScreen()),
+                      );
+                    },
+                  ),
+                ],
                 centerTitle: true,
                 elevation: 0,
                 backgroundColor: Colors.white.withAlpha(80),
