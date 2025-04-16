@@ -7,7 +7,7 @@ class EntityGrade {
   final String status;
   final String priority;
   final String category;
-  final String color;
+  final int color;
   final int point;
 
   final String table;
@@ -36,7 +36,7 @@ class EntityGrade {
       'status': status,
       'priority': priority,
       'category': category,
-      'color': color,
+      'color': color.toString(),
       'point': point,
     };
   }
@@ -49,7 +49,7 @@ class EntityGrade {
       'status': status,
       'priority': priority,
       'category': category,
-      'color': color,
+      'color': color.toString(),
       'point': point,
     };
   }
@@ -64,7 +64,7 @@ class EntityGrade {
       status: map['status'],
       priority: map['priority'],
       category: map['category'],
-      color: map['color'],
+      color: int.tryParse(map['color']) ?? 0xFF0000FF,
       point: map['point'],
     );
   }
@@ -78,7 +78,7 @@ class EntityGrade {
     String? status,
     String? priority,
     String? category,
-    String? color,
+    int? color,
     int? point,
   }) {
     return EntityGrade(
