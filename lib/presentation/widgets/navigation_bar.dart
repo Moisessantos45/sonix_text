@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sonix_text/config/helper/page_router.dart';
 import 'package:sonix_text/presentation/screens/grade.dart';
-import 'package:sonix_text/presentation/screens/notifications.dart';
-
 class CustomNavigation extends StatelessWidget {
   const CustomNavigation({super.key});
 
