@@ -83,7 +83,7 @@ class _AboutScreenState extends State<AboutScreen> {
       await _installAPK(appName);
 
       setState(() {
-        versionCode = appName.split("-").last;
+        versionCode = appName.split("-").last.split(".").first;
       });
     } catch (e) {
       showNotification("Error", "Error al descargar el APK", error: true);
