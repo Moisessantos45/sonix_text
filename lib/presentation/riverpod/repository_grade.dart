@@ -4,6 +4,7 @@ import 'package:sonix_text/domains/entity_grade.dart';
 import 'package:sonix_text/presentation/riverpod/repository_db.dart';
 import 'package:sonix_text/presentation/riverpod/repository_level.dart';
 import 'package:sonix_text/presentation/utils/data_card.dart';
+import 'package:sonix_text/presentation/utils/parse_date.dart';
 
 final allGradesProvider =
     StateNotifierProvider<AllGradesNotifier, List<EntityGrade>>((ref) {
@@ -47,7 +48,7 @@ final gradeNotifierProvider =
 });
 
 class GradeNotifier extends StateNotifier<List<EntityGrade>> {
-  List<EntityGrade> _allGrades;
+  final List<EntityGrade> _allGrades;
   String _currentFilter = 'All';
 
   GradeNotifier(this._allGrades) : super([]) {
@@ -78,8 +79,46 @@ class GradeNotifier extends StateNotifier<List<EntityGrade>> {
   }
 }
 
+final gradeFilterDateNotifierProvider =
+    StateNotifierProvider<GradeFilterDateNotifier, List<EntityGrade>>((ref) {
+  final allGrades = ref.watch(allGradesProvider);
+  return GradeFilterDateNotifier(allGrades);
+});
+
+class GradeFilterDateNotifier extends StateNotifier<List<EntityGrade>> {
+  final List<EntityGrade> _allGrades;
+  DateTime _currentDate = DateTime.now();
+
+  GradeFilterDateNotifier(this._allGrades) : super([]) {
+    _applyFilter();
+  }
+
+  void setDate(DateTime date) {
+    _currentDate = DateTime(date.year, date.month, date.day);
+    _applyFilter();
+  }
+
+  void _applyFilter() {
+    state = _allGrades.where((grade) {
+      final dueDate = parseDate(grade.dueDate);
+      return dueDate != null && isSameDate(dueDate, _currentDate);
+    }).toList();
+  }
+
+  bool isSameDate(DateTime date1, DateTime date2) {
+    return date1.year == date2.year &&
+        date1.month == date2.month &&
+        date1.day == date2.day;
+  }
+}
+
 final gradesProvider = Provider<List<EntityGrade>>((ref) {
   final grades = ref.watch(gradeNotifierProvider);
+  return grades.isEmpty ? [] : grades;
+});
+
+final gradesFilterDateProvider = Provider<List<EntityGrade>>((ref) {
+  final grades = ref.watch(gradeFilterDateNotifierProvider);
   return grades.isEmpty ? [] : grades;
 });
 
