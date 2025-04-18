@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sonix_text/presentation/screens/about.dart';
 import 'package:sonix_text/presentation/utils/validate_string.dart';
 import 'package:sonix_text/presentation/widgets/add_category_dialog.dart';
 import 'package:sonix_text/presentation/widgets/avatar.dart';
@@ -103,6 +104,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     }
   }
 
+  void _onMenuSelected(String value) {
+    Navigator.push(context, CustomPageRoute(page: const AboutScreen()));
+  }
+
   @override
   void initState() {
     super.initState();
@@ -134,6 +139,24 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               fontWeight: FontWeight.w600,
             ),
           ),
+          actions: [
+            PopupMenuButton<String>(
+              surfaceTintColor: Colors.white,
+              iconSize: 30,
+              style: ButtonStyle(
+                backgroundColor: WidgetStatePropertyAll(Color(0xFFF5F5F5)),
+              ),
+              onSelected: _onMenuSelected,
+              itemBuilder: (BuildContext context) {
+                return {'Acerca de'}.map((String choice) {
+                  return PopupMenuItem<String>(
+                    value: choice.toLowerCase(),
+                    child: Text(choice),
+                  );
+                }).toList();
+              },
+            ),
+          ],
         ),
         body: SingleChildScrollView(
           child: Container(
