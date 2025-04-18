@@ -72,7 +72,8 @@ class _AboutScreenState extends State<AboutScreen> {
 
       final appName =
           response.headers.value('x-app-name') ?? 'sonix_text-$versionCode.apk';
-      await sharedPreferents.saveCodeVersion("version_code", appName);
+      final appVersion = appName.split("-").last.replaceFirst(".apk", "");
+      await sharedPreferents.saveCodeVersion("version_code", appVersion);
 
       final directory = await getExternalStorageDirectory();
       final filePath = '${directory?.path}/$appName';
@@ -83,7 +84,7 @@ class _AboutScreenState extends State<AboutScreen> {
       await _installAPK(appName);
 
       setState(() {
-        versionCode = appName.split("-").last.split(".").first;
+        versionCode = appName.split("-").last.replaceFirst(".apk", "");
       });
     } catch (e) {
       showNotification("Error", "Error al descargar el APK", error: true);
