@@ -72,7 +72,8 @@ class _AboutScreenState extends State<AboutScreen> {
 
       final appName =
           response.headers.value('x-app-name') ?? 'sonix_text-$versionCode.apk';
-      final appVersion = appName.split("-").last.replaceFirst(".apk", "");
+      final appVersion =
+          response.headers.value('x-code-version') ?? versionCode;
       await sharedPreferents.saveCodeVersion("version_code", appVersion);
 
       final directory = await getExternalStorageDirectory();
