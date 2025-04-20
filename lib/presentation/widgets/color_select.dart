@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sonix_text/presentation/riverpod/seletc_color.dart';
 
 class ColorPair {
   final int color;
@@ -6,20 +8,16 @@ class ColorPair {
   ColorPair(this.color, this.index);
 }
 
-class ColorSelector extends StatefulWidget {
-  final int initColor;
+class ColorSelector extends ConsumerStatefulWidget {
   final ValueChanged<ColorPair> onColorSelected;
 
-  const ColorSelector(
-      {super.key, required this.initColor, required this.onColorSelected});
+  const ColorSelector({super.key, required this.onColorSelected});
 
   @override
-  State<ColorSelector> createState() => _ColorSelectorState();
+  ConsumerState<ColorSelector> createState() => _ColorSelectorState();
 }
 
-class _ColorSelectorState extends State<ColorSelector> {
-  Color? _selectedColor;
-
+class _ColorSelectorState extends ConsumerState<ColorSelector> {
   final List<int> colorList = [
     0xFF4fc3f7, // azul claro
     0xFFa7ffeb, // verde menta claro
@@ -63,23 +61,18 @@ class _ColorSelectorState extends State<ColorSelector> {
               child: Text(
                 'Seleccionar color',
                 style: TextStyle(
-                  fontSize: 14,
-                  color: _selectedColor != null
-                      ? Colors.black
-                      : const Color(0xFF2C3E50),
-                ),
+                    fontSize: 14, color: Color(ref.watch(selectColor))),
               ),
             ),
-            if (_selectedColor != null)
-              Container(
-                width: 20,
-                height: 20,
-                decoration: BoxDecoration(
-                  color: _selectedColor,
-                  shape: BoxShape.circle,
-                  border: Border.all(color: Colors.grey.shade400),
-                ),
+            Container(
+              width: 20,
+              height: 20,
+              decoration: BoxDecoration(
+                color: Color(ref.watch(selectColor)),
+                shape: BoxShape.circle,
+                border: Border.all(color: Colors.grey.shade400),
               ),
+            ),
           ],
         ),
       ),
@@ -107,9 +100,6 @@ class _ColorSelectorState extends State<ColorSelector> {
                 final newColor = ColorPair(colorValue, index);
                 return GestureDetector(
                   onTap: () {
-                    setState(() {
-                      _selectedColor = color;
-                    });
                     widget.onColorSelected(newColor);
                     Navigator.of(context).pop();
                   },
@@ -119,7 +109,7 @@ class _ColorSelectorState extends State<ColorSelector> {
                     decoration: BoxDecoration(
                       color: color,
                       shape: BoxShape.circle,
-                      border: _selectedColor == color
+                      border: Color(ref.watch(selectColor)) == color
                           ? Border.all(color: Colors.blueAccent, width: 3)
                           : null,
                     ),
@@ -131,12 +121,6 @@ class _ColorSelectorState extends State<ColorSelector> {
         );
       },
     );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _selectedColor = Color(colorList[widget.initColor]);
   }
 
   @override
