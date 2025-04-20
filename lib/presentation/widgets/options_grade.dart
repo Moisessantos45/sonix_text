@@ -156,7 +156,6 @@ class _GradeOptionsWidgetState extends ConsumerState<GradeOptionsWidget> {
                   children: [
                     Expanded(
                       child: ColorSelector(
-                          initColor: ref.watch(indexColor),
                           onColorSelected: (color) {
                             ref.read(indexColor.notifier).state = color.index;
                             ref.read(selectColor.notifier).state = color.color;
