@@ -35,3 +35,9 @@ DateTime? parseDate(String date) {
 
   return DateTime(year, month, day);
 }
+
+final currentDate = formatDateTimeToString(DateTime.now());
+
+String formatDateTimeToString(DateTime date) {
+  return "${date.day}/${date.month}/${date.year}";
+}
