@@ -4,7 +4,10 @@ import 'package:sonix_text/config/show_notification.dart';
 import 'package:sonix_text/domains/entity_grade.dart';
 import 'package:sonix_text/presentation/riverpod/repository_grade.dart';
 import 'package:sonix_text/presentation/riverpod/repository_level.dart';
+import 'package:sonix_text/presentation/riverpod/select_date.dart';
+import 'package:sonix_text/presentation/riverpod/seletc_color.dart';
 import 'package:sonix_text/presentation/utils/character.dart';
+import 'package:sonix_text/presentation/utils/parse_date.dart';
 import 'package:sonix_text/presentation/utils/validate_string.dart';
 import 'package:sonix_text/presentation/widgets/options_grade.dart';
 import 'package:sonix_text/presentation/widgets/options_grade_static.dart';
@@ -31,16 +34,10 @@ class _VoiceTextScreenState extends ConsumerState<VoiceTextScreen> {
   final TextEditingController statusEditingController =
       TextEditingController(text: 'Pending');
   bool isChangeStatus = false;
-  int selectedColor = 0xFF4fc3f7;
 
   String registerDate = "";
 
-  final String currentDate =
-      '${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}';
-
-  final TextEditingController dueDateEditingController = TextEditingController(
-      text:
-          '${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}');
+  final String currentDate = formatDateTimeToString(DateTime.now());
 
   final uuid = Uuid();
   String _lastWords = '';
@@ -116,7 +113,9 @@ class _VoiceTextScreenState extends ConsumerState<VoiceTextScreen> {
     categoryEditingController.text = grade.category;
     priorityEditingController.text = grade.priority;
     statusEditingController.text = grade.status;
-    dueDateEditingController.text = grade.dueDate;
+
+    ref.read(selectDateProvider.notifier).state = grade.dueDate;
+
     registerDate = grade.date;
     final splitDueteDate = grade.dueDate.split('/');
     DateTime dateTime = DateTime(
@@ -142,11 +141,11 @@ class _VoiceTextScreenState extends ConsumerState<VoiceTextScreen> {
         title: titleEditingController.text.trim(),
         content: textEditingController.text.trim(),
         date: currentDate,
-        dueDate: dueDateEditingController.text,
+        dueDate: ref.read(selectDateProvider),
         status: statusEditingController.text,
         priority: priorityEditingController.text,
         category: categoryEditingController.text,
-        color: selectedColor,
+        color: ref.read(selectColor),
         point: 1,
       );
 
@@ -168,11 +167,11 @@ class _VoiceTextScreenState extends ConsumerState<VoiceTextScreen> {
         title: titleEditingController.text.trim(),
         content: textEditingController.text.trim(),
         date: registerDate.isEmpty ? currentDate : registerDate,
-        dueDate: dueDateEditingController.text,
+        dueDate: ref.read(selectDateProvider),
         status: statusEditingController.text,
         priority: priorityEditingController.text,
         category: categoryEditingController.text,
-        color: selectedColor,
+        color: ref.read(selectColor),
         point: statusEditingController.text == "Completed" ? 1 * valueLevel : 1,
       );
 
@@ -199,15 +198,19 @@ class _VoiceTextScreenState extends ConsumerState<VoiceTextScreen> {
   }
 
   void clearFields() {
+    ref.read(initialDateProvider.notifier).state =
+        DateTime.now().add(const Duration(days: 1));
+    ref.read(selectDateProvider.notifier).state = currentDate;
+
     setState(() {
       titleEditingController.text = "";
       textEditingController.text = "";
       categoryEditingController.text = "General";
       priorityEditingController.text = "Normal";
       statusEditingController.text = "Pending";
-      dueDateEditingController.text = "";
       _lastWords = "";
-      registerDate = "";
+      registerDate = formatDateTimeToString(DateTime.now());
+
       _speechToText.stop();
     });
   }
@@ -227,7 +230,6 @@ class _VoiceTextScreenState extends ConsumerState<VoiceTextScreen> {
     categoryEditingController.dispose();
     priorityEditingController.dispose();
     statusEditingController.dispose();
-    dueDateEditingController.dispose();
     super.dispose();
   }
 
@@ -282,18 +284,11 @@ class _VoiceTextScreenState extends ConsumerState<VoiceTextScreen> {
                       category: categoryEditingController.text,
                       status: statusEditingController.text,
                       priority: priorityEditingController.text,
-                      dueDate: dueDateEditingController.text,
-                    )
+                      dueDate: ref.watch(selectDateProvider))
                   : GradeOptionsWidget(
                       category: categoryEditingController,
                       status: statusEditingController,
                       priority: priorityEditingController,
-                      dueDate: dueDateEditingController,
-                      onTapColor: (color) {
-                        setState(() {
-                          selectedColor = color;
-                        });
-                      },
                     ),
               const Divider(height: 20, color: Color(0xFFECF0F1)),
               Expanded(
