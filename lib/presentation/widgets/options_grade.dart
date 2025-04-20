@@ -1,36 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sonix_text/presentation/riverpod/repository_category.dart';
+import 'package:sonix_text/presentation/riverpod/select_date.dart';
+import 'package:sonix_text/presentation/riverpod/seletc_color.dart';
 import 'package:sonix_text/presentation/utils/options.dart';
+import 'package:sonix_text/presentation/utils/parse_date.dart';
 import 'package:sonix_text/presentation/widgets/color_select.dart';
 
 class GradeOptionsWidget extends ConsumerStatefulWidget {
   final TextEditingController category;
   final TextEditingController status;
   final TextEditingController priority;
-  final TextEditingController dueDate;
-  final ValueChanged<int> onTapColor;
+  final ValueChanged<int>? onTapColor;
 
   const GradeOptionsWidget(
       {super.key,
       required this.category,
       required this.status,
       required this.priority,
-      required this.dueDate,
-      required this.onTapColor});
+      this.onTapColor});
 
   @override
   ConsumerState<GradeOptionsWidget> createState() => _GradeOptionsWidgetState();
 }
 
 class _GradeOptionsWidgetState extends ConsumerState<GradeOptionsWidget> {
-  DateTime _dueDate = DateTime.now().add(const Duration(days: 1));
   bool isInit = false;
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: _dueDate,
+      initialDate: ref.read(initialDateProvider),
       firstDate: DateTime.now(),
       lastDate: DateTime(2100),
       builder: (context, child) {
@@ -45,12 +45,10 @@ class _GradeOptionsWidgetState extends ConsumerState<GradeOptionsWidget> {
         );
       },
     );
-    if (picked != null && picked != _dueDate) {
-      setState(() {
-        _dueDate = picked;
-        widget.dueDate.text =
-            '${_dueDate.day}/${_dueDate.month}/${_dueDate.year}';
-      });
+    if (picked != null && picked != ref.read(initialDateProvider)) {
+      ref.read(initialDateProvider.notifier).state = picked;
+      ref.read(selectDateProvider.notifier).state =
+          formatDateTimeToString(picked);
     }
   }
 
@@ -64,12 +62,6 @@ class _GradeOptionsWidgetState extends ConsumerState<GradeOptionsWidget> {
 
     final validCategories = categories.map((e) => e.name).toSet().toList();
     final currentValue = widget.category.text.trim();
-
-    List<String> parts = widget.dueDate.text.split('/');
-    int day = int.parse(parts[0]);
-    int month = int.parse(parts[1]);
-    int year = int.parse(parts[2]);
-    _dueDate = DateTime(year, month, day);
 
     setState(() {
       if (currentValue.isEmpty || !validCategories.contains(currentValue)) {
@@ -163,9 +155,12 @@ class _GradeOptionsWidgetState extends ConsumerState<GradeOptionsWidget> {
                 child: Row(
                   children: [
                     Expanded(
-                      child: ColorSelector(onColorSelected: (color) {
-                        widget.onTapColor(color);
-                      }),
+                      child: ColorSelector(
+                          initColor: ref.watch(indexColor),
+                          onColorSelected: (color) {
+                            ref.read(indexColor.notifier).state = color.index;
+                            ref.read(selectColor.notifier).state = color.color;
+                          }),
                     ),
                   ],
                 ),
@@ -235,7 +230,7 @@ class _GradeOptionsWidgetState extends ConsumerState<GradeOptionsWidget> {
             const SizedBox(width: 8),
             Expanded(
               child: Text(
-                '${_dueDate.day}/${_dueDate.month}/${_dueDate.year}',
+                ref.watch(selectDateProvider),
                 style: const TextStyle(
                   fontSize: 14,
                   color: Color(0xFF2C3E50),
