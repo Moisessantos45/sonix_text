@@ -202,6 +202,9 @@ class _VoiceTextScreenState extends ConsumerState<VoiceTextScreen> {
         DateTime.now().add(const Duration(days: 1));
     ref.read(selectDateProvider.notifier).state = currentDate;
 
+    ref.read(indexColor.notifier).state = 0;
+    ref.read(selectColor.notifier).state = 0xFF4fc3f7;
+
     setState(() {
       titleEditingController.text = "";
       textEditingController.text = "";
