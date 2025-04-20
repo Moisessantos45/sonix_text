@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
 
-class ColorSelector extends StatefulWidget {
-  final ValueChanged<int> onColorSelected;
+class ColorPair {
+  final int color;
+  final int index;
+  ColorPair(this.color, this.index);
+}
 
-  const ColorSelector({super.key, required this.onColorSelected});
+class ColorSelector extends StatefulWidget {
+  final int initColor;
+  final ValueChanged<ColorPair> onColorSelected;
+
+  const ColorSelector(
+      {super.key, required this.initColor, required this.onColorSelected});
 
   @override
   State<ColorSelector> createState() => _ColorSelectorState();
@@ -84,18 +92,25 @@ class _ColorSelectorState extends State<ColorSelector> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Seleccionar color'),
+          backgroundColor: Colors.white,
+          elevation: 0,
+          surfaceTintColor: Colors.white,
+          shadowColor: Colors.white,
           content: SingleChildScrollView(
             child: Wrap(
               spacing: 10,
               runSpacing: 10,
-              children: colorList.map((colorValue) {
+              children: colorList.asMap().entries.map((entry) {
+                final index = entry.key;
+                final colorValue = entry.value;
                 final color = Color(colorValue);
+                final newColor = ColorPair(colorValue, index);
                 return GestureDetector(
                   onTap: () {
                     setState(() {
                       _selectedColor = color;
                     });
-                    widget.onColorSelected(colorValue);
+                    widget.onColorSelected(newColor);
                     Navigator.of(context).pop();
                   },
                   child: Container(
@@ -116,6 +131,12 @@ class _ColorSelectorState extends State<ColorSelector> {
         );
       },
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedColor = Color(colorList[widget.initColor]);
   }
 
   @override
