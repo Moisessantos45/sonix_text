@@ -39,29 +39,47 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: "/onboarding",
       pageBuilder: (context, state) => CustomTransitionPage(
-          key: state.pageKey,
-          child: const OnboardingScreen(),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return FadeTransition(opacity: animation, child: child);
-          }),
+        key: state.pageKey,
+        child: const OnboardingScreen(),
+        transitionDuration: const Duration(milliseconds: 200),
+        reverseTransitionDuration: Duration.zero,
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return ScaleTransition(
+            scale: animation,
+            child: child,
+          );
+        },
+      ),
     ),
-     GoRoute(
+    GoRoute(
       path: "/statistics",
       pageBuilder: (context, state) => CustomTransitionPage(
-          key: state.pageKey,
-          child: const StatisticsScreen(),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return FadeTransition(opacity: animation, child: child);
-          }),
+        key: state.pageKey,
+        child: const StatisticsScreen(),
+        transitionDuration: const Duration(milliseconds: 200),
+        reverseTransitionDuration: Duration.zero,
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return ScaleTransition(
+            scale: animation,
+            child: child,
+          );
+        },
+      ),
     ),
     GoRoute(
       path: "/profile",
       pageBuilder: (context, state) => CustomTransitionPage(
-          key: state.pageKey,
-          child: const ProfileScreen(),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return FadeTransition(opacity: animation, child: child);
-          }),
+        key: state.pageKey,
+        child: const ProfileScreen(),
+        transitionDuration: const Duration(milliseconds: 200),
+        reverseTransitionDuration: Duration.zero,
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return ScaleTransition(
+            scale: animation,
+            child: child,
+          );
+        },
+      ),
     )
   ],
 );
