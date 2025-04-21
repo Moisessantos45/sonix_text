@@ -127,7 +127,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final categoryNames = categories.map((e) => e.name).toSet().toList();
 
     return Scaffold(
-        backgroundColor: const Color(0xFFF5F5F5),
+        backgroundColor: const Color(0xFFD6EAF8).withAlpha(50),
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,

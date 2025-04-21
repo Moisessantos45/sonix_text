@@ -65,11 +65,12 @@ class GradeItemWidget extends ConsumerWidget {
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 9),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Colors.white60,
           borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: Color(0xFF4DADE2),width: 0.4),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withAlpha(50),
+              color: Color(0xFF4DADE2).withAlpha(50),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -145,7 +146,7 @@ class GradeItemWidget extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       child: Row(
         children: [
-          Icon(icon, size: 18, color: const Color(0xFF95A5A6)),
+          Icon(icon, size: 18, color: Colors.white),
           const SizedBox(width: 8),
           Expanded(
             child: DropdownButtonHideUnderline(
@@ -154,7 +155,7 @@ class GradeItemWidget extends ConsumerWidget {
                   isDense: true,
                   isExpanded: true,
                   icon: const Icon(Icons.arrow_drop_down,
-                      color: Color(0xFF95A5A6)),
+                      color: Colors.white),
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.white,

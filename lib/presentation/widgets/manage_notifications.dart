@@ -33,7 +33,7 @@ class _NotificationManagerState extends ConsumerState<NotificationManager> {
     }
   }
 
-  Future<void> _scheduleNotifications() async {
+  Future<void> _scheduleNotifications(bool value) async {
     try {
       final user = ref.read(userProvider);
       if (user.isEmpty) {
@@ -41,10 +41,10 @@ class _NotificationManagerState extends ConsumerState<NotificationManager> {
       }
 
       final updatedUser = user.first.copyWith(
-        activeNotifications: isSwitched,
+        activeNotifications: value,
       );
 
-      if (!isSwitched) {
+      if (!value) {
         await NotificationsService.cancelAll();
 
         await _updateUser(updatedUser.copyWith(activeNotifications: false));
@@ -86,6 +86,9 @@ class _NotificationManagerState extends ConsumerState<NotificationManager> {
 
       showNotification("Notificaciones",
           "Las notificaciones han sido programadas correctamente");
+      setState(() {
+        isSwitched = true;
+      });
     } catch (e) {
       showNotification("Error", "Error al programar las notificaciones",
           error: true);
@@ -158,20 +161,14 @@ class _NotificationManagerState extends ConsumerState<NotificationManager> {
                     actions: [
                       TextButton(
                         onPressed: () {
-                          setState(() {
-                            isSwitched = value;
-                          });
-                          _scheduleNotifications();
+                          _scheduleNotifications(value);
                           Navigator.of(context).pop();
                         },
                         child: const Text('Cancelar'),
                       ),
                       TextButton(
                         onPressed: () {
-                          setState(() {
-                            isSwitched = value;
-                          });
-                          _scheduleNotifications();
+                          _scheduleNotifications(value);
                           Navigator.of(context).pop();
                         },
                         child: const Text('Aceptar'),
@@ -180,7 +177,10 @@ class _NotificationManagerState extends ConsumerState<NotificationManager> {
                   ),
                 );
               },
-              activeColor: Theme.of(context).primaryColor,
+              activeColor: Colors.blue,
+              inactiveThumbColor: Colors.blue,
+              inactiveTrackColor: Colors.white,
+              trackOutlineColor: WidgetStatePropertyAll(Colors.grey[400]),
             ),
           ],
         ),
@@ -202,7 +202,7 @@ class _NotificationManagerState extends ConsumerState<NotificationManager> {
           color: Color(0xFF2C3E50),
           fontWeight: FontWeight.w500,
         ),
-        cursorColor: Theme.of(context).primaryColor,
+        cursorColor: Colors.black,
         keyboardType: TextInputType.number,
         decoration: InputDecoration(
           hintText: hintText,
@@ -210,7 +210,7 @@ class _NotificationManagerState extends ConsumerState<NotificationManager> {
           fillColor: Colors.white,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: Theme.of(context).primaryColor),
+            borderSide: BorderSide.none,
           ),
           contentPadding:
               const EdgeInsets.symmetric(horizontal: 16, vertical: 14),

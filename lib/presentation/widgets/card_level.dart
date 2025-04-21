@@ -110,8 +110,8 @@ class _CardLevelWidgetState extends ConsumerState<CardLevelWidget>
                                 const Color(0xFF2980B9),
                               ]
                             : [
-                                const Color(0xFF34495E),
-                                const Color(0xFF2C3E50),
+                                const Color(0xFF1ABC9C),
+                                const Color(0xFF1ABC9C),
                               ],
                       ),
                       borderRadius: BorderRadius.circular(16),
@@ -140,7 +140,7 @@ class _CardLevelWidgetState extends ConsumerState<CardLevelWidget>
                     Text(
                       isLevelUp ? "¡Nivel Completado!" : "Nivel Actual",
                       style: TextStyle(
-                        color: isLevelUp ? Colors.white : Colors.white70,
+                        color: Colors.white,
                         fontSize: 14,
                         fontWeight:
                             isLevelUp ? FontWeight.bold : FontWeight.normal,

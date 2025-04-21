@@ -113,6 +113,7 @@ class _VoiceTextScreenState extends ConsumerState<VoiceTextScreen> {
     categoryEditingController.text = grade.category;
     priorityEditingController.text = grade.priority;
     statusEditingController.text = grade.status;
+    print(grade.dueDate);
 
     ref.read(selectDateProvider.notifier).state = grade.dueDate;
 
@@ -222,7 +223,9 @@ class _VoiceTextScreenState extends ConsumerState<VoiceTextScreen> {
   void initState() {
     super.initState();
     _initSpeech();
-    getGrade();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      getGrade();
+    });
   }
 
   @override
@@ -239,13 +242,14 @@ class _VoiceTextScreenState extends ConsumerState<VoiceTextScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
+      backgroundColor: const Color(0xFFD6EAF8).withAlpha(50),
       appBar: AppBar(
         title: Text(
           widget.id.isEmpty ? 'Nueva Nota' : 'Editar Nota',
           style: const TextStyle(color: Color(0xFF2C3E50)),
         ),
         backgroundColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
         elevation: 0,
         iconTheme: const IconThemeData(color: Color(0xFF2C3E50)),
         actions: widget.id.isEmpty
@@ -259,9 +263,9 @@ class _VoiceTextScreenState extends ConsumerState<VoiceTextScreen> {
               ],
       ),
       body: Container(
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+        decoration: BoxDecoration(
+          color: Color(0xFFD6EAF8).withAlpha(50),
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
         ),
         child: Padding(
           padding: const EdgeInsets.all(20.0),

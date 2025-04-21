@@ -62,10 +62,10 @@ class _GradeDisplayWidgetState extends ConsumerState<GradeDisplayWidget> {
         const SizedBox(height: 10),
         Expanded(
           child: Container(
-            padding: const EdgeInsets.fromLTRB(20, 30, 20, 20),
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            decoration: BoxDecoration(
+              color: Color(0xFFD6EAF8).withAlpha(50),
+              borderRadius:const BorderRadius.vertical(top: Radius.circular(30)),
             ),
             child: gradesState.isEmpty
                 ? const Center(

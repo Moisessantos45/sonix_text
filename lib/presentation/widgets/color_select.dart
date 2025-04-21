@@ -50,7 +50,7 @@ class _ColorSelectorState extends ConsumerState<ColorSelector> {
       onTap: () => _showColorPicker(context),
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Color(0xFFD6EAF8).withAlpha(50),
         ),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
         child: Row(

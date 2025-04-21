@@ -35,10 +35,10 @@ class _GradeScreenState extends ConsumerState<GradeScreen> {
     final grades = ref.watch(gradesFilterDateProvider);
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: const Color(0xFFD6EAF8).withAlpha(50),
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        surfaceTintColor: Colors.white,
+        backgroundColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
         elevation: 0,
         title: const Text('Notas',
             style: TextStyle(

@@ -88,7 +88,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final nickName = user.isEmpty ? 'Usuario' : user.first.nickname;
     return Scaffold(
       key: scaffoldKey,
-      backgroundColor: const Color(0xFFF5F5F5),
+      backgroundColor: const Color(0xFFD6EAF8).withAlpha(50),
       appBar: PreferredSize(
           preferredSize: const Size.fromHeight(50),
           child: Padding(
@@ -105,7 +105,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ),
                 actions: [
                   IconButton(
-                    icon: const Icon(Icons.notifications),
+                    icon: const Icon(Icons.notifications,color: Color(0xFF2C80B4)),
                     onPressed: () {
                       Navigator.push(
                         context,

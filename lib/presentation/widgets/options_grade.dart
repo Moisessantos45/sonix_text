@@ -155,11 +155,10 @@ class _GradeOptionsWidgetState extends ConsumerState<GradeOptionsWidget> {
                 child: Row(
                   children: [
                     Expanded(
-                      child: ColorSelector(
-                          onColorSelected: (color) {
-                            ref.read(indexColor.notifier).state = color.index;
-                            ref.read(selectColor.notifier).state = color.color;
-                          }),
+                      child: ColorSelector(onColorSelected: (color) {
+                        ref.read(indexColor.notifier).state = color.index;
+                        ref.read(selectColor.notifier).state = color.color;
+                      }),
                     ),
                   ],
                 ),
@@ -181,7 +180,7 @@ class _GradeOptionsWidgetState extends ConsumerState<GradeOptionsWidget> {
 
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Color(0xFFD6EAF8).withAlpha(50),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       child: Row(
@@ -220,7 +219,7 @@ class _GradeOptionsWidgetState extends ConsumerState<GradeOptionsWidget> {
     return InkWell(
       onTap: () => _selectDate(context),
       child: Container(
-        decoration: BoxDecoration(color: Colors.white),
+        decoration: BoxDecoration(color: Color(0xFFD6EAF8).withAlpha(50),),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
         child: Row(
           children: [

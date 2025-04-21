@@ -11,9 +11,9 @@ class NotificationsScreen extends ConsumerWidget {
     final grades = ref.watch(allGradesProvider);
     final dueSoonGrades = filterNotesDueSoon(grades);
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F6FA),
+      backgroundColor: const Color(0xFFD6EAF8).withAlpha(50),
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
         elevation: 0,
         surfaceTintColor: Colors.transparent,
         title: const Text('Mis Notificaciones',
@@ -46,12 +46,13 @@ class NotificationsScreen extends ConsumerWidget {
                   height: 105,
                   margin: const EdgeInsets.only(bottom: 12),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Colors.white60,
                     borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: Color(0xFF4DADE2), width: 0.4),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withAlpha(20),
-                        blurRadius: 12,
+                        color: Color(0xFF4DADE2).withAlpha(50),
+                        blurRadius: 10,
                         offset: const Offset(0, 4),
                       ),
                     ],
@@ -64,12 +65,12 @@ class NotificationsScreen extends ConsumerWidget {
                         width: 44,
                         height: 44,
                         decoration: BoxDecoration(
-                          color: const Color(0xFF3498DB).withAlpha(30),
+                          color: const Color(0xFF5DADE2),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: const Icon(
                           Icons.notifications_outlined,
-                          color: Color(0xFF3498DB),
+                          color: Colors.white,
                         ),
                       ),
                       title: Text(
@@ -93,7 +94,7 @@ class NotificationsScreen extends ConsumerWidget {
                       trailing: const Icon(
                         Icons.arrow_forward_ios,
                         size: 16,
-                        color: Color(0xFF95A5A6),
+                        color: Color(0xFF5DADE2),
                       ),
                     ),
                   ),
@@ -105,9 +106,9 @@ class NotificationsScreen extends ConsumerWidget {
 
   Color _getUrgencyColor(int days) {
     return days == 0
-        ? Colors.red
+        ? Color(0XFFE74C3C)
         : days <= 2
-            ? Colors.orange
+            ? Color(0XFFF1C40F)
             : Colors.blue;
   }
 }

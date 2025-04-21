@@ -12,8 +12,8 @@ class CustomNavigation extends StatelessWidget {
         elevation: 0,
         shape: const CircularNotchedRectangle(),
         shadowColor: const Color(0xFF3498DB),
-        surfaceTintColor: Colors.grey[400],
-        color: Colors.white,
+        surfaceTintColor: Color(0xFFD6EAF8).withAlpha(50),
+        color: Color(0xFFD6EAF8).withAlpha(50),
         child: Container(
           decoration: BoxDecoration(
             boxShadow: [
@@ -28,11 +28,11 @@ class CustomNavigation extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               IconButton(
-                icon: const Icon(Icons.home),
+                icon: const Icon(Icons.home,color: Color(0xFF2C80B4),),
                 onPressed: () => context.go("/"),
               ),
               IconButton(
-                icon: const Icon(Icons.notes),
+                icon: const Icon(Icons.notes,color: Color(0xFF2C80B4)),
                 onPressed: () {
                   Navigator.push(
                     context,
@@ -42,13 +42,13 @@ class CustomNavigation extends StatelessWidget {
               ),
               const SizedBox(width: 40),
               IconButton(
-                icon: const Icon(Icons.stacked_bar_chart),
+                icon: const Icon(Icons.stacked_bar_chart,color: Color(0xFF2C80B4)),
                 onPressed: () {
                   context.go("/statistics");
                 },
               ),
               IconButton(
-                icon: const Icon(Icons.person),
+                icon: const Icon(Icons.person,color: Color(0xFF2C80B4)),
                 onPressed: () => context.go("/profile"),
               ),
             ],
