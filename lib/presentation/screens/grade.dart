@@ -68,7 +68,6 @@ class _GradeScreenState extends ConsumerState<GradeScreen> {
               dayColor: Colors.teal[200],
               activeDayColor: Colors.white,
               activeBackgroundDayColor: Colors.redAccent[100],
-              selectableDayPredicate: (date) => date.day != 23,
               locale: 'en_ISO',
             ),
             const SizedBox(height: 15),
