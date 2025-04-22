@@ -6,6 +6,7 @@ import 'package:sonix_text/presentation/riverpod/seletc_color.dart';
 import 'package:sonix_text/presentation/utils/options.dart';
 import 'package:sonix_text/presentation/utils/parse_date.dart';
 import 'package:sonix_text/presentation/widgets/color_select.dart';
+import 'package:sonix_text/presentation/widgets/modal_select.dart';
 
 class GradeOptionsWidget extends ConsumerStatefulWidget {
   final TextEditingController category;
@@ -167,6 +168,19 @@ class _GradeOptionsWidgetState extends ConsumerState<GradeOptionsWidget> {
           );
   }
 
+  void _showSelector(context, List<String> items, String title,
+      String selectedItem, Function(String) onItemSelected) {
+    SelectionModal.show(
+      context: context,
+      items: items,
+      title: title,
+      selectedItem: selectedItem,
+      onItemSelected: (value) {
+        onItemSelected(value);
+      },
+    );
+  }
+
   Widget _buildDropdownField({
     required IconData icon,
     required String hint,
@@ -183,35 +197,36 @@ class _GradeOptionsWidgetState extends ConsumerState<GradeOptionsWidget> {
         color: Color(0xFFD6EAF8).withAlpha(50),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-      child: Row(
-        children: [
-          Icon(icon, size: 18, color: Colors.greenAccent),
-          const SizedBox(width: 8),
-          Expanded(
-            child: DropdownButtonHideUnderline(
-              child: DropdownButton<String>(
-                value: validValue,
-                isDense: true,
-                isExpanded: true,
-                icon: const Icon(Icons.arrow_drop_down,
-                    color: Colors.greenAccent),
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: Color(0xFF2C3E50),
+      child: GestureDetector(
+          onTap: () {
+            _showSelector(
+              context,
+              uniqueItems,
+              hint,
+              validValue ?? items.first,
+              (value) {
+                onChanged(value);
+              },
+            );
+          },
+          child: Row(
+            children: [
+              Icon(icon, size: 18, color: Colors.greenAccent),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  validValue ?? hint,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: Color(0xFF2C3E50),
+                  ),
                 ),
-                onChanged: onChanged,
-                items: uniqueItems.map((String item) {
-                  return DropdownMenuItem<String>(
-                    value: item,
-                    child: Text(item),
-                  );
-                }).toList(),
-                hint: Text(hint),
               ),
-            ),
-          ),
-        ],
-      ),
+              const SizedBox(width: 8),
+              const Icon(Icons.arrow_drop_down, color: Colors.greenAccent),
+              const SizedBox(width: 8),
+            ],
+          )),
     );
   }
 
@@ -219,7 +234,9 @@ class _GradeOptionsWidgetState extends ConsumerState<GradeOptionsWidget> {
     return InkWell(
       onTap: () => _selectDate(context),
       child: Container(
-        decoration: BoxDecoration(color: Color(0xFFD6EAF8).withAlpha(50),),
+        decoration: BoxDecoration(
+          color: Color(0xFFD6EAF8).withAlpha(50),
+        ),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
         child: Row(
           children: [
