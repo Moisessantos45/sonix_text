@@ -113,7 +113,6 @@ class _VoiceTextScreenState extends ConsumerState<VoiceTextScreen> {
     categoryEditingController.text = grade.category;
     priorityEditingController.text = grade.priority;
     statusEditingController.text = grade.status;
-    print(grade.dueDate);
 
     ref.read(selectDateProvider.notifier).state = grade.dueDate;
 
