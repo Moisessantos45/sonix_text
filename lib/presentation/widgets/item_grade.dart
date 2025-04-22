@@ -7,6 +7,7 @@ import 'package:sonix_text/domains/entity_grade.dart';
 import 'package:sonix_text/presentation/riverpod/repository_grade.dart';
 import 'package:sonix_text/presentation/screens/voicce_text.dart';
 import 'package:sonix_text/presentation/utils/options.dart';
+import 'package:sonix_text/presentation/widgets/modal_select.dart';
 import 'package:uuid/uuid.dart';
 
 class GradeItemWidget extends ConsumerWidget {
@@ -67,7 +68,7 @@ class GradeItemWidget extends ConsumerWidget {
         decoration: BoxDecoration(
           color: Colors.white60,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Color(0xFF4DADE2),width: 0.4),
+          border: Border.all(color: Color(0xFF4DADE2), width: 0.4),
           boxShadow: [
             BoxShadow(
               color: Color(0xFF4DADE2).withAlpha(50),
@@ -102,100 +103,45 @@ class GradeItemWidget extends ConsumerWidget {
               ),
             ),
             trailing: Container(
-              constraints: BoxConstraints(maxWidth: 180),
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              decoration: BoxDecoration(
-                  color: Color(color), borderRadius: BorderRadius.circular(12)),
-              child: _buildDropdownField(
-                icon: Icons.flag_outlined,
-                hint: 'Estado',
-                value: grade.status,
-                items: statusOptions,
-                color: color,
-                onChanged: (value) {
-                  if (value != null) {
-                    changeStatus(grade.id, value, ref);
-                  }
-                },
-              ),
-            ),
+                constraints: BoxConstraints(maxWidth: 180),
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                decoration: BoxDecoration(
+                    color: Color(color),
+                    borderRadius: BorderRadius.circular(12)),
+                child: Row(
+                  children: [
+                    Text(grade.status,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w500,
+                        )),
+                    const Spacer(),
+                    IconButton(
+                      onPressed: () {
+                        _showPeriodSelector(context, ref);
+                      },
+                      icon:
+                          const Icon(Icons.edit, color: Colors.white, size: 25),
+                      tooltip: 'Cambiar estatus',
+                    ),
+                  ],
+                )),
           ),
         ),
       ),
     );
   }
 
-  Widget _buildDropdownField({
-    required IconData icon,
-    required String hint,
-    required String value,
-    required List<String> items,
-    required int color,
-    required void Function(String?) onChanged,
-  }) {
-    final uniqueItems = items.toSet().toList();
-    final validValue =
-        uniqueItems.contains(value) ? value : uniqueItems.firstOrNull;
-
-    return Container(
-      decoration: BoxDecoration(
-        color: Color(color),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Color(color)),
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-      child: Row(
-        children: [
-          Icon(icon, size: 18, color: Colors.white),
-          const SizedBox(width: 8),
-          Expanded(
-            child: DropdownButtonHideUnderline(
-              child: DropdownButton<String>(
-                  value: validValue,
-                  isDense: true,
-                  isExpanded: true,
-                  icon: const Icon(Icons.arrow_drop_down,
-                      color: Colors.white),
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.white,
-                    fontWeight: FontWeight.w500,
-                  ),
-                  onChanged: onChanged,
-                  dropdownColor: Colors.white,
-                  focusColor: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
-                  items: uniqueItems.map((String item) {
-                    return DropdownMenuItem<String>(
-                      value: item,
-                      child: Text(
-                        item,
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Color(color),
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    );
-                  }).toList(),
-                  hint: Text(hint,
-                      style: const TextStyle(
-                        color: Colors.white,
-                      )),
-                  selectedItemBuilder: (BuildContext context) {
-                    return uniqueItems.map<Widget>((String item) {
-                      return Text(
-                        item,
-                        style: const TextStyle(
-                          color: Colors.white,
-                        ),
-                      );
-                    }).toList();
-                  }),
-            ),
-          ),
-        ],
-      ),
+  void _showPeriodSelector(context, ref) {
+    SelectionModal.show(
+      context: context,
+      items: statusOptions,
+      title: 'Selecciona el estatus',
+      selectedItem: grade.status,
+      onItemSelected: (value) {
+        changeStatus(grade.id, value, ref);
+      },
     );
   }
 
