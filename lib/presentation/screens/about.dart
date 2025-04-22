@@ -99,10 +99,13 @@ class _AboutScreenState extends State<AboutScreen> {
     final filePath = '${directory?.path}/$pathFile';
 
     InstallPlugin.installApk(filePath, appId: 'com.example.sonix_text')
-        .then((result) {
-      print('Instalación iniciada: $result');
-    }).catchError((error) {
-      print('Error al iniciar instalación: $error');
+        .then((result) {})
+        .catchError((error) {
+      showNotification("Error", "Error al instalar el APK", error: true);
+    }).whenComplete(() {
+      setState(() {
+        _downloading = false;
+      });
     });
   }
 
