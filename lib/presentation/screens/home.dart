@@ -105,7 +105,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ),
                 actions: [
                   IconButton(
-                    icon: const Icon(Icons.notifications,color: Color(0xFF2C80B4)),
+                    icon: const Icon(Icons.notifications,
+                        color: Color(0xFF2C80B4)),
                     onPressed: () {
                       Navigator.push(
                         context,
@@ -128,8 +129,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         width: double.infinity,
         child: Column(
           children: [
-            CarouselCard(),
             CardLevelWidget(),
+            CarouselCard(),
             Expanded(
               child: GradeDisplayWidget(),
             ),
