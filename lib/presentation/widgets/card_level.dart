@@ -63,7 +63,8 @@ class _CardLevelWidgetState extends ConsumerState<CardLevelWidget>
     final currentLevel = ref.watch(currentLevelProvider);
     final int nextRewardPoints = ref.watch(pointsLevelProvider);
     final int totalPoints = ref.watch(scoreProvider);
-    final bool isLevelUp = totalPoints >= nextRewardPoints && currentLevel?.isClaimed == false;
+    final bool isLevelUp =
+        totalPoints >= nextRewardPoints && currentLevel?.isClaimed == false;
 
     if (isLevelUp && !_animationController.isAnimating) {
       _animationController.repeat(reverse: true);
@@ -72,80 +73,95 @@ class _CardLevelWidgetState extends ConsumerState<CardLevelWidget>
     return Padding(
       padding: const EdgeInsets.fromLTRB(15, 10, 15, 16),
       child: GestureDetector(
-          onTap: () {
-            if (isLevelUp) {
-              Navigator.push(
-                  context, CustomPageRoute(page: const RewardScreen()));
-            }
-          },
-          child: AnimatedBuilder(
-            animation: _animationController,
-            builder: (context, child) {
-              return Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: isLevelUp
-                      ? [
-                          BoxShadow(
-                            color: const Color(0xFF3498DB).withAlpha(
-                                (_glowOpacityAnimation.value * 255).toInt()),
-                            blurRadius: 20,
-                            spreadRadius: 4,
-                          ),
-                        ]
-                      : null,
-                ),
-                child: Transform.scale(
-                  scale: isLevelUp ? _scaleAnimation.value : 1.0,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 12, horizontal: 20),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: isLevelUp
-                            ? [
-                                const Color(0xFF3498DB),
-                                const Color(0xFF2980B9),
-                              ]
-                            : [
-                                const Color(0xFF1ABC9C),
-                                const Color(0xFF1ABC9C),
-                              ],
-                      ),
-                      borderRadius: BorderRadius.circular(16),
-                      boxShadow: [
+        onTap: () {
+          if (isLevelUp) {
+            Navigator.push(
+                context, CustomPageRoute(page: const RewardScreen()));
+          }
+        },
+        child: AnimatedBuilder(
+          animation: _animationController,
+          builder: (context, child) {
+            return Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: isLevelUp
+                    ? [
                         BoxShadow(
-                          color: isLevelUp
-                              ? const Color(0xFF3498DB).withAlpha(30)
-                              : const Color(0xFF34495E).withAlpha(30),
-                          blurRadius: isLevelUp ? _glowAnimation.value : 8,
-                          spreadRadius:
-                              isLevelUp ? _glowAnimation.value / 2 : 0,
-                          offset: const Offset(0, 4),
+                          color: const Color(0xFF3498DB).withAlpha(
+                              (_glowOpacityAnimation.value * 255).toInt()),
+                          blurRadius: 20,
+                          spreadRadius: 4,
+                        ),
+                      ]
+                    : null,
+              ),
+              child: Transform.scale(
+                scale: isLevelUp ? _scaleAnimation.value : 1.0,
+                child: Container(
+                  height: 180,
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: isLevelUp
+                          ? [
+                              const Color(0xFF3498DB),
+                              const Color(0xFF2980B9),
+                            ]
+                          : [
+                              const Color(0xFF1ABC9C),
+                              const Color(0xFF1ABC9C),
+                            ],
+                    ),
+                    borderRadius: BorderRadius.circular(40),
+                    boxShadow: [
+                      BoxShadow(
+                        color: isLevelUp
+                            ? const Color(0xFF3498DB).withAlpha(30)
+                            : const Color(0xFF34495E).withAlpha(30),
+                        blurRadius: isLevelUp ? _glowAnimation.value : 8,
+                        spreadRadius: isLevelUp ? _glowAnimation.value / 2 : 0,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: child,
+                ),
+              ),
+            );
+          },
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(
+                          isLevelUp ? Icons.check_circle : Icons.info,
+                          color: Colors.white,
+                          size: 20,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          isLevelUp ? "¡Nivel Completado!" : "Nivel Actual",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight:
+                                isLevelUp ? FontWeight.bold : FontWeight.normal,
+                          ),
                         ),
                       ],
                     ),
-                    child: child,
-                  ),
-                ),
-              );
-            },
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      isLevelUp ? "¡Nivel Completado!" : "Nivel Actual",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                        fontWeight:
-                            isLevelUp ? FontWeight.bold : FontWeight.normal,
-                      ),
-                    ),
+                    const SizedBox(height: 8),
                     Container(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 12, vertical: 4),
@@ -158,46 +174,64 @@ class _CardLevelWidgetState extends ConsumerState<CardLevelWidget>
                         style: const TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
-                          fontSize: 12,
+                          fontSize: 14,
                         ),
                       ),
                     ),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.star,
+                          color: Colors.white,
+                          size: 18,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          "$totalPoints pts",
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Icon(
+                          Icons.arrow_upward,
+                          color: Colors.white,
+                          size: 18,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          "$nextRewardPoints pts",
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
-                const SizedBox(height: 10),
-                ClipRRect(
+              ),
+              const SizedBox(width: 20),
+              SizedBox(
+                height: 120,
+                width: 120,
+                child: ClipRRect(
                   borderRadius: BorderRadius.circular(8),
-                  child: LinearProgressIndicator(
+                  child: CircularProgressIndicator(
                     value: totalPoints / nextRewardPoints,
                     backgroundColor: Colors.white24,
                     valueColor:
                         const AlwaysStoppedAnimation<Color>(Color(0xFF3498DB)),
-                    minHeight: 10,
+                    strokeWidth: 8,
                   ),
                 ),
-                const SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "$totalPoints pts",
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 12,
-                      ),
-                    ),
-                    Text(
-                      "$nextRewardPoints pts",
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 12,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          )),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
