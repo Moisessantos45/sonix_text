@@ -1,8 +1,11 @@
 import 'package:calendar_timeline/calendar_timeline.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sonix_text/config/helper/page_router.dart';
 import 'package:sonix_text/presentation/riverpod/repository_grade.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:sonix_text/presentation/screens/voicce_text.dart';
+import 'package:sonix_text/presentation/widgets/navigation_bar.dart';
 
 class GradeScreen extends ConsumerStatefulWidget {
   const GradeScreen({super.key});
@@ -133,6 +136,22 @@ class _GradeScreenState extends ConsumerState<GradeScreen> {
           ],
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: const Color(0xFF3498DB),
+        onPressed: () {
+          Navigator.push(
+            context,
+            CustomPageRoute(page: const VoiceTextScreen()),
+          );
+        },
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+          size: 32,
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      bottomNavigationBar: CustomNavigation(),
     );
   }
 }
