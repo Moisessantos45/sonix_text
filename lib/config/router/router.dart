@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sonix_text/config/helper/shared_preferents.dart';
+import 'package:sonix_text/presentation/screens/grade.dart';
 import 'package:sonix_text/presentation/screens/home.dart';
 import 'package:sonix_text/presentation/screens/onboarding.dart';
 import 'package:sonix_text/presentation/screens/profile.dart';
@@ -29,6 +30,15 @@ final GoRouter appRouter = GoRouter(
           }
           return "/onboarding";
         },
+        pageBuilder: (context, state) => CustomTransitionPage(
+            key: state.pageKey,
+            child: const GradeScreen(),
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+              return FadeTransition(opacity: animation, child: child);
+            })),
+    GoRoute(
+        path: "/progress",
         pageBuilder: (context, state) => CustomTransitionPage(
             key: state.pageKey,
             child: const HomeScreen(),
