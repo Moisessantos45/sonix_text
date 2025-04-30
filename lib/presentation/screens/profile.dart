@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:uuid/uuid.dart';
+import 'package:go_router/go_router.dart';
 import 'package:sonix_text/presentation/screens/about.dart';
 import 'package:sonix_text/presentation/utils/validate_string.dart';
 import 'package:sonix_text/presentation/widgets/add_category_dialog.dart';
 import 'package:sonix_text/presentation/widgets/avatar.dart';
 import 'package:sonix_text/presentation/widgets/manage_notifications.dart';
-import 'package:uuid/uuid.dart';
 import 'package:sonix_text/presentation/riverpod/repository_user.dart';
 import 'package:sonix_text/config/show_notification.dart';
 import 'package:sonix_text/infrastructure/category_model.dart';
 import 'package:sonix_text/config/helper/page_router.dart';
 import 'package:sonix_text/presentation/riverpod/repository_category.dart';
-import 'package:sonix_text/presentation/screens/voicce_text.dart';
 import 'package:sonix_text/presentation/widgets/custom_text_form_field.dart';
 import 'package:sonix_text/presentation/widgets/list_category.dart';
 import 'package:sonix_text/presentation/widgets/navigation_bar.dart';
@@ -289,10 +289,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         floatingActionButton: FloatingActionButton(
           backgroundColor: const Color(0xFF3498DB),
           onPressed: () {
-            Navigator.push(
-              context,
-              CustomPageRoute(page: const VoiceTextScreen()),
-            );
+           context.push("/add_note/0");
           },
           child: const Icon(Icons.add, color: Colors.white),
         ),
