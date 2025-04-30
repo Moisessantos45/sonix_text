@@ -34,6 +34,7 @@ class _VoiceTextScreenState extends ConsumerState<VoiceTextScreen> {
   final TextEditingController statusEditingController =
       TextEditingController(text: 'Pending');
   bool isChangeStatus = false;
+  bool isSmartModeEnabled = false;
 
   String registerDate = "";
 
@@ -72,6 +73,8 @@ class _VoiceTextScreenState extends ConsumerState<VoiceTextScreen> {
   }
 
   void replaceAllMapped() {
+    if (!isSmartModeEnabled) return;
+
     final String textReplaced = textEditingController.text
         .toLowerCase()
         .replaceAllMapped(
@@ -105,7 +108,7 @@ class _VoiceTextScreenState extends ConsumerState<VoiceTextScreen> {
   }
 
   void getGrade() {
-    if (widget.id.isEmpty) return;
+    if (widget.id.isEmpty || widget.id == "0") return;
     final grade =
         ref.read(gradeNotifierProvider).firstWhere((t) => t.id == widget.id);
     titleEditingController.text = grade.title;
@@ -218,6 +221,32 @@ class _VoiceTextScreenState extends ConsumerState<VoiceTextScreen> {
     });
   }
 
+  void _showSmartModeInfo() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Modo Inteligente',
+              style: TextStyle(color: Color(0xFF2C3E50))),
+          content: const Text(
+              'El modo inteligente permite la conversión automática de palabras a símbolos mientras hablas.\n\nPor ejemplo:\n- "coma" → ","\n- "punto" → "."\n- "paréntesis" → "()"\n\nEsto hace que la entrada por voz sea más natural y eficiente.',
+              style: TextStyle(color: Color(0xFF2C3E50))),
+          backgroundColor: const Color(0xFFD6EAF8).withAlpha(240),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          actions: [
+            TextButton(
+              child: const Text('Entendido',
+                  style: TextStyle(color: Color(0xFF3498DB))),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -247,8 +276,8 @@ class _VoiceTextScreenState extends ConsumerState<VoiceTextScreen> {
           widget.id.isEmpty ? 'Nueva Nota' : 'Editar Nota',
           style: const TextStyle(color: Color(0xFF2C3E50)),
         ),
-        backgroundColor: Colors.transparent,
-        surfaceTintColor: Colors.transparent,
+        backgroundColor: const Color(0xFFD6EAF8).withAlpha(50),
+        surfaceTintColor: const Color(0xFFD6EAF8).withAlpha(50),
         elevation: 0,
         iconTheme: const IconThemeData(color: Color(0xFF2C3E50)),
         actions: widget.id.isEmpty
@@ -285,6 +314,37 @@ class _VoiceTextScreenState extends ConsumerState<VoiceTextScreen> {
                 ),
               ),
               const Divider(height: 20, color: Color(0xFFECF0F1)),
+              Row(
+                children: [
+                  Expanded(
+                    child: CheckboxListTile(
+                      title: const Text(
+                        'Modo Inteligente',
+                        style: TextStyle(
+                          color: Color(0xFF2C3E50),
+                          fontSize: 16,
+                        ),
+                      ),
+                      value: isSmartModeEnabled,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          isSmartModeEnabled = value ?? false;
+                        });
+                      },
+                      activeColor: const Color(0xFF3498DB),
+                      checkColor: Colors.white,
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(
+                      Icons.info_outline,
+                      color: Color(0xFF3498DB),
+                    ),
+                    onPressed: _showSmartModeInfo,
+                  ),
+                ],
+              ),
+              const Divider(height: 10, color: Color(0xFFECF0F1)),
               isChangeStatus
                   ? GradeOptionsDisplay(
                       category: categoryEditingController.text,
@@ -319,7 +379,7 @@ class _VoiceTextScreenState extends ConsumerState<VoiceTextScreen> {
       ),
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(bottom: 20.0),
-        child: Row(
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             FloatingActionButton(
@@ -328,7 +388,7 @@ class _VoiceTextScreenState extends ConsumerState<VoiceTextScreen> {
               backgroundColor: const Color(0xFF3498DB),
               child: const Icon(Icons.save),
             ),
-            const SizedBox(width: 16),
+            const SizedBox(height: 16),
             FloatingActionButton(
               heroTag: "btnMic",
               onPressed: _speechToText.isNotListening
