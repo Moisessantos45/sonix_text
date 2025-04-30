@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_inapp_notifications/flutter_inapp_notifications.dart';
+import 'package:lottie/lottie.dart';
 import 'package:sonix_text/config/service/notifications.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -8,22 +9,73 @@ import 'package:sonix_text/config/db.dart';
 import 'package:sonix_text/config/router/router.dart';
 import 'package:sonix_text/presentation/riverpod/repository_db.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  final database = await initializeDatabase();
-  await dotenv.load(fileName: '.env');
-  await NotificationsService.init();
-  tz.initializeTimeZones();
+// void main() async {
 
-  // await startBackgroundService(database);
-  runApp(
-    ProviderScope(
-      overrides: [
-        databaseProvider.overrideWithValue(database),
-      ],
-      child: const MyApp(),
-    ),
-  );
+//   WidgetsFlutterBinding.ensureInitialized();
+//   final database = await initializeDatabase();
+//   await dotenv.load(fileName: '.env');
+//   await NotificationsService.init();
+//   tz.initializeTimeZones();
+
+//   // await startBackgroundService(database);
+//   runApp(
+//     ProviderScope(
+//       overrides: [
+//         databaseProvider.overrideWithValue(database),
+//       ],
+//       child: const MyApp(),
+//     ),
+//   );
+// }
+
+void main() {
+  runApp(const SplashScreen());
+}
+
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
+
+  @override
+  SplashScreenState createState() => SplashScreenState();
+}
+
+class SplashScreenState extends State<SplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+    _initializeApp();
+  }
+
+  Future<void> _initializeApp() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    final database = await initializeDatabase();
+    await dotenv.load(fileName: '.env');
+    await NotificationsService.init();
+    tz.initializeTimeZones();
+    await Future.delayed(const Duration(seconds: 3));
+
+    runApp(
+      ProviderScope(
+        overrides: [
+          databaseProvider.overrideWithValue(database),
+        ],
+        child: const MyApp(),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        body: Center(
+          child: Lottie.asset('assets/lottle/1745961873622.json',
+              width: 200, height: 200),
+        ),
+      ),
+    );
+  }
 }
 
 class MyApp extends StatelessWidget {
