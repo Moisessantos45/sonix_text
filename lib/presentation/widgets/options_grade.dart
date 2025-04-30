@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:sonix_text/presentation/riverpod/repository_category.dart';
 import 'package:sonix_text/presentation/riverpod/select_date.dart';
 import 'package:sonix_text/presentation/riverpod/seletc_color.dart';
@@ -57,7 +58,7 @@ class _GradeOptionsWidgetState extends ConsumerState<GradeOptionsWidget> {
     final categories = ref.read(categoryNotifierProvider);
 
     if (categories.isEmpty) {
-      Navigator.pop(context);
+      context.go("/");
       return;
     }
 
@@ -75,7 +76,9 @@ class _GradeOptionsWidgetState extends ConsumerState<GradeOptionsWidget> {
   @override
   void initState() {
     super.initState();
-    initializeState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      initializeState();
+    });
   }
 
   @override
