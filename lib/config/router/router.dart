@@ -6,6 +6,7 @@ import 'package:sonix_text/presentation/screens/home.dart';
 import 'package:sonix_text/presentation/screens/onboarding.dart';
 import 'package:sonix_text/presentation/screens/profile.dart';
 import 'package:sonix_text/presentation/screens/statistics.dart';
+import 'package:sonix_text/presentation/screens/voicce_text.dart';
 
 Future<bool> checkForRedirect() async {
   final sharedPreferents = SharedPreferentsManager();
@@ -37,6 +38,18 @@ final GoRouter appRouter = GoRouter(
                 (context, animation, secondaryAnimation, child) {
               return FadeTransition(opacity: animation, child: child);
             })),
+    GoRoute(
+        path: "/add_note/:id",
+        pageBuilder: (context, state) {
+          final userId = state.pathParameters['id'] ?? "";
+          return CustomTransitionPage(
+              key: state.pageKey,
+              child: VoiceTextScreen(id: userId),
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                return FadeTransition(opacity: animation, child: child);
+              });
+        }),
     GoRoute(
         path: "/progress",
         pageBuilder: (context, state) => CustomTransitionPage(
