@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sonix_text/config/helper/page_router.dart';
+import 'package:go_router/go_router.dart';
 import 'package:sonix_text/presentation/riverpod/repository_grade.dart';
-import 'package:sonix_text/presentation/screens/voicce_text.dart';
 import 'package:sonix_text/presentation/widgets/fl_chart/bar_chart.dart';
 import 'package:sonix_text/presentation/widgets/fl_chart/pie_chart.dart';
 import 'package:sonix_text/presentation/widgets/navigation_bar.dart';
@@ -101,10 +100,7 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
         floatingActionButton: FloatingActionButton(
           backgroundColor: const Color(0xFF3498DB),
           onPressed: () {
-            Navigator.push(
-              context,
-              CustomPageRoute(page: const VoiceTextScreen()),
-            );
+            context.push("/add_note/0");
           },
           child: const Icon(Icons.add, color: Colors.white),
         ),
