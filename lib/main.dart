@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_inapp_notifications/flutter_inapp_notifications.dart';
 import 'package:lottie/lottie.dart';
 import 'package:sonix_text/config/service/notifications.dart';
@@ -9,26 +10,14 @@ import 'package:sonix_text/config/db.dart';
 import 'package:sonix_text/config/router/router.dart';
 import 'package:sonix_text/presentation/riverpod/repository_db.dart';
 
-// void main() async {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
 
-//   WidgetsFlutterBinding.ensureInitialized();
-//   final database = await initializeDatabase();
-//   await dotenv.load(fileName: '.env');
-//   await NotificationsService.init();
-//   tz.initializeTimeZones();
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
 
-//   // await startBackgroundService(database);
-//   runApp(
-//     ProviderScope(
-//       overrides: [
-//         databaseProvider.overrideWithValue(database),
-//       ],
-//       child: const MyApp(),
-//     ),
-//   );
-// }
-
-void main() {
   runApp(const SplashScreen());
 }
 
