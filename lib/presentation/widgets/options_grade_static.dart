@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sonix_text/presentation/widgets/color_select.dart';
 
 class GradeOptionsDisplay extends StatelessWidget {
   final String category;
@@ -57,7 +58,17 @@ class GradeOptionsDisplay extends StatelessWidget {
               ),
             ],
           ),
-        )
+        ),
+        Container(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: Row(
+            children: [
+              Expanded(
+                child: ColorSelector(onColorSelected: (color) {}),
+              ),
+            ],
+          ),
+        ),
       ],
     );
   }
@@ -69,16 +80,12 @@ class GradeOptionsDisplay extends StatelessWidget {
   }) {
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(
-          color: Colors.grey[300]!,
-          width: 1.0,
-        ),
-        borderRadius: BorderRadius.all(Radius.circular(10)),
+        color: Color(0xFFD6EAF8).withAlpha(50),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       child: Row(
         children: [
-          Icon(icon, size: 20, color: Colors.black54),
+          Icon(icon, size: 20, color: Colors.greenAccent),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
@@ -110,17 +117,13 @@ class GradeOptionsDisplay extends StatelessWidget {
   Widget _buildStaticDateDisplay() {
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(
-          color: Colors.grey[300]!,
-          width: 1.0,
-        ),
-        borderRadius: BorderRadius.all(Radius.circular(10)),
+        color: Color(0xFFD6EAF8).withAlpha(50),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
       child: Row(
         children: [
           const Icon(Icons.calendar_today_outlined,
-              size: 20, color: Colors.black54),
+              size: 20, color: Colors.greenAccent),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
