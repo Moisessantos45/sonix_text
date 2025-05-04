@@ -118,9 +118,11 @@ class GradeItemWidget extends ConsumerWidget {
                         )),
                     const Spacer(),
                     IconButton(
-                      onPressed: () {
-                        _showPeriodSelector(context, ref);
-                      },
+                      onPressed: grade.status != "Completed"
+                          ? () {
+                              _showPeriodSelector(context, ref);
+                            }
+                          : null,
                       icon:
                           const Icon(Icons.edit, color: Colors.white, size: 25),
                       tooltip: 'Cambiar estatus',
