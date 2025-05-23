@@ -153,7 +153,9 @@ class _VoiceTextScreenState extends ConsumerState<VoiceTextScreen> {
       );
 
       await ref.read(allGradesProvider.notifier).addGrade(grade);
+      await ref.read(allGradesProvider.notifier).loadGrades();
       clearFields();
+      Navigator.pop(context);
       showNotification("Nota", "Nota añadida correctamente");
     } catch (e) {
       showNotification("Error", "Error al añadir la nota", error: true);
@@ -385,8 +387,9 @@ class _VoiceTextScreenState extends ConsumerState<VoiceTextScreen> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     FloatingActionButton(
-                      heroTag: widget.id.isEmpty ? "btnSave" : "btnUpdate",
-                      onPressed: widget.id.isEmpty ? addGrade : updateGrade,
+                      onPressed: widget.id.isEmpty || widget.id == "0"
+                          ? addGrade
+                          : updateGrade,
                       backgroundColor: const Color(0xFF3498DB),
                       child: const Icon(Icons.save),
                     ),
