@@ -12,7 +12,7 @@ Sonix Text es una aplicación desarrollada en Flutter que permite la transcripci
 
 ## Capturas de pantalla
 
-*(Agrega aquí imágenes de la app si lo deseas)*
+*(Imágenes de la app)*
 
 ## Autor
 
