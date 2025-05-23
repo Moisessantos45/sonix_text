@@ -4,7 +4,6 @@ import 'package:sonix_text/domains/entity_grade.dart';
 import 'package:sonix_text/presentation/riverpod/repository_db.dart';
 import 'package:sonix_text/presentation/riverpod/repository_level.dart';
 import 'package:sonix_text/presentation/utils/data_card.dart';
-import 'package:sonix_text/presentation/utils/parse_date.dart';
 
 final allGradesProvider =
     StateNotifierProvider<AllGradesNotifier, List<EntityGrade>>((ref) {
@@ -20,6 +19,7 @@ class AllGradesNotifier extends StateNotifier<List<EntityGrade>> {
 
   Future<void> loadGrades() async {
     final rows = await _repository.getAll(_table);
+
     final listGrade = rows.map((json) => EntityGrade.fromMap(json)).toList();
     state = List.from(listGrade);
   }
@@ -81,28 +81,36 @@ class GradeNotifier extends StateNotifier<List<EntityGrade>> {
 
 final gradeFilterDateNotifierProvider =
     StateNotifierProvider<GradeFilterDateNotifier, List<EntityGrade>>((ref) {
-  final allGrades = ref.watch(allGradesProvider);
-  return GradeFilterDateNotifier(allGrades);
+  final repository = ref.watch(dbRepositoryProvider);
+  return GradeFilterDateNotifier(repository);
 });
 
 class GradeFilterDateNotifier extends StateNotifier<List<EntityGrade>> {
-  final List<EntityGrade> _allGrades;
-  DateTime _currentDate = DateTime.now();
+  final DbRepository _repository;
+  final String _table = 'grade';
+  String _currentDate = '';
 
-  GradeFilterDateNotifier(this._allGrades) : super([]) {
+  GradeFilterDateNotifier(this._repository) : super([]) {
     _applyFilter();
   }
 
   void setDate(DateTime date) {
-    _currentDate = DateTime(date.year, date.month, date.day);
+    _currentDate = "${date.day}/${date.month}/${date.year}";
     _applyFilter();
   }
 
-  void _applyFilter() {
-    state = _allGrades.where((grade) {
-      final dueDate = parseDate(grade.dueDate);
-      return dueDate != null && isSameDate(dueDate, _currentDate);
-    }).toList();
+  Future<void> _applyFilter() async {
+    if (_currentDate.isEmpty) {
+      _currentDate =
+          "${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}";
+    }
+    final rows = await _repository.executeQuery(
+      'SELECT * FROM $_table WHERE due_date = ?',
+      [_currentDate],
+    );
+
+    final listGrade = rows.map((json) => EntityGrade.fromMap(json)).toList();
+    state = [...listGrade];
   }
 
   bool isSameDate(DateTime date1, DateTime date2) {
