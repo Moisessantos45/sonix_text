@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:sonix_text/config/helper/page_router.dart';
 import 'package:sonix_text/config/show_notification.dart';
 import 'package:sonix_text/domains/entity_grade.dart';
@@ -8,7 +7,6 @@ import 'package:sonix_text/presentation/riverpod/repository_grade.dart';
 import 'package:sonix_text/presentation/screens/voicce_text.dart';
 import 'package:sonix_text/presentation/utils/options.dart';
 import 'package:sonix_text/presentation/widgets/modal_select.dart';
-import 'package:uuid/uuid.dart';
 
 class GradeItemWidget extends ConsumerWidget {
   final EntityGrade grade;
@@ -18,51 +16,63 @@ class GradeItemWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final int indexColor = statusOptions.indexOf(grade.status);
     final int color = statusColors[indexColor];
-    return Slidable(
-      key: Key(Uuid().v4()),
-      startActionPane: ActionPane(
-          motion: const ScrollMotion(),
-          dismissible: DismissiblePane(
-            onDismissed: () {
-              Navigator.push(
-                context,
-                CustomPageRoute(page: VoiceTextScreen(id: grade.id)),
-              );
-            },
-          ),
-          children: [
-            SlidableAction(
-              onPressed: (BuildContext context) {
-                Navigator.push(
-                  context,
-                  CustomPageRoute(page: VoiceTextScreen(id: grade.id)),
-                );
-              },
-              backgroundColor: Color.fromARGB(255, 0, 176, 246),
-              foregroundColor: Colors.white,
-              icon: Icons.edit,
-              label: 'Edit',
-            ),
-          ]),
-      endActionPane: ActionPane(
-        motion: const ScrollMotion(),
-        dismissible: DismissiblePane(
-          onDismissed: () {
-            removeGrade(grade.id, ref);
-          },
+    return Dismissible(
+      key: Key(grade.id),
+      direction: DismissDirection.horizontal,
+      background: Padding(
+        padding: const EdgeInsets.all(8),
+        child: Container(
+          color: Colors.blue,
+          child: Icon(Icons.edit, color: Colors.white, size: 40),
         ),
-        children: [
-          SlidableAction(
-            onPressed: (BuildContext context) {
-              removeGrade(grade.id, ref);
-            },
-            backgroundColor: Colors.red,
-            foregroundColor: Colors.white,
-            icon: Icons.delete,
-            label: 'Delete',
-          ),
-        ],
       ),
+      secondaryBackground: Padding(
+        padding: const EdgeInsets.all(8),
+        child: Container(
+          color: Colors.red,
+          child: Icon(Icons.delete, color: Colors.white, size: 40),
+        ),
+      ),
+      confirmDismiss: (direction) async {
+        if (direction == DismissDirection.endToStart) {
+          final confirm = await showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              backgroundColor: Colors.white,
+              elevation: 30,
+              surfaceTintColor: Colors.white,
+              shadowColor: Colors.black.withAlpha(50),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              title: Text("Confirmar eliminación"),
+              content: Text("¿Estás seguro de eliminar este elemento?"),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(false),
+                  child: Text("Cancelar"),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(true),
+                  child: Text("Eliminar", style: TextStyle(color: Colors.red)),
+                ),
+              ],
+            ),
+          );
+          return confirm;
+        } else {
+          Navigator.push(
+            context,
+            CustomPageRoute(page: VoiceTextScreen(id: grade.id)),
+          );
+          return false;
+        }
+      },
+      onDismissed: (direction) {
+        if (direction == DismissDirection.endToStart) {
+          removeGrade(grade.id, ref);
+        }
+      },
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 9),
         decoration: BoxDecoration(
@@ -80,8 +90,7 @@ class GradeItemWidget extends ConsumerWidget {
         child: Material(
           color: Colors.transparent,
           child: ListTile(
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            contentPadding: const EdgeInsets.all(8),
             title: Text(
               grade.title,
               style: const TextStyle(
