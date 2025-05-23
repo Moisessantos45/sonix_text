@@ -15,8 +15,18 @@ class DbRepository {
 
   DbRepository(this.database);
 
-  Future<List<Map<String, dynamic>>> getAll(String table) async {
-    final data = await database.rawQuery("SELECT * FROM $table");
+  Future<List<Map<String, dynamic>>> getAll(
+    String table, {
+    int limit = 10,
+    int offset = 0,
+  }) async {
+    final data = await database
+        .rawQuery("SELECT * FROM $table LIMIT $limit OFFSET $offset");
+    return data;
+  }
+
+  Future executeQuery(String query, [List<dynamic>? arguments]) async {
+    final data = await database.rawQuery(query, arguments ?? []);
     return data;
   }
 
