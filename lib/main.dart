@@ -58,6 +58,7 @@ class SplashScreenState extends State<SplashScreen> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
+        backgroundColor: Colors.blue,
         body: Center(
           child: Lottie.asset('assets/lottle/1745961873622.json',
               width: 200, height: 200),
