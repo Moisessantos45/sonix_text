@@ -36,21 +36,51 @@ class SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _initializeApp() async {
-    WidgetsFlutterBinding.ensureInitialized();
-    final database = await initializeDatabase();
-    await dotenv.load(fileName: '.env');
-    await NotificationsService.init();
-    tz.initializeTimeZones();
-    await Future.delayed(const Duration(seconds: 3));
+    try {
+      WidgetsFlutterBinding.ensureInitialized();
 
-    runApp(
-      ProviderScope(
-        overrides: [
-          databaseProvider.overrideWithValue(database),
-        ],
-        child: const MyApp(),
-      ),
-    );
+      // Inicializar la base de datos primero ya que se necesita para el ProviderScope
+      final database = await initializeDatabase();
+
+      // Inicializar el resto de servicios en paralelo ya que no dependen entre sí
+      await Future.wait([
+        dotenv.load(fileName: '.env'),
+        NotificationsService.init(),
+        Future(() => tz.initializeTimeZones()),
+        Future.delayed(const Duration(seconds: 3)),
+      ]);
+
+      runApp(
+        ProviderScope(
+          overrides: [
+            databaseProvider.overrideWithValue(database),
+          ],
+          child: const MyApp(),
+        ),
+      );
+    } catch (e) {
+      debugPrint('Error durante la inicialización de la app: $e');
+      runApp(
+        MaterialApp(
+          home: Scaffold(
+            backgroundColor: Color(0xff0dc1fe),
+            body: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.error_outline, size: 64, color: Colors.white),
+                  SizedBox(height: 16),
+                  Text(
+                    'Error al iniciar la aplicación',
+                    style: TextStyle(color: Colors.white, fontSize: 18),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+    }
   }
 
   @override
