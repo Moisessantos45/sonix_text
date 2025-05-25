@@ -58,7 +58,7 @@ class SplashScreenState extends State<SplashScreen> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        backgroundColor: Colors.blue,
+        backgroundColor: Color(0xff0dc1fe),
         body: Center(
           child: Lottie.asset('assets/lottle/1745961873622.json',
               width: 200, height: 200),
@@ -78,7 +78,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         brightness: Brightness.light,
-        primaryColor: Colors.blue,
+        primaryColor: Color(0xff0dc1fe),
         useMaterial3: true,
       ),
       routerConfig: appRouter,
