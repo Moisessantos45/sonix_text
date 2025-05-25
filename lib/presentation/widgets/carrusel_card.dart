@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:sonix_text/presentation/riverpod/repository_grade.dart';
 
 class CarouselCard extends ConsumerWidget {
@@ -10,7 +11,6 @@ class CarouselCard extends ConsumerWidget {
     final listCard = ref.watch(listCardsProvider);
     return Column(
       children: [
-        const SizedBox(height: 10),
         Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15),
             child: Row(
@@ -26,23 +26,29 @@ class CarouselCard extends ConsumerWidget {
                     ),
                   ),
                 ),
-                const Text(
-                  'Ver detalles',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF3498DB),
+                TextButton(
+                  onPressed: () {
+                   context.go('/statistics');
+                  },
+                  child: Text(
+                    'Ver detalles',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF3498DB),
+                    ),
                   ),
                 ),
               ],
             )),
         SizedBox(
-            height: 230,
+            height: 175,
             width: double.infinity,
             child: ListView.builder(
               itemCount: listCard.length,
               physics: const BouncingScrollPhysics(),
               scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.only(left: 20),
               itemBuilder: (context, index) {
                 final card = listCard[index];
                 return _buildAnimatedCard(
@@ -68,9 +74,9 @@ class CarouselCard extends ConsumerWidget {
     String description,
   ) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 18.0),
+      padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 14.0),
       child: Container(
-        width: 220,
+        width: 210,
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
@@ -101,25 +107,16 @@ class CarouselCard extends ConsumerWidget {
                 ),
               ),
             ),
-            Positioned(
-              left: -30,
-              bottom: -30,
-              child: Container(
-                width: 120,
-                height: 120,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.white.withAlpha(10),
-                ),
-              ),
-            ),
             Padding(
-              padding: const EdgeInsets.all(20.0),
+              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Container(
                         padding: const EdgeInsets.all(8),
@@ -130,33 +127,32 @@ class CarouselCard extends ConsumerWidget {
                         child: Icon(
                           icon,
                           color: Colors.white,
-                          size: 54,
+                          size: 45,
                         ),
                       ),
                       const SizedBox(width: 12),
                       Text(
                         title,
                         style: const TextStyle(
-                          fontSize: 42,
+                          fontSize: 40,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 12),
-                  Expanded(
-                    child: Text(
-                      subTitle,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 22,
-                        fontWeight: FontWeight.w600,
-                      ),
-                      overflow: TextOverflow.ellipsis,
+                  const SizedBox(height: 5),
+                  Text(
+                    subTitle,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
                     ),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 10),
                   Text(
                     description,
                     style: TextStyle(
