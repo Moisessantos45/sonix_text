@@ -99,9 +99,9 @@ class _CardLevelWidgetState extends ConsumerState<CardLevelWidget>
               child: Transform.scale(
                 scale: isLevelUp ? _scaleAnimation.value : 1.0,
                 child: Container(
-                  height: 180,
+                  height: 140,
                   padding:
-                      const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+                      const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       begin: Alignment.topLeft,
@@ -164,7 +164,7 @@ class _CardLevelWidgetState extends ConsumerState<CardLevelWidget>
                     const SizedBox(height: 8),
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 4),
+                          horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
                         color: Colors.white.withAlpha(isLevelUp ? 40 : 20),
                         borderRadius: BorderRadius.circular(20),
@@ -215,8 +215,8 @@ class _CardLevelWidgetState extends ConsumerState<CardLevelWidget>
               ),
               const SizedBox(width: 20),
               SizedBox(
-                height: 120,
-                width: 120,
+                height: 100,
+                width: 100,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(8),
                   child: CircularProgressIndicator(
