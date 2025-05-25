@@ -24,6 +24,8 @@ class _GradeDisplayWidgetState extends ConsumerState<GradeDisplayWidget> {
           child: ListView.builder(
             itemCount: statusFilter.length,
             scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.only(left: 20),
+            physics: const BouncingScrollPhysics(),
             itemBuilder: (context, index) {
               return Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -65,7 +67,8 @@ class _GradeDisplayWidgetState extends ConsumerState<GradeDisplayWidget> {
             padding: const EdgeInsets.symmetric(horizontal: 20),
             decoration: BoxDecoration(
               color: Color(0xFFD6EAF8).withAlpha(50),
-              borderRadius:const BorderRadius.vertical(top: Radius.circular(30)),
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(30)),
             ),
             child: gradesState.isEmpty
                 ? const Center(
