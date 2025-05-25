@@ -74,7 +74,7 @@ class GradeItemWidget extends ConsumerWidget {
         }
       },
       child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 9),
+        margin: const EdgeInsets.symmetric(vertical: 6),
         decoration: BoxDecoration(
           color: Colors.white60,
           borderRadius: BorderRadius.circular(16),
@@ -100,7 +100,7 @@ class GradeItemWidget extends ConsumerWidget {
               ),
             ),
             subtitle: Padding(
-              padding: const EdgeInsets.only(top: 8),
+              padding: const EdgeInsets.only(top: 5),
               child: Text(
                 grade.content,
                 maxLines: 2,
@@ -112,8 +112,8 @@ class GradeItemWidget extends ConsumerWidget {
               ),
             ),
             trailing: Container(
-                constraints: BoxConstraints(maxWidth: 180),
-                padding: const EdgeInsets.symmetric(horizontal: 12),
+                constraints: BoxConstraints(maxWidth: 150),
+                padding: const EdgeInsets.symmetric(horizontal: 10),
                 decoration: BoxDecoration(
                     color: Color(color),
                     borderRadius: BorderRadius.circular(12)),
