@@ -68,11 +68,13 @@ class _GradeScreenState extends ConsumerState<GradeScreen> {
   }
 
   Future<void> _loadData() async {
-    await ref.read(levelNotifierProvider.notifier).getLevels();
-    await ref.read(userNotifierProvider.notifier).getUsers();
-    await ref.read(allGradesProvider.notifier).loadGrades();
-    await ref.read(categoryNotifierProvider.notifier).getCategories();
-    await _scheduleNotifications();
+    await Future.wait([
+      ref.read(levelNotifierProvider.notifier).getLevels(),
+      ref.read(userNotifierProvider.notifier).getUsers(),
+      ref.read(allGradesProvider.notifier).loadGrades(),
+      ref.read(categoryNotifierProvider.notifier).getCategories(),
+      _scheduleNotifications()
+    ]);
 
     setState(() {
       isLoading = false;
