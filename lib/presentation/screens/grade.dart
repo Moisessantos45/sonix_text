@@ -73,8 +73,8 @@ class _GradeScreenState extends ConsumerState<GradeScreen> {
       ref.read(userNotifierProvider.notifier).getUsers(),
       ref.read(allGradesProvider.notifier).loadGrades(),
       ref.read(categoryNotifierProvider.notifier).getCategories(),
-      _scheduleNotifications()
     ]);
+    await _scheduleNotifications();
 
     setState(() {
       isLoading = false;
