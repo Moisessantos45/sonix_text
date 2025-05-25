@@ -33,6 +33,10 @@ class LevelNotifier extends StateNotifier<List<LevelModel>> {
     await _dbRepository.remove(_table, id);
     state = state.where((e) => e.id != id).toList();
   }
+
+  Future<void> deleteTable() async {
+    await _dbRepository.executeQuery("DROP TABLE IF EXISTS $_table");
+  }
 }
 
 final levelProvider = Provider<List<LevelModel>>((ref) {

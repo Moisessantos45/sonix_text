@@ -38,6 +38,10 @@ class AllGradesNotifier extends StateNotifier<List<EntityGrade>> {
     await _repository.remove(_table, grade.id);
     state = state.where((t) => t.id != grade.id).toList();
   }
+
+  Future<void> deleteTable() async {
+    await _repository.executeQuery("DROP TABLE IF EXISTS $_table");
+  }
 }
 
 final gradeNotifierProvider =
