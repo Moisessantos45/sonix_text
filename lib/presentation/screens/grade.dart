@@ -108,8 +108,13 @@ class _GradeScreenState extends ConsumerState<GradeScreen> {
     final grades = ref.watch(gradesFilterDateProvider);
 
     return isLoading
-        ? Lottie.asset('assets/lottle/1745961873622.json',
-            width: 200, height: 200)
+        ? Container(
+            color: Color(0xff0dc1fe),
+            width: double.infinity,
+            height: double.infinity,
+            alignment: Alignment.center,
+            child: Lottie.asset('assets/lottle/1745961873622.json',
+                width: 200, height: 200))
         : Scaffold(
             key: scaffoldKey,
             backgroundColor: const Color(0xFFD6EAF8).withAlpha(50),
