@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:sonix_text/config/helper/page_router.dart';
 import 'package:sonix_text/presentation/riverpod/repository_user.dart';
 import 'package:sonix_text/presentation/screens/notifications.dart';
 import 'package:sonix_text/presentation/screens/voicce_text.dart';
 import 'package:sonix_text/presentation/widgets/card_level.dart';
-import 'package:sonix_text/presentation/widgets/carrusel_card.dart';
 import 'package:sonix_text/presentation/widgets/home/grade.dart';
 import 'package:sonix_text/presentation/widgets/navigation_bar.dart';
 
@@ -67,7 +67,56 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         child: Column(
           children: [
             CardLevelWidget(),
-            CarouselCard(),
+            InkWell(
+              onTap: () {
+                context.go('/statistics');
+              },
+              child: Builder(
+                builder: (context) {
+                  final width = MediaQuery.of(context).size.width;
+                  return Container(
+                    margin: EdgeInsets.symmetric(
+                      vertical: width * 0.025, // antes 10
+                      horizontal: width * 0.05, // antes 20
+                    ),
+                    padding: EdgeInsets.all(width * 0.04), // antes 15
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius:
+                          BorderRadius.circular(width * 0.04), // antes 15
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withAlpha(100),
+                          spreadRadius: 1,
+                          blurRadius: 5,
+                          offset: const Offset(0, 3),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Column(
+                          children: [
+                            Icon(Icons.bar_chart,
+                                color: Color(0xFF3498DB),
+                                size: width * 0.08),
+                            SizedBox(height: width * 0.02),
+                            const Text(
+                              'Ver estadísticas',
+                              style: TextStyle(
+                                color: Color(0xFF2C3E50),
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
             Expanded(
               child: GradeDisplayWidget(),
             ),
