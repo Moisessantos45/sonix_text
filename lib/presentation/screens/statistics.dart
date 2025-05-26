@@ -5,6 +5,7 @@ import 'package:sonix_text/presentation/riverpod/repository_grade.dart';
 import 'package:sonix_text/presentation/widgets/fl_chart/bar_chart.dart';
 import 'package:sonix_text/presentation/widgets/fl_chart/pie_chart.dart';
 import 'package:sonix_text/presentation/widgets/navigation_bar.dart';
+import 'package:sonix_text/presentation/widgets/carrusel_card.dart';
 
 class StatisticsScreen extends ConsumerStatefulWidget {
   const StatisticsScreen({super.key});
@@ -44,15 +45,8 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
                 ),
                 child: Column(
                   children: [
-                    const Text(
-                      'Estado de las Notas',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF2C3E50),
-                      ),
-                    ),
-                    const SizedBox(height: 50),
+                    CarouselCard(),
+                    const SizedBox(height: 30),
                     grades.isEmpty
                         ? const Center(
                             child: Text(
