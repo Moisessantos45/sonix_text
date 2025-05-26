@@ -145,7 +145,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               surfaceTintColor: Colors.white,
               iconSize: width * 0.08, // antes 30
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Color(0xFFF5F5F5)),
+                backgroundColor: WidgetStateProperty.all(Color(0xFFF5F5F5)),
               ),
               onSelected: _onMenuSelected,
               itemBuilder: (BuildContext context) {
