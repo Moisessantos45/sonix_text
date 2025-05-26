@@ -125,6 +125,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   Widget build(BuildContext context) {
     final categories = ref.watch(categoryNotifierProvider);
     final categoryNames = categories.map((e) => e.name).toSet().toList();
+    final width = MediaQuery.of(context).size.width;
 
     return Scaffold(
         backgroundColor: const Color(0xFFD6EAF8).withAlpha(50),
@@ -142,9 +143,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           actions: [
             PopupMenuButton<String>(
               surfaceTintColor: Colors.white,
-              iconSize: 30,
+              iconSize: width * 0.08, // antes 30
               style: ButtonStyle(
-                backgroundColor: WidgetStatePropertyAll(Color(0xFFF5F5F5)),
+                backgroundColor: MaterialStateProperty.all(Color(0xFFF5F5F5)),
               ),
               onSelected: _onMenuSelected,
               itemBuilder: (BuildContext context) {
@@ -160,12 +161,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         ),
         body: SingleChildScrollView(
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
+            padding: EdgeInsets.symmetric(horizontal: width * 0.06), // antes 24
             width: double.infinity,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 10),
+                SizedBox(height: width * 0.025), // antes 10
                 Center(
                   child: Column(
                     children: [
@@ -173,11 +174,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                         avatar: avatar,
                         onSelect: (p0) => {},
                       ),
-                      const SizedBox(height: 16),
-                      const Text(
+                      SizedBox(height: width * 0.04), // antes 16
+                      Text(
                         'Información Personal',
                         style: TextStyle(
-                          fontSize: 20,
+                          fontSize: width * 0.05, // antes 20
                           fontWeight: FontWeight.w600,
                           color: Color(0xFF2C3E50),
                         ),
@@ -185,42 +186,43 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     ],
                   ),
                 ),
-                const SizedBox(height: 32),
+                SizedBox(height: width * 0.08), // antes 32
                 CustomTextFormField(
                   controller: _nameController,
                   label: 'Nombre',
                   icon: Icons.person,
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: width * 0.04), // antes 16
                 CustomTextFormField(
                   controller: _nicknameController,
                   label: 'Apodo',
                   icon: Icons.alternate_email,
                 ),
-                const SizedBox(height: 32),
+                SizedBox(height: width * 0.08), // antes 32
                 NotificationManager(),
-                const SizedBox(height: 32),
+                SizedBox(height: width * 0.08), // antes 32
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
+                    Text(
                       'Mis Categorías',
                       style: TextStyle(
-                        fontSize: 20,
+                        fontSize: width * 0.05, // antes 20
                         fontWeight: FontWeight.w600,
                         color: Color(0xFF2C3E50),
                       ),
                     ),
                     IconButton(
                       onPressed: _showAddCategoryDialog,
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.add_circle,
                         color: Color(0xFF3498DB),
+                        size: width * 0.08, // antes 30
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: width * 0.04), // antes 16
                 CategoryListWidget(
                   categories: categoryNames,
                   onCategory: (category) {
@@ -235,7 +237,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                         surfaceTintColor: Colors.white,
                         shadowColor: Colors.black.withAlpha(50),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
+                          borderRadius:
+                              BorderRadius.circular(width * 0.04), // antes 16
                         ),
                         title: const Text('Eliminar Categoría'),
                         content: Text(
@@ -258,30 +261,31 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     );
                   },
                 ),
-                const SizedBox(height: 32),
+                SizedBox(height: width * 0.08), // antes 32
                 SizedBox(
                   width: double.infinity,
-                  height: 50,
+                  height: width * 0.12, // antes 50
                   child: ElevatedButton(
                     onPressed: updateUser,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF3498DB),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius:
+                            BorderRadius.circular(width * 0.03), // antes 12
                       ),
                       elevation: 0,
                     ),
-                    child: const Text(
+                    child: Text(
                       'Guardar Cambios',
                       style: TextStyle(
-                        fontSize: 16,
+                        fontSize: width * 0.04, // antes 16
                         fontWeight: FontWeight.w600,
                         color: Colors.white,
                       ),
                     ),
                   ),
                 ),
-                const SizedBox(height: 24),
+                SizedBox(height: width * 0.06), // antes 24
               ],
             ),
           ),
@@ -289,9 +293,13 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         floatingActionButton: FloatingActionButton(
           backgroundColor: const Color(0xFF3498DB),
           onPressed: () {
-           context.push("/add_note/0");
+            context.push("/add_note/0");
           },
-          child: const Icon(Icons.add, color: Colors.white),
+          child: Icon(
+            Icons.add,
+            color: Colors.white,
+            size: width * 0.08, // antes 30
+          ),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         bottomNavigationBar: CustomNavigation());
