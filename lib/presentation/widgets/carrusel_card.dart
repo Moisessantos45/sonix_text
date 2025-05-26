@@ -12,35 +12,16 @@ class CarouselCard extends ConsumerWidget {
     return Column(
       children: [
         Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Text(
-                    'Tu progreso académico',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.blue[900],
-                    ),
-                  ),
-                ),
-                TextButton(
-                  onPressed: () {
-                   context.go('/statistics');
-                  },
-                  child: Text(
-                    'Ver detalles',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF3498DB),
-                    ),
-                  ),
-                ),
-              ],
-            )),
+          padding: const EdgeInsets.symmetric(horizontal: 15),
+          child: Text(
+            'Tu progreso académico',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.blue[900],
+            ),
+          ),
+        ),
         SizedBox(
             height: 175,
             width: double.infinity,
@@ -48,7 +29,6 @@ class CarouselCard extends ConsumerWidget {
               itemCount: listCard.length,
               physics: const BouncingScrollPhysics(),
               scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.only(left: 20),
               itemBuilder: (context, index) {
                 final card = listCard[index];
                 return _buildAnimatedCard(
