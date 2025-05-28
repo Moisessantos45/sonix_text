@@ -44,7 +44,7 @@ class _PieChartWidgetState extends ConsumerState<PieChartWidget> {
                 centerSpaceRadius: width * 0.2, // antes 80
                 sections: showingSections(grades, width).map((section) {
                   return section.copyWith(
-                    radius: section.radius * 1.8,
+                    radius: section.radius * 1.4,
                   );
                 }).toList()),
           ),
