@@ -17,6 +17,7 @@ class _PieChartWidgetState extends ConsumerState<PieChartWidget> {
   @override
   Widget build(BuildContext context) {
     final grades = ref.watch(allGradesProvider);
+    final width = MediaQuery.of(context).size.width;
     return Column(
       children: [
         Expanded(
@@ -40,19 +41,19 @@ class _PieChartWidgetState extends ConsumerState<PieChartWidget> {
                   show: false,
                 ),
                 sectionsSpace: 0,
-                centerSpaceRadius: 80,
-                sections: showingSections(grades).map((section) {
+                centerSpaceRadius: width * 0.2, // antes 80
+                sections: showingSections(grades, width).map((section) {
                   return section.copyWith(
                     radius: section.radius * 1.8,
                   );
                 }).toList()),
           ),
         ),
-        const SizedBox(
-          height: 40,
+        SizedBox(
+          height: width * 0.1, // antes 40
         ),
         SizedBox(
-            width: MediaQuery.of(context).size.width * 0.8,
+            width: width * 0.8,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -61,25 +62,28 @@ class _PieChartWidgetState extends ConsumerState<PieChartWidget> {
                   color: AppColors.contentColorBlue,
                   text: 'Pending',
                   isSquare: true,
+                  size: width * 0.04, // antes 16
                 ),
                 SizedBox(
-                  height: 4,
+                  height: width * 0.01, // antes 4
                 ),
                 Indicator(
                   color: AppColors.contentColorYellow,
                   text: 'In Progress',
                   isSquare: true,
+                  size: width * 0.04, // antes 16
                 ),
                 SizedBox(
-                  height: 4,
+                  height: width * 0.01, // antes 4
                 ),
                 Indicator(
                   color: AppColors.contentColorGreen,
                   text: 'Completed',
                   isSquare: true,
+                  size: width * 0.04, // antes 16
                 ),
                 SizedBox(
-                  height: 4,
+                  height: width * 0.01, // antes 4
                 ),
               ],
             )),
@@ -87,7 +91,8 @@ class _PieChartWidgetState extends ConsumerState<PieChartWidget> {
     );
   }
 
-  List<PieChartSectionData> showingSections(List<EntityGrade> grades) {
+  List<PieChartSectionData> showingSections(
+      List<EntityGrade> grades, double width) {
     final pendingCount =
         grades.where((task) => task.status == "Pending").length;
     final inProgressCount =
@@ -109,9 +114,9 @@ class _PieChartWidgetState extends ConsumerState<PieChartWidget> {
         color: pendingColor,
         value: pendingPercent,
         title: "${pendingPercent.toStringAsFixed(0)}%",
-        radius: _getRadius(0),
-        titleStyle: _getTitleStyle(0),
-        badgeWidget: _getBadge("Pending", pendingCount, pendingColor),
+        radius: _getRadius(0, width),
+        titleStyle: _getTitleStyle(0, width),
+        badgeWidget: _getBadge("Pending", pendingCount, pendingColor, width),
         badgePositionPercentageOffset: .45,
         titlePositionPercentageOffset: .80,
       ),
@@ -119,9 +124,10 @@ class _PieChartWidgetState extends ConsumerState<PieChartWidget> {
         color: inProgressColor,
         value: inProgressPercent,
         title: "${inProgressPercent.toStringAsFixed(0)}%",
-        radius: _getRadius(1),
-        titleStyle: _getTitleStyle(1),
-        badgeWidget: _getBadge("In Progress", inProgressCount, inProgressColor),
+        radius: _getRadius(1, width),
+        titleStyle: _getTitleStyle(1, width),
+        badgeWidget:
+            _getBadge("In Progress", inProgressCount, inProgressColor, width),
         badgePositionPercentageOffset: .45,
         titlePositionPercentageOffset: .80,
       ),
@@ -129,23 +135,26 @@ class _PieChartWidgetState extends ConsumerState<PieChartWidget> {
         color: completedColor,
         value: completedPercent,
         title: "${completedPercent.toStringAsFixed(0)}%",
-        radius: _getRadius(2),
-        titleStyle: _getTitleStyle(2),
-        badgeWidget: _getBadge("Completed", completedCount, completedColor),
+        radius: _getRadius(2, width),
+        titleStyle: _getTitleStyle(2, width),
+        badgeWidget:
+            _getBadge("Completed", completedCount, completedColor, width),
         badgePositionPercentageOffset: .45,
         titlePositionPercentageOffset: .80,
       ),
     ];
   }
 
-  double _getRadius(int index) {
-    return touchedIndex == index ? 60.0 : 50.0;
+  double _getRadius(int index, double width) {
+    return touchedIndex == index
+        ? width * 0.15
+        : width * 0.125; // antes 60.0 : 50.0
   }
 
-  TextStyle _getTitleStyle(int index) {
+  TextStyle _getTitleStyle(int index, double width) {
     final isTouched = index == touchedIndex;
     return TextStyle(
-      fontSize: isTouched ? 25.0 : 15.0,
+      fontSize: isTouched ? width * 0.06 : width * 0.04, // antes 25.0 : 15.0
       fontFamily: 'Poppins',
       fontWeight: FontWeight.bold,
       color: AppColors.mainTextColor1,
@@ -153,20 +162,23 @@ class _PieChartWidgetState extends ConsumerState<PieChartWidget> {
     );
   }
 
-  Widget _getBadge(String label, int count, Color color) {
+  Widget _getBadge(String label, int count, Color color, double width) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
           label,
-          style: const TextStyle(
-              color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12),
+          style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: width * 0.03), // antes 12
         ),
         Text(
           count.toString(),
-          style: const TextStyle(
+          style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
+            fontSize: width * 0.035, // antes no especificado
           ),
         ),
       ],
@@ -191,6 +203,7 @@ class Indicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
     return Row(
       children: [
         Container(
@@ -201,13 +214,13 @@ class Indicator extends StatelessWidget {
             color: color,
           ),
         ),
-        const SizedBox(
-          width: 4,
+        SizedBox(
+          width: width * 0.01, // antes 4
         ),
         Text(
           text,
           style: TextStyle(
-            fontSize: 16,
+            fontSize: width * 0.04, // antes 16
             fontWeight: FontWeight.bold,
             color: textColor,
           ),
