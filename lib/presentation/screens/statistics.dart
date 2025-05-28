@@ -18,6 +18,7 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
   @override
   Widget build(BuildContext context) {
     final grades = ref.watch(allGradesProvider);
+    final width = MediaQuery.of(context).size.width;
 
     return Scaffold(
         backgroundColor: const Color(0xFFD6EAF8).withAlpha(50),
@@ -25,11 +26,11 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
           backgroundColor: Colors.transparent,
           elevation: 0,
           surfaceTintColor: Colors.transparent,
-          title: const Text('Mis Estadisticas',
+          title: Text('Mis Estadisticas',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 color: Color(0xFF2C3E50),
-                fontSize: 26,
+                fontSize: width * 0.065, // antes 26
                 letterSpacing: 0.5,
               )),
           centerTitle: true,
@@ -37,7 +38,7 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
         body: LayoutBuilder(
           builder: (context, constraints) {
             return SingleChildScrollView(
-              padding: const EdgeInsets.all(20),
+              padding: EdgeInsets.all(width * 0.05), // antes 20
               physics: const BouncingScrollPhysics(),
               child: ConstrainedBox(
                 constraints: BoxConstraints(
@@ -46,13 +47,13 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
                 child: Column(
                   children: [
                     CarouselCard(),
-                    const SizedBox(height: 30),
+                    SizedBox(height: width * 0.075), // antes 30
                     grades.isEmpty
-                        ? const Center(
+                        ? Center(
                             child: Text(
                               'No hay notas registradas',
                               style: TextStyle(
-                                fontSize: 16,
+                                fontSize: width * 0.04, // antes 16
                                 color: Color(0xFF7F8C8D),
                               ),
                             ),
@@ -61,21 +62,21 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
                             height: constraints.maxHeight * 0.55,
                             child: PieChartWidget(),
                           ),
-                    const SizedBox(height: 20),
-                    const Text(
+                    SizedBox(height: width * 0.05), // antes 20
+                    Text(
                       'Notas por dia',
                       style: TextStyle(
-                        fontSize: 24,
+                        fontSize: width * 0.06, // antes 24
                         fontWeight: FontWeight.bold,
                         color: Color(0xFF2C3E50),
                       ),
                     ),
                     grades.isEmpty
-                        ? const Center(
+                        ? Center(
                             child: Text(
                               'No hay notas registradas',
                               style: TextStyle(
-                                fontSize: 16,
+                                fontSize: width * 0.04, // antes 16
                                 color: Color(0xFF7F8C8D),
                               ),
                             ),
@@ -84,7 +85,7 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
                             height: constraints.maxHeight * 0.4,
                             child: BarChartWidget(grades: [...grades]),
                           ),
-                    const SizedBox(height: 20),
+                    SizedBox(height: width * 0.05), // antes 20
                   ],
                 ),
               ),
@@ -96,7 +97,11 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
           onPressed: () {
             context.push("/add_note/0");
           },
-          child: const Icon(Icons.add, color: Colors.white),
+          child: Icon(
+            Icons.add,
+            color: Colors.white,
+            size: width * 0.08, // antes tamaño por defecto
+          ),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         bottomNavigationBar: CustomNavigation());
