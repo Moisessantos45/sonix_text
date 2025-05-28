@@ -128,14 +128,14 @@ class _NotificationManagerState extends ConsumerState<NotificationManager> {
         Row(
           children: [
             _buildTextField(
-              'Hora (0-23)',
+              'H (0-23)',
               (value) => setState(() {
                 hora = int.parse(value);
               }),
             ),
             const SizedBox(width: 12),
             _buildTextField(
-              'Minuto (0-59)',
+              'Min (0-59)',
               (value) => setState(() {
                 minuto = int.parse(value);
               }),
@@ -193,7 +193,7 @@ class _NotificationManagerState extends ConsumerState<NotificationManager> {
     Function(String) onChanged,
   ) {
     return SizedBox(
-      width: 140,
+      width: 120,
       height: 50,
       child: TextField(
         textAlign: TextAlign.center,
