@@ -108,11 +108,23 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         brightness: Brightness.light,
-        primaryColor: Color(0xff0dc1fe),
+        primaryColor: const Color(0xff0dc1fe),
         useMaterial3: true,
       ),
       routerConfig: appRouter,
-      builder: InAppNotifications.init(),
+      builder: (context, child) {
+        final mediaQuery = MediaQuery.of(context);
+        final modifiedMediaQuery = mediaQuery.copyWith(
+          textScaler: mediaQuery.textScaler.scale(1.0) > 1.3
+              ? const TextScaler.linear(1.05)
+              : mediaQuery.textScaler,
+        );
+
+        return MediaQuery(
+          data: modifiedMediaQuery,
+          child: InAppNotifications.init()(context, child),
+        );
+      },
     );
   }
 }
