@@ -47,7 +47,7 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
                 child: Column(
                   children: [
                     CarouselCard(),
-                    SizedBox(height: width * 0.075), // antes 30
+                    SizedBox(height: width * 0.13), // antes 30
                     grades.isEmpty
                         ? Center(
                             child: Text(
