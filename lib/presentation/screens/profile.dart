@@ -161,7 +161,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         ),
         body: SingleChildScrollView(
           child: Container(
-            padding: EdgeInsets.symmetric(horizontal: width * 0.06), // antes 24
+            padding: EdgeInsets.symmetric(horizontal: width * 0.08), // antes 24
             width: double.infinity,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
