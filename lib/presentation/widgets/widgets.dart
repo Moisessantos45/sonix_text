@@ -1,0 +1,17 @@
+export 'package:sonix_text/presentation/widgets/fl_chart/bar_chart.dart';
+export 'package:sonix_text/presentation/widgets/fl_chart/pie_chart.dart';
+export 'package:sonix_text/presentation/widgets/home/grade.dart';
+export 'package:sonix_text/presentation/widgets/add_category_dialog.dart';
+export 'package:sonix_text/presentation/widgets/avatar.dart';
+export 'package:sonix_text/presentation/widgets/card_level.dart';
+export 'package:sonix_text/presentation/widgets/carrusel_card.dart';
+export 'package:sonix_text/presentation/widgets/color_select.dart';
+export 'package:sonix_text/presentation/widgets/custom_text_form_field.dart';
+export 'package:sonix_text/presentation/widgets/item_grade.dart';
+export 'package:sonix_text/presentation/widgets/list_category.dart';
+export 'package:sonix_text/presentation/widgets/manage_notifications.dart';
+export 'package:sonix_text/presentation/widgets/modal_select.dart';
+export 'package:sonix_text/presentation/widgets/navigation_bar.dart';
+export 'package:sonix_text/presentation/widgets/options_grade_static.dart';
+export 'package:sonix_text/presentation/widgets/options_grade.dart';
+export 'package:sonix_text/presentation/widgets/widgets.dart';
