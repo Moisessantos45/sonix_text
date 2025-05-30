@@ -6,6 +6,7 @@ import 'package:sonix_text/config/show_notification.dart';
 import 'package:sonix_text/infrastructure/user_model.dart';
 import 'package:sonix_text/presentation/riverpod/repository_grade.dart';
 import 'package:sonix_text/presentation/riverpod/repository_user.dart';
+import 'package:sonix_text/presentation/utils/generate_id.dart';
 import 'package:sonix_text/presentation/utils/parse_date.dart';
 
 class NotificationManager extends ConsumerStatefulWidget {
@@ -18,8 +19,7 @@ class NotificationManager extends ConsumerStatefulWidget {
 
 class _NotificationManagerState extends ConsumerState<NotificationManager> {
   int hora = 0;
-  int minuto = 0;
-  int i = 0;
+
   bool isSwitched = false;
 
   void initializeState() async {
@@ -28,7 +28,6 @@ class _NotificationManagerState extends ConsumerState<NotificationManager> {
       setState(() {
         isSwitched = user.first.activeNotifications;
         hora = user.first.hora;
-        minuto = user.first.minuto;
       });
     }
   }
@@ -54,7 +53,7 @@ class _NotificationManagerState extends ConsumerState<NotificationManager> {
         return;
       }
 
-      if (hora <= 0 || hora > 24 || minuto <= 0 || minuto > 59) {
+      if (hora <= 0 || hora > 24) {
         showNotification("Error",
             "La hora y el minuto deben estar en el rango correcto (0-23 y 0-59)",
             error: true);
@@ -64,25 +63,25 @@ class _NotificationManagerState extends ConsumerState<NotificationManager> {
       final dueSoonGrades = filterNotesDueSoon(ref.read(allGradesProvider));
       if (dueSoonGrades.isEmpty) return;
 
+      await NotificationsService.cancelAll();
+
       for (final grade in dueSoonGrades) {
         DateTime fecha = parseDate(grade.dueDate) ?? DateTime.now();
 
         DateTime fechaConHora =
-            DateTime(fecha.year, fecha.month, fecha.day, hora, minuto);
-
-        await NotificationsService.cancel(i);
+            DateTime(fecha.year, fecha.month, fecha.day, hora, 1);
+        final notificationId = generateUniqueId();
 
         await NotificationsService.hideNotificationSchedule(
-          i,
+          notificationId,
           "La nota ${grade.title}",
           'La nota ${grade.title} se vence en ${grade.dueDate}',
           fechaConHora,
         );
-        i++;
       }
 
       await _updateUser(updatedUser.copyWith(
-          minuto: minuto, hora: hora, activeNotifications: true));
+          minuto: 1, hora: hora, activeNotifications: true));
 
       showNotification("Notificaciones",
           "Las notificaciones han sido programadas correctamente");
@@ -96,7 +95,6 @@ class _NotificationManagerState extends ConsumerState<NotificationManager> {
       await NotificationsService.cancelAll();
       setState(() {
         isSwitched = false;
-        i = 0;
       });
       return;
     }
@@ -128,16 +126,10 @@ class _NotificationManagerState extends ConsumerState<NotificationManager> {
         Row(
           children: [
             _buildTextField(
-              'H (0-23)',
+              'Hora (0-23)',
+              hora,
               (value) => setState(() {
                 hora = int.parse(value);
-              }),
-            ),
-            const SizedBox(width: 12),
-            _buildTextField(
-              'Min (0-59)',
-              (value) => setState(() {
-                minuto = int.parse(value);
               }),
             ),
             const SizedBox(width: 12),
@@ -190,12 +182,14 @@ class _NotificationManagerState extends ConsumerState<NotificationManager> {
 
   Widget _buildTextField(
     String hintText,
+    int initialValue,
     Function(String) onChanged,
   ) {
     return SizedBox(
       width: 120,
       height: 50,
       child: TextField(
+        controller: TextEditingController(text: initialValue.toString()),
         textAlign: TextAlign.center,
         style: const TextStyle(
           fontSize: 16,
