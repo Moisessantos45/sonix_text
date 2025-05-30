@@ -1,0 +1,12 @@
+export 'package:sonix_text/presentation/utils/fl_chart/app_assets.dart';
+export 'package:sonix_text/presentation/utils/fl_chart/chart_type.dart';
+export 'package:sonix_text/presentation/utils/fl_chart/urls.dart';
+export 'package:sonix_text/presentation/utils/app_colors.dart';
+export 'package:sonix_text/presentation/utils/app_dimens.dart';
+export 'package:sonix_text/presentation/utils/character.dart';
+export 'package:sonix_text/presentation/utils/data_card.dart';
+export 'package:sonix_text/presentation/utils/data_level.dart';
+export 'package:sonix_text/presentation/utils/generate_id.dart';
+export 'package:sonix_text/presentation/utils/options.dart';
+export 'package:sonix_text/presentation/utils/parse_date.dart';
+export 'package:sonix_text/presentation/utils/validate_string.dart';
