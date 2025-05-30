@@ -15,6 +15,7 @@ class AboutScreen extends StatefulWidget {
 }
 
 class _AboutScreenState extends State<AboutScreen> {
+   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final sharedPreferents = SharedPreferentsManager();
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
   String API_URL = dotenv.env['API_URL'] ?? '';
@@ -118,9 +119,12 @@ class _AboutScreenState extends State<AboutScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: scaffoldKey,
       backgroundColor: const Color(0xFFF5F5F5),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
+        shadowColor: Colors.transparent,
         elevation: 0,
         title: const Text(
           'Acerca de',
