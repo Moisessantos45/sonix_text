@@ -1,18 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:sonix_text/presentation/widgets/add_category_dialog.dart';
 import 'package:uuid/uuid.dart';
 import 'package:sonix_text/config/helper/shared_preferents.dart';
 import 'package:sonix_text/config/show_notification.dart';
 import 'package:sonix_text/infrastructure/category_model.dart';
 import 'package:sonix_text/infrastructure/user_model.dart';
-import 'package:sonix_text/presentation/riverpod/repository_category.dart';
-import 'package:sonix_text/presentation/riverpod/repository_level.dart';
-import 'package:sonix_text/presentation/riverpod/repository_user.dart';
+import 'package:sonix_text/presentation/riverpod/riverpod.dart';
 import 'package:sonix_text/presentation/utils/data_level.dart';
-import 'package:sonix_text/presentation/widgets/custom_text_form_field.dart';
-import 'package:sonix_text/presentation/widgets/list_category.dart';
+import 'package:sonix_text/presentation/widgets/widgets.dart';
 
 class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({super.key});
