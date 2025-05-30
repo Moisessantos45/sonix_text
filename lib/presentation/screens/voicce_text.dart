@@ -1,19 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sonix_text/config/show_notification.dart';
-import 'package:sonix_text/domains/entity_grade.dart';
-import 'package:sonix_text/presentation/riverpod/repository_grade.dart';
-import 'package:sonix_text/presentation/riverpod/repository_level.dart';
-import 'package:sonix_text/presentation/riverpod/select_date.dart';
-import 'package:sonix_text/presentation/riverpod/seletc_color.dart';
-import 'package:sonix_text/presentation/utils/character.dart';
-import 'package:sonix_text/presentation/utils/parse_date.dart';
-import 'package:sonix_text/presentation/utils/validate_string.dart';
-import 'package:sonix_text/presentation/widgets/options_grade.dart';
-import 'package:sonix_text/presentation/widgets/options_grade_static.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:uuid/uuid.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sonix_text/config/show_notification.dart';
+import 'package:sonix_text/presentation/riverpod/riverpod.dart';
+import 'package:sonix_text/presentation/utils/utils.dart';
+import 'package:sonix_text/presentation/widgets/options_grade.dart';
 
 class VoiceTextScreen extends ConsumerStatefulWidget {
   final String id;
@@ -24,6 +17,7 @@ class VoiceTextScreen extends ConsumerStatefulWidget {
 }
 
 class _VoiceTextScreenState extends ConsumerState<VoiceTextScreen> {
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final SpeechToText _speechToText = SpeechToText();
   final TextEditingController titleEditingController = TextEditingController();
   final TextEditingController textEditingController = TextEditingController();
@@ -33,7 +27,6 @@ class _VoiceTextScreenState extends ConsumerState<VoiceTextScreen> {
       TextEditingController(text: 'Normal');
   final TextEditingController statusEditingController =
       TextEditingController(text: 'Pending');
-  bool isChangeStatus = false;
   bool isSmartModeEnabled = false;
 
   String registerDate = "";
@@ -120,39 +113,20 @@ class _VoiceTextScreenState extends ConsumerState<VoiceTextScreen> {
     ref.read(selectDateProvider.notifier).state = grade.dueDate;
 
     registerDate = grade.date;
-    final splitDueteDate = grade.dueDate.split('/');
-    DateTime dateTime = DateTime(
-      int.parse(splitDueteDate[2]),
-      int.parse(splitDueteDate[1]),
-      int.parse(splitDueteDate[0]),
-    );
-
-    DateTime fechaActual = DateTime.now();
-    DateTime fechaActualSinHora =
-        DateTime(fechaActual.year, fechaActual.month, fechaActual.day);
-    DateTime dateTimeSinHora =
-        DateTime(dateTime.year, dateTime.month, dateTime.day);
-    isChangeStatus = dateTimeSinHora.isBefore(fechaActualSinHora) ||
-        grade.status == "Completed";
   }
 
   Future<void> addGrade() async {
     try {
       if (!checkText()) return;
-      final grade = EntityGrade(
-        id: uuid.v4(),
-        title: titleEditingController.text.trim(),
-        content: textEditingController.text.trim(),
-        date: currentDate,
-        dueDate: ref.read(selectDateProvider),
-        status: statusEditingController.text,
-        priority: priorityEditingController.text,
-        category: categoryEditingController.text,
-        color: ref.read(selectColor),
-        point: 1,
-      );
 
-      await ref.read(allGradesProvider.notifier).addGrade(grade);
+      await ref.read(allGradesProvider.notifier).addGrade(
+          titleEditingController.text.trim(),
+          textEditingController.text.trim(),
+          ref.read(selectDateProvider),
+          statusEditingController.text,
+          priorityEditingController.text,
+          categoryEditingController.text,
+          ref.read(selectColor));
       await ref.read(allGradesProvider.notifier).loadGrades();
       clearFields();
       Navigator.pop(context);
@@ -167,20 +141,16 @@ class _VoiceTextScreenState extends ConsumerState<VoiceTextScreen> {
       if (!checkText()) return;
       final valueLevel = ref.watch(multiplyLevelProvider);
 
-      final task = EntityGrade(
-        id: widget.id,
-        title: titleEditingController.text.trim(),
-        content: textEditingController.text.trim(),
-        date: registerDate.isEmpty ? currentDate : registerDate,
-        dueDate: ref.read(selectDateProvider),
-        status: statusEditingController.text,
-        priority: priorityEditingController.text,
-        category: categoryEditingController.text,
-        color: ref.read(selectColor),
-        point: statusEditingController.text == "Completed" ? 1 * valueLevel : 1,
-      );
-
-      await ref.read(allGradesProvider.notifier).updateGrade(task);
+      await ref.read(allGradesProvider.notifier).updateGrade(
+          widget.id,
+          titleEditingController.text.trim(),
+          textEditingController.text.trim(),
+          ref.read(selectDateProvider),
+          statusEditingController.text,
+          priorityEditingController.text,
+          categoryEditingController.text,
+          ref.read(selectColor),
+          statusEditingController.text == "Completed" ? 1 * valueLevel : 1);
 
       clearFields();
       showNotification("Nota", "Nota actualizada correctamente");
@@ -271,12 +241,22 @@ class _VoiceTextScreenState extends ConsumerState<VoiceTextScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
+    final screenWidth = screenSize.width;
+    final screenHeight = screenSize.height;
+
+    final unitWidth = screenWidth / 100;
+    final unitHeight = screenHeight / 100;
     return Scaffold(
+        key: scaffoldKey,
         backgroundColor: const Color(0xFFD6EAF8).withAlpha(50),
         appBar: AppBar(
           title: Text(
             widget.id.isEmpty ? 'Nueva Nota' : 'Editar Nota',
-            style: const TextStyle(color: Color(0xFF2C3E50)),
+            style: TextStyle(
+              color: Color(0xFF2C3E50),
+              fontSize: unitWidth * 5,
+            ),
           ),
           backgroundColor: const Color(0xFFD6EAF8).withAlpha(50),
           surfaceTintColor: const Color(0xFFD6EAF8).withAlpha(50),
@@ -286,128 +266,125 @@ class _VoiceTextScreenState extends ConsumerState<VoiceTextScreen> {
               ? null
               : [
                   IconButton(
-                    icon: const Icon(Icons.delete_outline,
-                        color: Color(0xFFE74C3C)),
+                    icon: Icon(Icons.delete_outline,
+                        color: Color(0xFFE74C3C), size: unitWidth * 6),
                     onPressed: removeGrade,
                   ),
                 ],
         ),
         body: Container(
+          padding: EdgeInsets.all(unitWidth * 5),
           decoration: BoxDecoration(
             color: Color(0xFFD6EAF8).withAlpha(50),
             borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
           ),
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              children: [
-                TextField(
-                  controller: titleEditingController,
-                  readOnly: isChangeStatus,
-                  style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w600,
+          child: Column(
+            children: [
+              TextField(
+                controller: titleEditingController,
+                style: TextStyle(
+                  fontSize: unitWidth * 6,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF2C3E50),
+                ),
+                decoration: InputDecoration(
+                  hintText: 'Título de la nota',
+                  border: InputBorder.none,
+                  hintStyle: TextStyle(
+                    color: Color(0xFFBDC3C7),
+                    fontSize: unitWidth * 6,
+                  ),
+                ),
+              ),
+              Divider(height: unitHeight * 2, color: Color(0xFFECF0F1)),
+              Row(
+                children: [
+                  Expanded(
+                    child: CheckboxListTile(
+                      title: Text(
+                        'Modo Inteligente',
+                        style: TextStyle(
+                          color: Color(0xFF2C3E50),
+                          fontSize: unitWidth * 4,
+                        ),
+                      ),
+                      value: isSmartModeEnabled,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          isSmartModeEnabled = value ?? false;
+                        });
+                      },
+                      activeColor: const Color(0xFF3498DB),
+                      checkColor: Colors.white,
+                    ),
+                  ),
+                  IconButton(
+                    icon: Icon(
+                      Icons.info_outline,
+                      color: Color(0xFF3498DB),
+                      size: unitWidth * 6,
+                    ),
+                    onPressed: _showSmartModeInfo,
+                  ),
+                ],
+              ),
+              Divider(height: unitHeight * 1, color: Color(0xFFECF0F1)),
+              GradeOptionsWidget(
+                category: categoryEditingController,
+                status: statusEditingController,
+                priority: priorityEditingController,
+              ),
+              Divider(height: unitHeight * 2, color: Color(0xFFECF0F1)),
+              Expanded(
+                child: TextField(
+                  controller: textEditingController,
+                  maxLines: null,
+                  style: TextStyle(
+                    fontSize: unitWidth * 4,
                     color: Color(0xFF2C3E50),
                   ),
-                  decoration: const InputDecoration(
-                    hintText: 'Título de la nota',
+                  decoration: InputDecoration(
+                    hintText: 'Empieza a escribir o usa el micrófono...',
                     border: InputBorder.none,
-                    hintStyle: TextStyle(color: Color(0xFFBDC3C7)),
+                    hintStyle: TextStyle(
+                        color: Color(0xFFBDC3C7), fontSize: unitWidth * 4),
                   ),
                 ),
-                const Divider(height: 20, color: Color(0xFFECF0F1)),
-                Row(
-                  children: [
-                    Expanded(
-                      child: CheckboxListTile(
-                        title: const Text(
-                          'Modo Inteligente',
-                          style: TextStyle(
-                            color: Color(0xFF2C3E50),
-                            fontSize: 16,
-                          ),
-                        ),
-                        value: isSmartModeEnabled,
-                        onChanged: (bool? value) {
-                          setState(() {
-                            isSmartModeEnabled = value ?? false;
-                          });
-                        },
-                        activeColor: const Color(0xFF3498DB),
-                        checkColor: Colors.white,
-                      ),
-                    ),
-                    IconButton(
-                      icon: const Icon(
-                        Icons.info_outline,
-                        color: Color(0xFF3498DB),
-                      ),
-                      onPressed: _showSmartModeInfo,
-                    ),
-                  ],
-                ),
-                const Divider(height: 10, color: Color(0xFFECF0F1)),
-                isChangeStatus
-                    ? GradeOptionsDisplay(
-                        category: categoryEditingController.text,
-                        status: statusEditingController.text,
-                        priority: priorityEditingController.text,
-                        dueDate: ref.watch(selectDateProvider))
-                    : GradeOptionsWidget(
-                        category: categoryEditingController,
-                        status: statusEditingController,
-                        priority: priorityEditingController,
-                      ),
-                const Divider(height: 20, color: Color(0xFFECF0F1)),
-                Expanded(
-                  child: TextField(
-                    controller: textEditingController,
-                    maxLines: null,
-                    readOnly: isChangeStatus,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      color: Color(0xFF2C3E50),
-                    ),
-                    decoration: const InputDecoration(
-                      hintText: 'Empieza a escribir o usa el micrófono...',
-                      border: InputBorder.none,
-                      hintStyle: TextStyle(color: Color(0xFFBDC3C7)),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
-        floatingActionButton: isChangeStatus
-            ? null
-            : Padding(
-                padding: const EdgeInsets.only(bottom: 20.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    FloatingActionButton(
-                      onPressed: widget.id.isEmpty || widget.id == "0"
-                          ? addGrade
-                          : updateGrade,
-                      backgroundColor: const Color(0xFF3498DB),
-                      child: const Icon(Icons.save),
-                    ),
-                    const SizedBox(height: 16),
-                    FloatingActionButton(
-                      heroTag: "btnMic",
-                      onPressed: _speechToText.isNotListening
-                          ? _startListening
-                          : _stopListening,
-                      backgroundColor: _speechToText.isNotListening
-                          ? const Color(0xFF95A5A6)
-                          : const Color(0xFFE74C3C),
-                      child: Icon(_speechToText.isNotListening
-                          ? Icons.mic_off
-                          : Icons.mic),
-                    ),
-                  ],
+        floatingActionButton: Padding(
+          padding: EdgeInsets.only(bottom: unitHeight * 3),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              FloatingActionButton(
+                onPressed: widget.id.isEmpty || widget.id == "0"
+                    ? addGrade
+                    : updateGrade,
+                backgroundColor: const Color(0xFF3498DB),
+                child: Icon(
+                  Icons.save,
+                  size: unitWidth * 7,
                 ),
-              ));
+              ),
+              SizedBox(height: unitHeight * 2),
+              FloatingActionButton(
+                heroTag: "btnMic",
+                onPressed: _speechToText.isNotListening
+                    ? _startListening
+                    : _stopListening,
+                backgroundColor: _speechToText.isNotListening
+                    ? const Color(0xFF95A5A6)
+                    : const Color(0xFFE74C3C),
+                child: Icon(
+                  _speechToText.isNotListening ? Icons.mic_off : Icons.mic,
+                  size: unitWidth * 7,
+                ),
+              ),
+            ],
+          ),
+        ));
   }
 }
