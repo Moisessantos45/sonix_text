@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:sonix_text/presentation/riverpod/repository_category.dart';
-import 'package:sonix_text/presentation/riverpod/select_date.dart';
-import 'package:sonix_text/presentation/riverpod/seletc_color.dart';
-import 'package:sonix_text/presentation/utils/options.dart';
-import 'package:sonix_text/presentation/utils/parse_date.dart';
-import 'package:sonix_text/presentation/widgets/color_select.dart';
-import 'package:sonix_text/presentation/widgets/modal_select.dart';
+import 'package:sonix_text/presentation/riverpod/riverpod.dart';
+import 'package:sonix_text/presentation/utils/utils.dart';
+import 'package:sonix_text/presentation/widgets/widgets.dart';
 
 class GradeOptionsWidget extends ConsumerStatefulWidget {
   final TextEditingController category;
@@ -83,6 +79,10 @@ class _GradeOptionsWidgetState extends ConsumerState<GradeOptionsWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final Size screenSize = MediaQuery.of(context).size;
+    final double screenWidth = screenSize.width;
+    final double screenHeight = screenSize.height;
+
     final categories =
         ref.watch(categoryNotifierProvider).map((e) => e.name).toList();
     return !isInit
@@ -90,7 +90,7 @@ class _GradeOptionsWidgetState extends ConsumerState<GradeOptionsWidget> {
         : Column(
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(vertical: 8),
+                padding: EdgeInsets.symmetric(vertical: screenHeight * 0.01),
                 child: Row(
                   children: [
                     if (categories.isNotEmpty)
@@ -109,7 +109,7 @@ class _GradeOptionsWidgetState extends ConsumerState<GradeOptionsWidget> {
                           },
                         ),
                       ),
-                    const SizedBox(width: 16),
+                    SizedBox(width: screenWidth * 0.04),
                     Expanded(
                       child: _buildDateSelector(context),
                     ),
@@ -117,7 +117,7 @@ class _GradeOptionsWidgetState extends ConsumerState<GradeOptionsWidget> {
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(vertical: 8),
+                padding: EdgeInsets.symmetric(vertical: screenHeight * 0.01),
                 child: Row(
                   children: [
                     Expanded(
@@ -135,7 +135,7 @@ class _GradeOptionsWidgetState extends ConsumerState<GradeOptionsWidget> {
                         },
                       ),
                     ),
-                    const SizedBox(width: 16),
+                    SizedBox(width: screenWidth * 0.04),
                     Expanded(
                       child: _buildDropdownField(
                         icon: Icons.priority_high_outlined,
@@ -155,7 +155,7 @@ class _GradeOptionsWidgetState extends ConsumerState<GradeOptionsWidget> {
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(vertical: 8),
+                padding: EdgeInsets.symmetric(vertical: screenHeight * 0.01),
                 child: Row(
                   children: [
                     Expanded(
@@ -191,6 +191,10 @@ class _GradeOptionsWidgetState extends ConsumerState<GradeOptionsWidget> {
     required List<String> items,
     required void Function(String?) onChanged,
   }) {
+    final Size screenSize = MediaQuery.of(context).size;
+    final double screenWidth = screenSize.width;
+    final double screenHeight = screenSize.height;
+
     final uniqueItems = items.toSet().toList();
     final validValue =
         uniqueItems.contains(value) ? value : uniqueItems.firstOrNull;
@@ -199,58 +203,66 @@ class _GradeOptionsWidgetState extends ConsumerState<GradeOptionsWidget> {
       decoration: BoxDecoration(
         color: Color(0xFFD6EAF8).withAlpha(50),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      padding: EdgeInsets.symmetric(
+          horizontal: screenWidth * 0.03, vertical: screenHeight * 0.005),
       child: GestureDetector(
-          onTap: () {
-            _showSelector(
-              context,
-              uniqueItems,
-              hint,
-              validValue ?? items.first,
-              (value) {
-                onChanged(value);
-              },
-            );
-          },
-          child: Row(
-            children: [
-              Icon(icon, size: 18, color: Colors.greenAccent),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  validValue ?? hint,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: Color(0xFF2C3E50),
-                  ),
+        onTap: () {
+          _showSelector(
+            context,
+            uniqueItems,
+            hint,
+            validValue ?? items.first,
+            (value) {
+              onChanged(value);
+            },
+          );
+        },
+        child: Row(
+          children: [
+            Icon(icon, size: screenWidth * 0.045, color: Colors.greenAccent),
+            SizedBox(width: screenWidth * 0.02),
+            Expanded(
+              child: Text(
+                validValue ?? hint,
+                style: TextStyle(
+                  fontSize: screenWidth * 0.035,
+                  color: Color(0xFF2C3E50),
                 ),
               ),
-              const SizedBox(width: 8),
-              const Icon(Icons.arrow_drop_down, color: Colors.greenAccent),
-              const SizedBox(width: 8),
-            ],
-          )),
+            ),
+            SizedBox(width: screenWidth * 0.02),
+            Icon(Icons.arrow_drop_down,
+                color: Colors.greenAccent, size: screenWidth * 0.06),
+            SizedBox(width: screenWidth * 0.02),
+          ],
+        ),
+      ),
     );
   }
 
   Widget _buildDateSelector(BuildContext context) {
+    final Size screenSize = MediaQuery.of(context).size;
+    final double screenWidth = screenSize.width;
+    final double screenHeight = screenSize.height;
+
     return InkWell(
       onTap: () => _selectDate(context),
       child: Container(
         decoration: BoxDecoration(
           color: Color(0xFFD6EAF8).withAlpha(50),
         ),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+        padding: EdgeInsets.symmetric(
+            horizontal: screenWidth * 0.03, vertical: screenHeight * 0.015),
         child: Row(
           children: [
-            const Icon(Icons.calendar_today,
-                size: 18, color: Colors.greenAccent),
-            const SizedBox(width: 8),
+            Icon(Icons.calendar_today,
+                size: screenWidth * 0.045, color: Colors.greenAccent),
+            SizedBox(width: screenWidth * 0.02),
             Expanded(
               child: Text(
                 ref.watch(selectDateProvider),
-                style: const TextStyle(
-                  fontSize: 14,
+                style: TextStyle(
+                  fontSize: screenWidth * 0.035,
                   color: Color(0xFF2C3E50),
                 ),
               ),
