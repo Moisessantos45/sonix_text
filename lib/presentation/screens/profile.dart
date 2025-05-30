@@ -2,19 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 import 'package:go_router/go_router.dart';
-import 'package:sonix_text/presentation/screens/about.dart';
-import 'package:sonix_text/presentation/utils/validate_string.dart';
-import 'package:sonix_text/presentation/widgets/add_category_dialog.dart';
-import 'package:sonix_text/presentation/widgets/avatar.dart';
-import 'package:sonix_text/presentation/widgets/manage_notifications.dart';
-import 'package:sonix_text/presentation/riverpod/repository_user.dart';
-import 'package:sonix_text/config/show_notification.dart';
-import 'package:sonix_text/infrastructure/category_model.dart';
 import 'package:sonix_text/config/helper/page_router.dart';
-import 'package:sonix_text/presentation/riverpod/repository_category.dart';
-import 'package:sonix_text/presentation/widgets/custom_text_form_field.dart';
-import 'package:sonix_text/presentation/widgets/list_category.dart';
-import 'package:sonix_text/presentation/widgets/navigation_bar.dart';
+import 'package:sonix_text/config/show_notification.dart';
+import 'package:sonix_text/presentation/riverpod/riverpod.dart';
+import 'package:sonix_text/presentation/screens/screens.dart';
+import 'package:sonix_text/presentation/utils/validate_string.dart';
+import 'package:sonix_text/infrastructure/category_model.dart';
+import 'package:sonix_text/presentation/widgets/widgets.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
@@ -124,13 +118,18 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final categories = ref.watch(categoryNotifierProvider);
+    final currentUser = ref.watch(userProvider);
     final categoryNames = categories.map((e) => e.name).toSet().toList();
     final width = MediaQuery.of(context).size.width;
 
     return Scaffold(
+        key: scaffoldKey,
+        resizeToAvoidBottomInset: false,
         backgroundColor: const Color(0xFFD6EAF8).withAlpha(50),
         appBar: AppBar(
           backgroundColor: Colors.transparent,
+          surfaceTintColor: Colors.transparent,
+          shadowColor: Colors.transparent,
           elevation: 0,
           title: const Text(
             'Mi Perfil',
@@ -171,7 +170,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   child: Column(
                     children: [
                       AvatarWidget(
-                        avatar: avatar,
+                        avatar: currentUser.isNotEmpty
+                            ? currentUser.first.avatar
+                            : avatar,
                         onSelect: (p0) => {},
                       ),
                       SizedBox(height: width * 0.04), // antes 16
