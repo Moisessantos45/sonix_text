@@ -12,7 +12,7 @@ class GradeDisplayWidget extends ConsumerStatefulWidget {
 }
 
 class _GradeDisplayWidgetState extends ConsumerState<GradeDisplayWidget> {
-  int _selectedMenu = 0;
+  int _selectedMenu = 1;
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +32,7 @@ class _GradeDisplayWidgetState extends ConsumerState<GradeDisplayWidget> {
                 padding: EdgeInsets.all(width * 0.02), // antes 8.0
                 child: GestureDetector(
                   onTap: () {
+                    if (index == 0) return;
                     setState(() {
                       _selectedMenu = index;
                     });
