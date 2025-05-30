@@ -3,11 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sonix_text/config/helper/page_router.dart';
 import 'package:sonix_text/presentation/riverpod/repository_user.dart';
-import 'package:sonix_text/presentation/screens/notifications.dart';
-import 'package:sonix_text/presentation/screens/voicce_text.dart';
-import 'package:sonix_text/presentation/widgets/card_level.dart';
-import 'package:sonix_text/presentation/widgets/home/grade.dart';
-import 'package:sonix_text/presentation/widgets/navigation_bar.dart';
+import 'package:sonix_text/presentation/screens/screens.dart';
+import 'package:sonix_text/presentation/widgets/widgets.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -24,6 +21,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final user = ref.watch(userProvider);
     final nickName = user.isEmpty ? 'Usuario' : user.first.nickname;
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       key: scaffoldKey,
       backgroundColor: const Color(0xFFD6EAF8).withAlpha(50),
       appBar: PreferredSize(
@@ -99,8 +97,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         Column(
                           children: [
                             Icon(Icons.bar_chart,
-                                color: Color(0xFF3498DB),
-                                size: width * 0.08),
+                                color: Color(0xFF3498DB), size: width * 0.08),
                             SizedBox(height: width * 0.02),
                             const Text(
                               'Ver estadísticas',
@@ -126,10 +123,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: const Color(0xFF3498DB),
         onPressed: () {
-          Navigator.push(
-            context,
-            CustomPageRoute(page: const VoiceTextScreen()),
-          );
+          context.push("/add_note/0");
         },
         child: const Icon(
           Icons.add,
