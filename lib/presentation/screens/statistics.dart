@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sonix_text/presentation/riverpod/repository_grade.dart';
-import 'package:sonix_text/presentation/widgets/fl_chart/bar_chart.dart';
-import 'package:sonix_text/presentation/widgets/fl_chart/pie_chart.dart';
-import 'package:sonix_text/presentation/widgets/navigation_bar.dart';
-import 'package:sonix_text/presentation/widgets/carrusel_card.dart';
+import 'package:sonix_text/presentation/widgets/widgets.dart';
 
 class StatisticsScreen extends ConsumerStatefulWidget {
   const StatisticsScreen({super.key});
@@ -15,12 +12,14 @@ class StatisticsScreen extends ConsumerStatefulWidget {
 }
 
 class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     final grades = ref.watch(allGradesProvider);
     final width = MediaQuery.of(context).size.width;
 
     return Scaffold(
+        key: scaffoldKey,
         backgroundColor: const Color(0xFFD6EAF8).withAlpha(50),
         appBar: AppBar(
           backgroundColor: Colors.transparent,
