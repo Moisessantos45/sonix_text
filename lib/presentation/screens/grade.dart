@@ -1,15 +1,12 @@
-import 'package:calendar_timeline/calendar_timeline.dart';
 import 'package:flutter/material.dart';
+import 'package:calendar_timeline/calendar_timeline.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'package:sonix_text/config/service/notifications.dart';
-import 'package:sonix_text/presentation/riverpod/repository_category.dart';
-import 'package:sonix_text/presentation/riverpod/repository_grade.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:sonix_text/presentation/riverpod/repository_level.dart';
-import 'package:sonix_text/presentation/riverpod/repository_user.dart';
-import 'package:sonix_text/presentation/utils/parse_date.dart';
+import 'package:sonix_text/presentation/riverpod/riverpod.dart';
+import 'package:sonix_text/presentation/utils/utils.dart';
 import 'package:sonix_text/presentation/widgets/navigation_bar.dart';
 
 class GradeScreen extends ConsumerStatefulWidget {
@@ -24,56 +21,43 @@ class _GradeScreenState extends ConsumerState<GradeScreen> {
   bool isLoading = true;
 
   Future<void> _scheduleNotifications() async {
-    int i = 0;
     try {
       final user = ref.read(userProvider);
-      if (user.isEmpty) {
+      if (user.isEmpty || user.first.activeNotifications == false) {
         return;
       }
 
       final updatedUser = user.first;
-      if (updatedUser.activeNotifications == false) {
-        return;
-      }
 
       final hora = updatedUser.hora;
-      final minuto = updatedUser.minuto;
 
       final dueSoonGrades = filterNotesDueSoon(ref.read(allGradesProvider));
       if (dueSoonGrades.isEmpty) return;
+      await NotificationsService.cancelAll();
 
       for (final grade in dueSoonGrades) {
         DateTime fecha = parseDate(grade.dueDate) ?? DateTime.now();
 
         DateTime fechaConHora =
-            DateTime(fecha.year, fecha.month, fecha.day, hora, minuto);
+            DateTime(fecha.year, fecha.month, fecha.day, hora, 1);
 
-        await NotificationsService.cancel(i);
+        final notificationId = generateUniqueId();
 
         await NotificationsService.hideNotificationSchedule(
-          i,
+          notificationId,
           "La nota ${grade.title}",
           'La nota ${grade.title} se vence en ${grade.dueDate}',
           fechaConHora,
         );
-        i++;
       }
     } catch (e) {
       await NotificationsService.cancelAll();
-      setState(() {
-        i = 0;
-      });
-      return;
     }
   }
 
   Future<void> _loadData() async {
-    await Future.wait([
-      ref.read(levelNotifierProvider.notifier).getLevels(),
-      ref.read(userNotifierProvider.notifier).getUsers(),
-      ref.read(allGradesProvider.notifier).loadGrades(),
-      ref.read(categoryNotifierProvider.notifier).getCategories(),
-    ]);
+    ref.read(loadDataProvider.notifier).loadData();
+
     await _scheduleNotifications();
 
     setState(() {
