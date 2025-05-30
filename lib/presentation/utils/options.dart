@@ -9,6 +9,7 @@
 
 final List<String> statusOptions = ['Pending', 'In Progress', 'Completed'];
 final List<Map<String, String>> statusFilter = [
+  {"name":"Ver","value":"See All"},
   {'name': 'Todos', 'value': 'All'},
   {'name': 'Pendiente', 'value': 'Pending'},
   {'name': 'En Progreso', 'value': 'In Progress'},
