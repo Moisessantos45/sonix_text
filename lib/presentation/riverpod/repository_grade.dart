@@ -4,6 +4,8 @@ import 'package:sonix_text/domains/entity_grade.dart';
 import 'package:sonix_text/presentation/riverpod/repository_db.dart';
 import 'package:sonix_text/presentation/riverpod/repository_level.dart';
 import 'package:sonix_text/presentation/utils/data_card.dart';
+import 'package:sonix_text/presentation/utils/parse_date.dart';
+import 'package:uuid/uuid.dart';
 
 final allGradesProvider =
     StateNotifierProvider<AllGradesNotifier, List<EntityGrade>>((ref) {
@@ -24,14 +26,62 @@ class AllGradesNotifier extends StateNotifier<List<EntityGrade>> {
     state = List.from(listGrade);
   }
 
-  Future<void> addGrade(EntityGrade grade) async {
+  Future<void> addGrade(String title, String content, String dueDate,
+      String status, String priority, String category, int color) async {
+    final uuid = Uuid();
+    final grade = EntityGrade(
+      id: uuid.v4(),
+      title: title,
+      content: content,
+      dueDate: dueDate,
+      status: status,
+      date: formatDateTimeToString(DateTime.now()),
+      priority: priority,
+      category: category,
+      point: 1,
+      color: color,
+    );
     await _repository.add(_table, grade.toMap());
     state = [...state, grade];
   }
 
-  Future<void> updateGrade(EntityGrade grade) async {
+  Future<void> updateGrade(
+      String id,
+      String title,
+      String content,
+      String dueDate,
+      String status,
+      String priority,
+      String category,
+      int color,
+      int point) async {
+    final grade = EntityGrade(
+      id: id,
+      title: title,
+      content: content,
+      dueDate: dueDate,
+      status: status,
+      date: formatDateTimeToString(DateTime.now()),
+      priority: priority,
+      category: category,
+      point: point,
+      color: color,
+    );
     await _repository.update(_table, grade.id, grade.toMap());
     state = state.map((t) => t.id == grade.id ? grade : t).toList();
+  }
+
+  Future<void> updateGradeStatus(String id, String status) async {
+    final response = await _repository.executeQuery(
+      'SELECT * FROM $_table WHERE id = ?',
+      [id],
+    );
+    if (response.isEmpty) return;
+    final updatedGrade =
+        EntityGrade.fromMap(response.first).copyWith(status: status);
+    await _repository.update(_table, updatedGrade.id, updatedGrade.toMap());
+    state =
+        state.map((t) => t.id == updatedGrade.id ? updatedGrade : t).toList();
   }
 
   Future<void> removeGrade(EntityGrade grade) async {
