@@ -39,10 +39,59 @@ class _AvatarWidgetState extends ConsumerState<AvatarWidget> {
     }
   }
 
+  @override
+  Widget build(BuildContext context) {
+    final Size screenSize = MediaQuery.of(context).size;
+    final double screenWidth = screenSize.width;
+
+    return Container(
+      width: screenWidth * 0.2, // era 80
+      height: screenWidth * 0.2, // era 80
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(
+          color: const Color(0xFF3498DB),
+          width: screenWidth * 0.005, // era 2
+        ),
+      ),
+      child: Stack(
+        children: [
+          GestureDetector(
+              onTap: _showAddAvatar,
+              child: AvatarPlus(
+                widget.avatar,
+                height: screenWidth * 0.2,
+                width: screenWidth * 0.2,
+              )),
+          Positioned.fill(
+            child: Align(
+              alignment: Alignment.bottomRight,
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: Color(0xFF3498DB),
+                  shape: BoxShape.circle,
+                ),
+                padding: EdgeInsets.all(screenWidth * 0.01), // era 4
+                child: Icon(
+                  Icons.camera_alt,
+                  size: screenWidth * 0.04, // era 16
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   void _showAddAvatar() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
+        final Size screenSize = MediaQuery.of(context).size;
+        final double screenWidth = screenSize.width;
+
         String newAvatar = '';
         return AlertDialog(
           backgroundColor: Colors.white,
@@ -50,17 +99,20 @@ class _AvatarWidgetState extends ConsumerState<AvatarWidget> {
           surfaceTintColor: Colors.white,
           shadowColor: Colors.black.withAlpha(50),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(screenWidth * 0.04), // era 16
           ),
           title: const Text('Ingrese el código del avatar'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text(
+              Text(
                 'Puede obtener códigos de avatar en:\nhttps://multiavatar.com',
-                style: TextStyle(fontSize: 12, color: Colors.grey),
+                style: TextStyle(
+                  fontSize: screenWidth * 0.03, // era 12
+                  color: Colors.grey,
+                ),
               ),
-              const SizedBox(height: 10),
+              SizedBox(height: screenWidth * 0.025), // era 10
               TextField(
                 onChanged: (value) {
                   newAvatar = value;
@@ -89,49 +141,6 @@ class _AvatarWidgetState extends ConsumerState<AvatarWidget> {
           ],
         );
       },
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 80,
-      height: 80,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(
-          color: const Color(0xFF3498DB),
-          width: 2,
-        ),
-      ),
-      child: Stack(
-        children: [
-          GestureDetector(
-              onTap: _showAddAvatar,
-              child: AvatarPlus(
-                widget.avatar,
-                height: MediaQuery.of(context).size.width - 20,
-                width: MediaQuery.of(context).size.width - 20,
-              )),
-          Positioned.fill(
-            child: Align(
-              alignment: Alignment.bottomRight,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: const Color(0xFF3498DB),
-                  shape: BoxShape.circle,
-                ),
-                padding: const EdgeInsets.all(4),
-                child: const Icon(
-                  Icons.camera_alt,
-                  size: 16,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
     );
   }
 }
