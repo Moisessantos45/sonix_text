@@ -14,23 +14,29 @@ class GradeItemWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final Size screenSize = MediaQuery.of(context).size;
+    final double screenWidth = screenSize.width;
+    final double screenHeight = screenSize.height;
+
     final int indexColor = statusOptions.indexOf(grade.status);
     final int color = statusColors[indexColor];
+
     return Dismissible(
       key: Key(grade.id),
       direction: DismissDirection.horizontal,
       background: Padding(
-        padding: const EdgeInsets.all(8),
+        padding: EdgeInsets.all(screenWidth * 0.02),
         child: Container(
           color: Colors.blue,
-          child: Icon(Icons.edit, color: Colors.white, size: 40),
+          child: Icon(Icons.edit, color: Colors.white, size: screenWidth * 0.1),
         ),
       ),
       secondaryBackground: Padding(
-        padding: const EdgeInsets.all(8),
+        padding: EdgeInsets.all(screenWidth * 0.02),
         child: Container(
           color: Colors.red,
-          child: Icon(Icons.delete, color: Colors.white, size: 40),
+          child:
+              Icon(Icons.delete, color: Colors.white, size: screenWidth * 0.1),
         ),
       ),
       confirmDismiss: (direction) async {
@@ -74,72 +80,74 @@ class GradeItemWidget extends ConsumerWidget {
         }
       },
       child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 6),
+        margin: EdgeInsets.symmetric(vertical: screenHeight * 0.008),
         decoration: BoxDecoration(
           color: Colors.white60,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Color(0xFF4DADE2), width: 0.4),
+          borderRadius: BorderRadius.circular(screenWidth * 0.04),
+          border:
+              Border.all(color: Color(0xFF4DADE2), width: screenWidth * 0.001),
           boxShadow: [
             BoxShadow(
               color: Color(0xFF4DADE2).withAlpha(50),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
+              blurRadius: screenWidth * 0.025,
+              offset: Offset(0, screenHeight * 0.005),
             ),
           ],
         ),
-        child: Material(
-          color: Colors.transparent,
-          child: ListTile(
-            contentPadding: const EdgeInsets.all(8),
-            title: Text(
-              grade.title,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: Color(0xFF2C3E50),
-              ),
-            ),
-            subtitle: Padding(
-              padding: const EdgeInsets.only(top: 5),
-              child: Text(
-                grade.content,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Color(0xFF7F8C8D),
+        child: InkWell(
+            onTap: () {
+              _showPeriodSelector(context, ref);
+            },
+            child: Material(
+              color: Colors.transparent,
+              child: ListTile(
+                contentPadding: EdgeInsets.all(screenWidth * 0.02),
+                title: Text(
+                  grade.title,
+                  style: TextStyle(
+                    fontSize: screenWidth * 0.04,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF2C3E50),
+                  ),
                 ),
-              ),
-            ),
-            trailing: Container(
-                constraints: BoxConstraints(maxWidth: 150),
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                decoration: BoxDecoration(
-                    color: Color(color),
-                    borderRadius: BorderRadius.circular(12)),
-                child: Row(
-                  children: [
-                    Text(grade.status,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w500,
-                        )),
-                    const Spacer(),
-                    IconButton(
-                      onPressed: grade.status != "Completed"
-                          ? () {
-                              _showPeriodSelector(context, ref);
-                            }
-                          : null,
-                      icon:
-                          const Icon(Icons.edit, color: Colors.white, size: 25),
-                      tooltip: 'Cambiar estatus',
+                subtitle: Padding(
+                  padding: EdgeInsets.only(top: screenHeight * 0.006),
+                  child: Text(
+                    grade.content,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: screenWidth * 0.035,
+                      color: Color(0xFF7F8C8D),
                     ),
-                  ],
-                )),
-          ),
-        ),
+                  ),
+                ),
+                trailing: Container(
+                    constraints: BoxConstraints(maxWidth: screenWidth * 0.4),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: screenWidth * 0.025,
+                        vertical: screenHeight * 0.01),
+                    decoration: BoxDecoration(
+                        color: Color(color),
+                        borderRadius:
+                            BorderRadius.circular(screenWidth * 0.03)),
+                    child: Row(
+                      children: [
+                        Text(
+                          grade.status,
+                          style: TextStyle(
+                            fontSize: screenWidth * 0.035,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const Spacer(),
+                        Icon(Icons.edit,
+                            color: Colors.white, size: screenWidth * 0.06),
+                      ],
+                    )),
+              ),
+            )),
       ),
     );
   }
@@ -157,13 +165,7 @@ class GradeItemWidget extends ConsumerWidget {
   }
 
   Future<void> changeStatus(String id, String status, WidgetRef ref) async {
-    final grade = ref
-        .read(gradeNotifierProvider)
-        .firstWhere((element) => element.id == id);
-
-    await ref.read(allGradesProvider.notifier).updateGrade(grade.copyWith(
-          status: status,
-        ));
+    await ref.read(allGradesProvider.notifier).updateGradeStatus(id, status);
 
     showNotification("Actualizado", "Estado actualizado");
   }
