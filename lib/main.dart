@@ -3,11 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_inapp_notifications/flutter_inapp_notifications.dart';
 import 'package:lottie/lottie.dart';
-import 'package:sonix_text/config/service/notifications.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:sonix_text/config/db.dart';
-import 'package:sonix_text/config/router/router.dart';
+import 'package:sonix_text/config/config.dart';
 import 'package:sonix_text/presentation/riverpod/repository_db.dart';
 
 void main() async {
@@ -39,10 +37,8 @@ class SplashScreenState extends State<SplashScreen> {
     try {
       WidgetsFlutterBinding.ensureInitialized();
 
-      // Inicializar la base de datos primero ya que se necesita para el ProviderScope
       final database = await initializeDatabase();
 
-      // Inicializar el resto de servicios en paralelo ya que no dependen entre sí
       await Future.wait([
         dotenv.load(fileName: '.env'),
         NotificationsService.init(),
