@@ -56,7 +56,7 @@ class _GradeScreenState extends ConsumerState<GradeScreen> {
   }
 
   Future<void> _loadData() async {
-    ref.read(loadDataProvider.notifier).loadData();
+    await ref.read(loadDataProvider.notifier).loadData();
 
     await _scheduleNotifications();
 
