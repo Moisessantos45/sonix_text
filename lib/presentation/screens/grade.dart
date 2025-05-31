@@ -86,7 +86,9 @@ class _GradeScreenState extends ConsumerState<GradeScreen> {
   @override
   void initState() {
     super.initState();
-    _loadData();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadData();
+    });
   }
 
   @override
