@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sonix_text/domains/entity_card.dart';
 import 'package:sonix_text/domains/entity_grade.dart';
+import 'package:sonix_text/domains/entity_stats.dart';
 import 'package:sonix_text/presentation/riverpod/repository_db.dart';
-import 'package:sonix_text/presentation/riverpod/repository_level.dart';
 import 'package:sonix_text/presentation/utils/data_card.dart';
 import 'package:sonix_text/presentation/utils/parse_date.dart';
 import 'package:uuid/uuid.dart';
@@ -184,34 +184,44 @@ final gradesFilterDateProvider = Provider<List<EntityGrade>>((ref) {
   return grades.isEmpty ? [] : grades;
 });
 
-final totalGradesProvider = Provider<int>((ref) {
-  final grades = ref.watch(allGradesProvider);
-  return grades.length;
-});
-
-final scoreProvider = Provider<int>((ref) {
-  final allGrades = ref.watch(allGradesProvider);
-  return allGrades
-      .where((grade) => grade.status == 'Completed')
-      .fold(0, (sum, grade) => sum + grade.point);
-});
-
-final completedGradesProvider = Provider<int>((ref) {
-  final grades = ref.watch(allGradesProvider);
-  return grades.where((grade) => grade.status == 'Completed').length;
-});
-
 final listCardsProvider = Provider<List<EntityCard>>((ref) {
-  final score = ref.watch(scoreProvider);
-  final points = ref.watch(pointsLevelProvider);
-  final completed = ref.watch(completedGradesProvider);
-  final total = ref.watch(totalGradesProvider);
+  final stats = ref.watch(statsProvider);
 
   final updatedCards = List<EntityCard>.from(listCard)
-    ..[0] = listCard[0].copyWith(title: total.toString())
-    ..[1] = listCard[1].copyWith(title: completed.toString())
-    ..[2] = listCard[2].copyWith(title: score.toString())
-    ..[3] = listCard[3].copyWith(title: (points - score).toString());
+    ..[0] = listCard[0].copyWith(title: stats.totalGrades.toString())
+    ..[1] = listCard[1].copyWith(title: stats.completedGrades.toString())
+    ..[2] = listCard[2].copyWith(title: stats.score.toString())
+    ..[3] = listCard[3].copyWith(title: stats.remainingPoints.toString());
 
   return updatedCards;
+});
+
+class StatsNotifier extends StateNotifier<EntityStats> {
+  final DbRepository _repository;
+  final String _table = 'grade';
+
+  StatsNotifier(this._repository)
+      : super(EntityStats(
+            totalGrades: 0, completedGrades: 0, score: 0, remainingPoints: 0));
+
+  Future<void> getStats() async {
+    final total = await _repository.getCount(_table);
+    final completed =
+        await _repository.getCountWhere(_table, 'status = ?', ['Completed']);
+    final score = await _repository
+        .getSumWhere(_table, 'point', 'status = ?', ['Completed']);
+
+    state = EntityStats(
+      totalGrades: total,
+      completedGrades: completed,
+      score: score,
+      remainingPoints: score,
+    );
+  }
+}
+
+final statsProvider = StateNotifierProvider<StatsNotifier, EntityStats>((ref) {
+  final repository = ref.watch(dbRepositoryProvider);
+
+  return StatsNotifier(repository);
 });
