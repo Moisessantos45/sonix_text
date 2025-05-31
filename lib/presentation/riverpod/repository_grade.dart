@@ -3,6 +3,7 @@ import 'package:sonix_text/domains/entity_card.dart';
 import 'package:sonix_text/domains/entity_grade.dart';
 import 'package:sonix_text/domains/entity_stats.dart';
 import 'package:sonix_text/presentation/riverpod/repository_db.dart';
+import 'package:sonix_text/presentation/riverpod/repository_level.dart';
 import 'package:sonix_text/presentation/utils/data_card.dart';
 import 'package:sonix_text/presentation/utils/parse_date.dart';
 import 'package:uuid/uuid.dart';
@@ -199,8 +200,9 @@ final listCardsProvider = Provider<List<EntityCard>>((ref) {
 class StatsNotifier extends StateNotifier<EntityStats> {
   final DbRepository _repository;
   final String _table = 'grade';
+  int _pointsLevel = 1; // Assuming a fixed points level for simplicity
 
-  StatsNotifier(this._repository)
+  StatsNotifier(this._repository, this._pointsLevel)
       : super(EntityStats(
             totalGrades: 0, completedGrades: 0, score: 0, remainingPoints: 0));
 
@@ -215,13 +217,13 @@ class StatsNotifier extends StateNotifier<EntityStats> {
       totalGrades: total,
       completedGrades: completed,
       score: score,
-      remainingPoints: score,
+      remainingPoints: _pointsLevel - score,
     );
   }
 }
 
 final statsProvider = StateNotifierProvider<StatsNotifier, EntityStats>((ref) {
   final repository = ref.watch(dbRepositoryProvider);
-
-  return StatsNotifier(repository);
+  final pointsLevel = ref.watch(pointsLevelProvider);
+  return StatsNotifier(repository, pointsLevel);
 });
