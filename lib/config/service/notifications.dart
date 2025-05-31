@@ -169,3 +169,33 @@ class NotificationsService {
     await flutterLocalNotificationsPlugin.cancelAll();
   }
 }
+
+
+Future<void> requestNotificationPermissions() async {
+    final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+        FlutterLocalNotificationsPlugin();
+
+    // Obtener la implementación específica para Android
+    final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
+        flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>();
+
+    if (androidImplementation != null) {
+      // 1. Solicitar el permiso POST_NOTIFICATIONS (para Android 13+)
+      final bool? grantedNotifications =
+          await androidImplementation.requestNotificationsPermission();
+      if (grantedNotifications == null || !grantedNotifications) {
+        debugPrint('Permiso de notificaciones denegado o no concedido.');
+        // Opcional: Considera mostrar un diálogo al usuario para explicar por qué necesita el permiso
+        // y cómo puede activarlo desde la configuración de la app.
+      }
+
+      // 2. Solicitar el permiso SCHEDULE_EXACT_ALARM (para Android 12+ al usar exactAllowWhileIdle)
+      final bool? grantedExactAlarms =
+          await androidImplementation.requestExactAlarmsPermission();
+      if (grantedExactAlarms == null || !grantedExactAlarms) {
+        debugPrint('Permiso de alarmas exactas denegado o no concedido.');
+        // Opcional: Similar al anterior, informa al usuario si este permiso es crítico.
+      }
+    }
+  }
