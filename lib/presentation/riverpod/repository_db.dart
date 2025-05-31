@@ -42,4 +42,28 @@ class DbRepository {
   Future<void> remove(String table, String id) async {
     await database.delete(table, where: "id = ?", whereArgs: [id]);
   }
+
+  Future<int> getCount(String table) async {
+    final result =
+        await database.rawQuery('SELECT COUNT(*) as count FROM $table');
+    return result.first['count'] as int;
+  }
+
+  Future<int> getCountWhere(
+      String table, String whereClause, List<dynamic> whereArgs) async {
+    final result = await database.rawQuery(
+      'SELECT COUNT(*) as count FROM $table WHERE $whereClause',
+      whereArgs,
+    );
+    return result.first['count'] as int;
+  }
+
+  Future<int> getSumWhere(String table, String column, String whereClause,
+      List<dynamic> whereArgs) async {
+    final result = await database.rawQuery(
+      'SELECT SUM($column) as total FROM $table WHERE $whereClause',
+      whereArgs,
+    );
+    return (result.first['total'] as int?) ?? 0;
+  }
 }
