@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:install_plugin/install_plugin.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sonix_text/config/helper/shared_preferents.dart';
+import 'package:sonix_text/config/service/api/api.dart';
 import 'dart:io';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:sonix_text/config/show_notification.dart';
@@ -15,35 +16,34 @@ class AboutScreen extends StatefulWidget {
 }
 
 class _AboutScreenState extends State<AboutScreen> {
-   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final sharedPreferents = SharedPreferentsManager();
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
   String API_URL = dotenv.env['API_URL'] ?? '';
   bool _downloading = false;
   String versionCode = "1.5.25";
+  late final VersionApi _versionApi;
+
+  @override
+  void initState() {
+    super.initState();
+    _versionApi = VersionApi(
+      sharedPreferents: sharedPreferents,
+      defaultVersion: versionCode,
+    );
+    _initializeVersion();
+  }
 
   Future<void> _initializeVersion() async {
-    try {
-      final version = await sharedPreferents.getCodeVersion("version_code");
-      if (version == "0.0.0") {
-        await sharedPreferents.saveCodeVersion("version_code", versionCode);
-      } else {
-        setState(() {
-          versionCode = version;
-        });
-      }
-    } catch (e) {
-      await sharedPreferents.saveCodeVersion("version_code", versionCode);
-    }
+    final version = await _versionApi.initializeVersion();
+    setState(() {
+      versionCode = version;
+    });
   }
 
   Future<void> getVersionDevice() async {
     try {
-      final version = await sharedPreferents.getCodeVersion("version_code");
-      if (version == "0.0.0") {
-        await sharedPreferents.saveCodeVersion("version_code", versionCode);
-        return;
-      }
+      final version = await _versionApi.getVersionDevice();
       setState(() {
         versionCode = version;
       });
@@ -108,12 +108,6 @@ class _AboutScreenState extends State<AboutScreen> {
         _downloading = false;
       });
     });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _initializeVersion();
   }
 
   @override
@@ -308,13 +302,13 @@ class _AboutScreenState extends State<AboutScreen> {
                   icon: _downloading
                       ? const SizedBox(
                           width: 24,
-                          height: 24,                          
+                          height: 24,
                           child: CircularProgressIndicator(
                             color: Colors.white,
                             strokeWidth: 2,
                           ),
                         )
-                      : const Icon(Icons.download,color: Colors.white),
+                      : const Icon(Icons.download, color: Colors.white),
                   label: Text(
                       _downloading
                           ? 'Descargando...'
