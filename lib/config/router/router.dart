@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sonix_text/config/config.dart';
-import 'package:sonix_text/config/helper/shared_preferents.dart';
 import 'package:sonix_text/presentation/screens/screens.dart';
 
 Future<bool> checkForRedirect() async {
