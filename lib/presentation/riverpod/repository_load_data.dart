@@ -7,8 +7,8 @@ final loadDataProvider =
   final users = ref.watch(userNotifierProvider.notifier);
   final grades = ref.watch(allGradesProvider.notifier);
   final categories = ref.watch(categoryNotifierProvider.notifier);
-  final stats = ref.watch(statsProvider.notifier);
-  return LoadDataNotifier(level, users, grades, categories, stats);
+
+  return LoadDataNotifier(level, users, grades, categories);
 });
 
 class LoadDataNotifier extends StateNotifier<List<dynamic>> {
@@ -16,10 +16,9 @@ class LoadDataNotifier extends StateNotifier<List<dynamic>> {
   final UserNotifier _userNotifier;
   final AllGradesNotifier _gradeNotifier;
   final CategoryNotifier _categoryNotifier;
-  final StatsNotifier _statsNotifier;
 
   LoadDataNotifier(this._levelNotifier, this._userNotifier, this._gradeNotifier,
-      this._categoryNotifier, this._statsNotifier)
+      this._categoryNotifier)
       : super([]);
 
   Future<void> loadData() async {
@@ -30,7 +29,6 @@ class LoadDataNotifier extends StateNotifier<List<dynamic>> {
         _gradeNotifier.loadGrades(),
         _categoryNotifier.getCategories(),
       ]);
-      await _statsNotifier.getStats();
       state = [];
     } catch (e) {
       state = [];
