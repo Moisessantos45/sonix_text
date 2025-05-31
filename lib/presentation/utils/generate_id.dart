@@ -1,7 +1,9 @@
-  import 'dart:math';
+import 'dart:math';
 
 int generateUniqueId() {
-    final now = DateTime.now();
-    final random = Random.secure();
-    return now.microsecondsSinceEpoch ^ random.nextInt(1 << 32);
-  }
+  final random = Random.secure();
+  // Aseguramos un número positivo de 31 bits (el bit 32 es para el signo)
+  return (DateTime.now().millisecondsSinceEpoch ^ random.nextInt(1 << 31))
+          .abs() %
+      (1 << 31);
+}
