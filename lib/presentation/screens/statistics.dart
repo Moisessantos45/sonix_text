@@ -13,6 +13,19 @@ class StatisticsScreen extends ConsumerStatefulWidget {
 
 class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+
+  Future<void> _refreshData() async {
+    await ref.read(statsProvider.notifier).getStats();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _refreshData();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final grades = ref.watch(allGradesProvider);
