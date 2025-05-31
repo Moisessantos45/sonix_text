@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sonix_text/config/config.dart';
 import 'package:sonix_text/config/helper/shared_preferents.dart';
-import 'package:sonix_text/presentation/screens/grade.dart';
-import 'package:sonix_text/presentation/screens/home.dart';
-import 'package:sonix_text/presentation/screens/onboarding.dart';
-import 'package:sonix_text/presentation/screens/profile.dart';
-import 'package:sonix_text/presentation/screens/statistics.dart';
-import 'package:sonix_text/presentation/screens/voicce_text.dart';
+import 'package:sonix_text/presentation/screens/screens.dart';
 
 Future<bool> checkForRedirect() async {
   final sharedPreferents = SharedPreferentsManager();
@@ -20,6 +16,7 @@ Future<bool> checkForRedirect() async {
 }
 
 final GoRouter appRouter = GoRouter(
+  navigatorKey: NotificationsService.navigatorKey,
   initialLocation: '/',
   routes: [
     GoRoute(
@@ -94,6 +91,21 @@ final GoRouter appRouter = GoRouter(
       pageBuilder: (context, state) => CustomTransitionPage(
         key: state.pageKey,
         child: const ProfileScreen(),
+        transitionDuration: const Duration(milliseconds: 200),
+        reverseTransitionDuration: Duration.zero,
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return ScaleTransition(
+            scale: animation,
+            child: child,
+          );
+        },
+      ),
+    ),
+    GoRoute(
+      path: "/about",
+      pageBuilder: (context, state) => CustomTransitionPage(
+        key: state.pageKey,
+        child: const AboutScreen(),
         transitionDuration: const Duration(milliseconds: 200),
         reverseTransitionDuration: Duration.zero,
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
