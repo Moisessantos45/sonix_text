@@ -62,7 +62,7 @@ class _CardLevelWidgetState extends ConsumerState<CardLevelWidget>
   Widget build(BuildContext context) {
     final currentLevel = ref.watch(currentLevelProvider);
     final int nextRewardPoints = ref.watch(pointsLevelProvider);
-    final int totalPoints = ref.watch(scoreProvider);
+    final int totalPoints = ref.watch(statsProvider).score;
     final bool isLevelUp =
         totalPoints >= nextRewardPoints && currentLevel?.isClaimed == false;
 
