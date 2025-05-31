@@ -33,7 +33,6 @@ class LoadDataNotifier extends StateNotifier<List<dynamic>> {
       await _statsNotifier.getStats();
       state = [];
     } catch (e) {
-      print('Error loading data: $e');
       state = [];
     }
   }
