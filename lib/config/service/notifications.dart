@@ -1,12 +1,30 @@
+import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:go_router/go_router.dart';
 import 'package:timezone/timezone.dart' as tz;
 
 class NotificationsService {
   static final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
+  static final GlobalKey<NavigatorState> navigatorKey =
+      GlobalKey<NavigatorState>();
+
   static void onDidReceiveNotificationResponse(
-      NotificationResponse notificationResponse) async {}
+      NotificationResponse response) async {
+    final context = navigatorKey.currentContext;
+    if (context != null && response.payload != null) {
+      try {
+        final payload = jsonDecode(response.payload!);
+        if (payload['type'] == 'update') {
+          GoRouter.of(context).push('/about');
+        }
+      } catch (e) {
+        debugPrint('Error procesando payload de notificación: $e');
+      }
+    }
+  }
 
   static Future<void> init() async {
     const AndroidInitializationSettings initializationSettingsAndroid =
@@ -21,15 +39,37 @@ class NotificationsService {
       iOS: iosInitializationSettings,
     );
 
-    await flutterLocalNotificationsPlugin.initialize(initializationSettings,
-        onDidReceiveBackgroundNotificationResponse:
-            onDidReceiveNotificationResponse,
-        onDidReceiveNotificationResponse: onDidReceiveNotificationResponse);
+    await flutterLocalNotificationsPlugin.initialize(
+      initializationSettings,
+      onDidReceiveBackgroundNotificationResponse:
+          onDidReceiveNotificationResponse,
+      onDidReceiveNotificationResponse: onDidReceiveNotificationResponse,
+    );
 
+    await _createNotificationChannels();
+  }
+
+  static Future<void> _createNotificationChannels() async {
     await flutterLocalNotificationsPlugin
         .resolvePlatformSpecificImplementation<
             AndroidFlutterLocalNotificationsPlugin>()
-        ?.requestNotificationsPermission();
+        ?.createNotificationChannel(const AndroidNotificationChannel(
+          'update_channel',
+          'Actualizaciones',
+          importance: Importance.high,
+          description: 'Notificaciones sobre nuevas versiones',
+        ));
+
+    // Canal general
+    await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(const AndroidNotificationChannel(
+          'general_channel',
+          'General',
+          importance: Importance.defaultImportance,
+          description: 'Notificaciones generales',
+        ));
   }
 
   static Future<void> hideNotification(String title, String body) async {
@@ -66,6 +106,59 @@ class NotificationsService {
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       matchDateTimeComponents: DateTimeComponents.time,
     );
+  }
+
+  static Future<void> showUpdateNotification({
+    required int id,
+    required String title,
+    required String body,
+    DateTime? scheduleDate,
+    String version = '1.6.65',
+  }) async {
+    final androidDetails = const AndroidNotificationDetails(
+      'update_channel',
+      'Actualizaciones',
+      channelDescription: 'Notificaciones sobre nuevas versiones',
+      importance: Importance.high,
+      priority: Priority.max,
+      playSound: true,
+      enableVibration: true,
+    );
+
+    final iosDetails = const DarwinNotificationDetails(
+      categoryIdentifier: 'update',
+    );
+
+    final details = NotificationDetails(
+      android: androidDetails,
+      iOS: iosDetails,
+    );
+
+    final payload = jsonEncode({
+      'type': 'update',
+      'version': version,
+      'timestamp': DateTime.now().toIso8601String(),
+    });
+
+    if (scheduleDate != null) {
+      await flutterLocalNotificationsPlugin.zonedSchedule(
+        id,
+        title,
+        body,
+        tz.TZDateTime.from(scheduleDate, tz.local),
+        details,
+        payload: payload,
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      );
+    } else {
+      await flutterLocalNotificationsPlugin.show(
+        id,
+        title,
+        body,
+        details,
+        payload: payload,
+      );
+    }
   }
 
   static Future<void> cancel(int id) async {
