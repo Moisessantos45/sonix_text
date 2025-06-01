@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sonix_text/presentation/riverpod/seletc_color.dart';
+import 'package:sonix_text/presentation/utils/app_colors.dart';
 
 class ColorPair {
   final int color;
@@ -18,33 +19,6 @@ class ColorSelector extends ConsumerStatefulWidget {
 }
 
 class _ColorSelectorState extends ConsumerState<ColorSelector> {
-  final List<int> colorList = [
-    0xFF4fc3f7, // azul claro
-    0xFFa7ffeb, // verde menta claro
-    0xFF00e676, // verde brillante
-    0xFF81d4fa, // azul cielo claro
-    0xFFb2fef7, // celeste muy suave
-    0xFF1de9b6, // verde aqua
-    0xFF64ffda, // turquesa claro
-    0xFF00bfa5, // verde azulado
-    0xFF69f0ae, // verde primavera
-    0xFF18ffff, // cian brillante
-    0xFF40c4ff, // azul vibrante
-    0xFF80d8ff, // azul muy claro
-    0xFFb9f6ca, // verde pastel
-    0xFF00e5ff, // cian intenso
-    0xFF76ff03, // verde lima neón
-    0xFFf06292, // rosa suave vibrante
-    0xFFffd54f, // amarillo suave y brillante
-    0xFFba68c8, // morado claro
-    0xFFff8a65, // naranja suave
-    0xFFf44336, // rojo vibrante
-    0xFFffeb3b, // amarillo neón
-    0xFFe57373, // rojo coral
-    0xFFce93d8, // lavanda claro
-    0xFFff5252, // rojo neón
-  ];
-
   Widget _buildColorSelector(BuildContext context) {
     return InkWell(
       onTap: () => _showColorPicker(context),
@@ -89,33 +63,38 @@ class _ColorSelectorState extends ConsumerState<ColorSelector> {
           elevation: 0,
           surfaceTintColor: Colors.white,
           shadowColor: Colors.white,
-          content: SingleChildScrollView(
-            child: Wrap(
-              spacing: 10,
-              runSpacing: 10,
-              children: colorList.asMap().entries.map((entry) {
-                final index = entry.key;
-                final colorValue = entry.value;
-                final color = Color(colorValue);
-                final newColor = ColorPair(colorValue, index);
-                return GestureDetector(
-                  onTap: () {
-                    widget.onColorSelected(newColor);
-                    Navigator.of(context).pop();
-                  },
-                  child: Container(
-                    height: 50,
-                    width: 50,
-                    decoration: BoxDecoration(
-                      color: color,
-                      shape: BoxShape.circle,
-                      border: Color(ref.watch(selectColor)) == color
-                          ? Border.all(color: Colors.blueAccent, width: 3)
-                          : null,
+          content: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height * 0.5,
+            ),
+            child: SingleChildScrollView(
+              child: Wrap(
+                spacing: 10,
+                runSpacing: 10,
+                children: colorList.asMap().entries.map((entry) {
+                  final index = entry.key;
+                  final colorValue = entry.value;
+                  final color = Color(colorValue);
+                  final newColor = ColorPair(colorValue, index);
+                  return GestureDetector(
+                    onTap: () {
+                      widget.onColorSelected(newColor);
+                      Navigator.of(context).pop();
+                    },
+                    child: Container(
+                      height: 50,
+                      width: 50,
+                      decoration: BoxDecoration(
+                        color: color,
+                        shape: BoxShape.circle,
+                        border: Color(ref.watch(selectColor)) == color
+                            ? Border.all(color: Colors.blueAccent, width: 3)
+                            : null,
+                      ),
                     ),
-                  ),
-                );
-              }).toList(),
+                  );
+                }).toList(),
+              ),
             ),
           ),
         );
