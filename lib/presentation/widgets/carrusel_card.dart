@@ -35,9 +35,7 @@ class CarouselCard extends ConsumerWidget {
                 final card = listCard[index];
                 return _buildAnimatedCard(
                   context,
-                  index == 3
-                      ? (nextRewardPoints - int.parse(card.title)).toString()
-                      : card.title,
+                  card.title,
                   card.subTitle,
                   card.icon,
                   card.primaryColor,
