@@ -35,11 +35,11 @@ class DbRepository {
   }
 
   Future<void> update(
-      String table, String id, Map<String, dynamic> data) async {
+      String table, dynamic id, Map<String, dynamic> data) async {
     await database.update(table, data, where: "id = ?", whereArgs: [id]);
   }
 
-  Future<void> remove(String table, String id) async {
+  Future<void> remove(String table, dynamic id) async {
     await database.delete(table, where: "id = ?", whereArgs: [id]);
   }
 
