@@ -19,6 +19,9 @@ Future<Database> initializeDatabase() async {
             'CREATE TABLE IF NOT EXISTS grade (id TEXT PRIMARY KEY, title TEXT NOT NULL, content TEXT, date TEXT, due_date TEXT, status TEXT, priority TEXT, category TEXT, color TEXT, point INTEGER)');
 
         await db.execute(
+            "CREATE TABLE IF NOT EXISTS note_links (id INTEGER PRIMARY KEY AUTOINCREMENT, from_id TEXT NOT NULL, to_id TEXT NOT NULL,created_at TEXT NOT NULL, FOREIGN KEY(from_id) REFERENCES grade(id) ON DELETE CASCADE,FOREIGN KEY(to_id) REFERENCES grade(id) ON DELETE CASCADE);");
+
+        await db.execute(
             'CREATE TABLE IF NOT EXISTS level (id TEXT PRIMARY KEY, title TEXT NOT NULL, level INTEGER NOT NULL,point INTEGER NOT NULL, multiplier INTEGER NOT NULL, message TEXT NOT NULL, isClaimed TEXT NOT NULL)');
       },
       onOpen: (Database db) async {
@@ -30,6 +33,9 @@ Future<Database> initializeDatabase() async {
 
         await db.execute(
             'CREATE TABLE IF NOT EXISTS grade (id TEXT PRIMARY KEY, title TEXT NOT NULL, content TEXT, date TEXT, due_date TEXT, status TEXT, priority TEXT, category TEXT, color TEXT, point INTEGER)');
+
+        await db.execute(
+            "CREATE TABLE IF NOT EXISTS note_links (id INTEGER PRIMARY KEY AUTOINCREMENT, from_id TEXT NOT NULL, to_id TEXT NOT NULL,created_at TEXT NOT NULL, FOREIGN KEY(from_id) REFERENCES grade(id) ON DELETE CASCADE,FOREIGN KEY(to_id) REFERENCES grade(id) ON DELETE CASCADE);");
 
         await db.execute(
             'CREATE TABLE IF NOT EXISTS level (id TEXT PRIMARY KEY, title TEXT NOT NULL, level INTEGER NOT NULL,point INTEGER NOT NULL, multiplier INTEGER NOT NULL, message TEXT NOT NULL, isClaimed TEXT NOT NULL)');
