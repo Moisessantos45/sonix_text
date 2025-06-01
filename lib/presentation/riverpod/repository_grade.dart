@@ -200,9 +200,9 @@ final listCardsProvider = Provider<List<EntityCard>>((ref) {
 class StatsNotifier extends StateNotifier<EntityStats> {
   final DbRepository _repository;
   final String _table = 'grade';
-  int _pointsLevel = 1; // Assuming a fixed points level for simplicity
+  int pointsLevel = 1;
 
-  StatsNotifier(this._repository, this._pointsLevel)
+  StatsNotifier(this._repository, this.pointsLevel)
       : super(EntityStats(
             totalGrades: 0, completedGrades: 0, score: 0, remainingPoints: 0));
 
@@ -217,7 +217,7 @@ class StatsNotifier extends StateNotifier<EntityStats> {
       totalGrades: total,
       completedGrades: completed,
       score: score,
-      remainingPoints: _pointsLevel - score,
+      remainingPoints: pointsLevel - score,
     );
   }
 }
