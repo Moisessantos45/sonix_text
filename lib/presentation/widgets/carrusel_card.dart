@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sonix_text/presentation/riverpod/repository_grade.dart';
-import 'package:sonix_text/presentation/riverpod/repository_level.dart';
 
 class CarouselCard extends ConsumerWidget {
   const CarouselCard({super.key});
@@ -9,7 +8,6 @@ class CarouselCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final listCard = ref.watch(listCardsProvider);
-    final int nextRewardPoints = ref.watch(pointsLevelProvider);
     final width = MediaQuery.of(context).size.width;
     return Column(
       children: [
