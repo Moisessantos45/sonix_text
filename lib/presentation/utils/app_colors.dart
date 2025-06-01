@@ -85,4 +85,29 @@ final List<int> colorList = [
   0xFFe57373, // rojo coral
   0xFFce93d8, // lavanda claro
   0xFFff5252, // rojo neón
+  0xFF9575cd, // morado medio
+  0xFF7986cb, // indigo claro
+  0xFF4dd0e1, // cian claro
+  0xFF4db6ac, // verde azulado claro
+  0xFF81c784, // verde medio
+  0xFFaed581, // verde lima claro
+  0xFFdce775, // lima brillante
+  0xFFfff176, // amarillo suave
+  0xFFffb74d, // naranja claro
+  0xFFff8a65, // naranja salmón
+  0xFF90a4ae, // azul grisáceo
+  0xFFf48fb1, // rosa claro
+  0xFF9fa8da, // indigo muy claro
+  0xFF80cbc4, // turquesa suave
+  0xFFa5d6a7, // verde pastel claro
+  0xFFe6ee9c, // lima pastel,
+  0xFFFFAB91, // naranja pastel
+  0xFFB39DDB, // morado pastel
+  0xFF80DEEA, // celeste pastel
+  0xFFC5E1A5, // verde oliva pastel
+  0xFFE1BEE7, // lavanda muy claro
+  0xFFBCAAA4, // marrón grisáceo claro
+  0xFF90CAF9, // azul muy claro
+  0xFFA1887F, // marrón suave
+  0xFFE0F2F1, // verde menta muy claro
 ];
