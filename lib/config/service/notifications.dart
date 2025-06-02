@@ -90,10 +90,12 @@ class NotificationsService {
       int id, String title, String body, DateTime scheduleDate) async {
     const NotificationDetails platformChannelSpecifics = NotificationDetails(
         android: AndroidNotificationDetails(
-      'channel_id',
-      'channel_name',
-      channelDescription: 'channel_description',
+      'general_channel',
+      'General',
+      channelDescription: 'Notificaciones generales',
       importance: Importance.max,
+      enableVibration: true,
+      playSound: true,
       priority: Priority.high,
     ));
 
