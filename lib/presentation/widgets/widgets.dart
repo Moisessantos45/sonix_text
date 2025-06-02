@@ -14,4 +14,8 @@ export 'package:sonix_text/presentation/widgets/modal_select.dart';
 export 'package:sonix_text/presentation/widgets/navigation_bar.dart';
 export 'package:sonix_text/presentation/widgets/options_grade_static.dart';
 export 'package:sonix_text/presentation/widgets/options_grade.dart';
+export 'package:sonix_text/presentation/widgets/related_notes_widget.dart';
+export 'package:sonix_text/presentation/widgets/notes_list_widget.dart';
+export 'package:sonix_text/presentation/widgets/empty_state.dart';
+export 'package:sonix_text/presentation/widgets/results_list.dart';
 export 'package:sonix_text/presentation/widgets/widgets.dart';
