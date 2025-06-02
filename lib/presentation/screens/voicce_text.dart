@@ -247,96 +247,92 @@ class _VoiceTextScreenState extends ConsumerState<VoiceTextScreen> {
 
     final unitWidth = screenWidth / 100;
     final unitHeight = screenHeight / 100;
+
     return Scaffold(
-        key: scaffoldKey,
-        backgroundColor: const Color(0xFFD6EAF8).withAlpha(50),
-        appBar: AppBar(
-          title: Text(
-            widget.id.isEmpty ? 'Nueva Nota' : 'Editar Nota',
-            style: TextStyle(
-              color: Color(0xFF2C3E50),
-              fontSize: unitWidth * 5,
-            ),
+      key: scaffoldKey,
+      backgroundColor: const Color(0xFFD6EAF8).withAlpha(50),
+      appBar: AppBar(
+        title: Text(
+          widget.id.isEmpty ? 'Nueva Nota' : 'Editar Nota',
+          style: TextStyle(
+            color: Color(0xFF2C3E50),
+            fontSize: unitWidth * 5,
           ),
-          backgroundColor: const Color(0xFFD6EAF8).withAlpha(50),
-          surfaceTintColor: const Color(0xFFD6EAF8).withAlpha(50),
-          elevation: 0,
-          iconTheme: const IconThemeData(color: Color(0xFF2C3E50)),
-          actions: widget.id.isEmpty
-              ? null
-              : [
-                  IconButton(
-                    icon: Icon(Icons.delete_outline,
-                        color: Color(0xFFE74C3C), size: unitWidth * 6),
-                    onPressed: removeGrade,
-                  ),
-                ],
         ),
-        body: Container(
-          padding: EdgeInsets.all(unitWidth * 5),
-          decoration: BoxDecoration(
-            color: Color(0xFFD6EAF8).withAlpha(50),
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
-          ),
-          child: Column(
-            children: [
-              TextField(
-                controller: titleEditingController,
-                style: TextStyle(
-                  fontSize: unitWidth * 6,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xFF2C3E50),
+        backgroundColor: const Color(0xFFD6EAF8).withAlpha(50),
+        surfaceTintColor: const Color(0xFFD6EAF8).withAlpha(50),
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Color(0xFF2C3E50)),
+        actions: widget.id.isEmpty || widget.id == "0"
+            ? null
+            : [
+                IconButton(
+                  icon: Icon(Icons.delete_outline,
+                      color: Color(0xFFE74C3C), size: unitWidth * 6),
+                  onPressed: removeGrade,
                 ),
-                decoration: InputDecoration(
-                  hintText: 'Título de la nota',
-                  border: InputBorder.none,
-                  hintStyle: TextStyle(
-                    color: Color(0xFFBDC3C7),
+              ],
+      ),
+      body: Padding(
+          padding:
+              EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+          child: SingleChildScrollView(
+            padding: EdgeInsets.only(
+              left: unitWidth * 5,
+              right: unitWidth * 5,
+            ),
+            child: Column(
+              children: [
+                TextField(
+                  controller: titleEditingController,
+                  style: TextStyle(
                     fontSize: unitWidth * 6,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF2C3E50),
+                  ),
+                  decoration: InputDecoration(
+                    hintText: 'Título de la nota',
+                    border: InputBorder.none,
+                    hintStyle: TextStyle(
+                      color: Color(0xFFBDC3C7),
+                      fontSize: unitWidth * 6,
+                    ),
                   ),
                 ),
-              ),
-              Divider(height: unitHeight * 2, color: Color(0xFFECF0F1)),
-              Row(
-                children: [
-                  Expanded(
-                    child: CheckboxListTile(
-                      title: Text(
-                        'Modo Inteligente',
-                        style: TextStyle(
-                          color: Color(0xFF2C3E50),
-                          fontSize: unitWidth * 4,
+                Divider(height: unitHeight * 2, color: Color(0xFFECF0F1)),
+                Row(
+                  children: [
+                    Expanded(
+                      child: CheckboxListTile(
+                        title: Text(
+                          'Modo Inteligente',
+                          style: TextStyle(
+                            color: Color(0xFF2C3E50),
+                            fontSize: unitWidth * 4,
+                          ),
                         ),
+                        value: isSmartModeEnabled,
+                        onChanged: (bool? value) {
+                          setState(() {
+                            isSmartModeEnabled = value ?? false;
+                          });
+                        },
+                        activeColor: const Color(0xFF3498DB),
+                        checkColor: Colors.white,
                       ),
-                      value: isSmartModeEnabled,
-                      onChanged: (bool? value) {
-                        setState(() {
-                          isSmartModeEnabled = value ?? false;
-                        });
-                      },
-                      activeColor: const Color(0xFF3498DB),
-                      checkColor: Colors.white,
                     ),
-                  ),
-                  IconButton(
-                    icon: Icon(
-                      Icons.info_outline,
-                      color: Color(0xFF3498DB),
-                      size: unitWidth * 6,
+                    IconButton(
+                      icon: Icon(
+                        Icons.info_outline,
+                        color: Color(0xFF3498DB),
+                        size: unitWidth * 6,
+                      ),
+                      onPressed: _showSmartModeInfo,
                     ),
-                    onPressed: _showSmartModeInfo,
-                  ),
-                ],
-              ),
-              Divider(height: unitHeight * 1, color: Color(0xFFECF0F1)),
-              GradeOptionsWidget(
-                category: categoryEditingController,
-                status: statusEditingController,
-                priority: priorityEditingController,
-              ),
-              Divider(height: unitHeight * 2, color: Color(0xFFECF0F1)),
-              Expanded(
-                child: TextField(
+                  ],
+                ),
+                Divider(height: unitHeight * 1, color: Color(0xFFECF0F1)),
+                TextField(
                   controller: textEditingController,
                   maxLines: null,
                   style: TextStyle(
@@ -350,41 +346,59 @@ class _VoiceTextScreenState extends ConsumerState<VoiceTextScreen> {
                         color: Color(0xFFBDC3C7), fontSize: unitWidth * 4),
                   ),
                 ),
-              ),
-            ],
-          ),
+                SizedBox(height: unitHeight * 2),
+              ],
+            ),
+          )),
+      bottomNavigationBar: Transform.translate(
+        offset: Offset(0, -MediaQuery.of(context).viewInsets.bottom),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            GradeOptionsWidget(
+              id: widget.id,
+              category: categoryEditingController,
+              status: statusEditingController,
+              priority: priorityEditingController,
+            ),
+            const SizedBox(height: 20),
+          ],
         ),
-        floatingActionButton: Padding(
-          padding: EdgeInsets.only(bottom: unitHeight * 3),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              FloatingActionButton(
-                onPressed: widget.id.isEmpty || widget.id == "0"
-                    ? addGrade
-                    : updateGrade,
-                backgroundColor: const Color(0xFF3498DB),
-                child: Icon(
-                  Icons.save,
-                  size: unitWidth * 7,
-                ),
+      ),
+      floatingActionButton: Padding(
+        padding: EdgeInsets.only(bottom: unitHeight * 3),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            FloatingActionButton(
+              heroTag: "btnSave",
+              onPressed: widget.id.isEmpty || widget.id == "0"
+                  ? addGrade
+                  : updateGrade,
+              backgroundColor: const Color(0xFF3498DB),
+              child: Icon(
+                Icons.save,
+                size: unitWidth * 7,
               ),
-              SizedBox(height: unitHeight * 2),
-              FloatingActionButton(
-                heroTag: "btnMic",
-                onPressed: _speechToText.isNotListening
-                    ? _startListening
-                    : _stopListening,
-                backgroundColor: _speechToText.isNotListening
-                    ? const Color(0xFF95A5A6)
-                    : const Color(0xFFE74C3C),
-                child: Icon(
-                  _speechToText.isNotListening ? Icons.mic_off : Icons.mic,
-                  size: unitWidth * 7,
-                ),
+            ),
+            SizedBox(height: unitHeight * 2),
+            FloatingActionButton(
+              heroTag: "btnMic",
+              onPressed: _speechToText.isNotListening
+                  ? _startListening
+                  : _stopListening,
+              backgroundColor: _speechToText.isNotListening
+                  ? const Color(0xFF95A5A6)
+                  : const Color(0xFFE74C3C),
+              child: Icon(
+                _speechToText.isNotListening ? Icons.mic_off : Icons.mic,
+                size: unitWidth * 7,
               ),
-            ],
-          ),
-        ));
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
