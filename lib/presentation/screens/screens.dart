@@ -5,5 +5,6 @@ export 'package:sonix_text/presentation/screens/notifications.dart';
 export 'package:sonix_text/presentation/screens/onboarding.dart';
 export 'package:sonix_text/presentation/screens/profile.dart';
 export 'package:sonix_text/presentation/screens/reward.dart';
+export 'package:sonix_text/presentation/screens/search_note_link.dart';
 export 'package:sonix_text/presentation/screens/statistics.dart';
 export 'package:sonix_text/presentation/screens/voicce_text.dart';
