@@ -10,9 +10,11 @@ class GradeOptionsWidget extends ConsumerStatefulWidget {
   final TextEditingController status;
   final TextEditingController priority;
   final ValueChanged<int>? onTapColor;
+  final String id;
 
   const GradeOptionsWidget(
       {super.key,
+      this.id = "",
       required this.category,
       required this.status,
       required this.priority,
@@ -87,88 +89,84 @@ class _GradeOptionsWidgetState extends ConsumerState<GradeOptionsWidget> {
         ref.watch(categoryNotifierProvider).map((e) => e.name).toList();
     return !isInit
         ? const Center(child: CircularProgressIndicator())
-        : Column(
-            children: [
-              Container(
-                padding: EdgeInsets.symmetric(vertical: screenHeight * 0.01),
-                child: Row(
-                  children: [
-                    if (categories.isNotEmpty)
-                      Expanded(
-                        child: _buildDropdownField(
-                          icon: Icons.category_outlined,
-                          hint: 'Categoría',
-                          value: widget.category.text,
-                          items: categories,
-                          onChanged: (value) {
-                            if (value != null) {
-                              setState(() {
-                                widget.category.text = value;
-                              });
-                            }
-                          },
-                        ),
-                      ),
-                    SizedBox(width: screenWidth * 0.04),
-                    Expanded(
-                      child: _buildDateSelector(context),
+        : SizedBox(
+            height: screenHeight * 0.05,
+            width: screenWidth * 0.95,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              children: [
+                if (widget.id.isNotEmpty && widget.id != "0")
+                  Container(
+                    width: screenWidth * 0.5,
+                    decoration: BoxDecoration(
+                      color: Color(0xFFD6EAF8).withAlpha(50),
                     ),
-                  ],
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.symmetric(vertical: screenHeight * 0.01),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: _buildDropdownField(
-                        icon: Icons.flag_outlined,
-                        hint: 'Estado',
-                        value: widget.status.text,
-                        items: statusOptions,
-                        onChanged: (value) {
-                          if (value != null) {
-                            setState(() {
-                              widget.status.text = value;
-                            });
-                          }
-                        },
+                    child: ListTile(
+                      onTap: () {
+                        context.push('/search_note_link/${widget.id}');
+                      },
+                      leading: Icon(Icons.link,
+                          size: screenWidth * 0.04, color: Colors.greenAccent),
+                      title: Text(
+                        'Vincular Notas',
+                        style: TextStyle(fontSize: screenWidth * 0.035),
                       ),
                     ),
-                    SizedBox(width: screenWidth * 0.04),
-                    Expanded(
-                      child: _buildDropdownField(
-                        icon: Icons.priority_high_outlined,
-                        hint: 'Prioridad',
-                        value: widget.priority.text,
-                        items: priorityOptions,
-                        onChanged: (value) {
-                          if (value != null) {
-                            setState(() {
-                              widget.priority.text = value;
-                            });
-                          }
-                        },
-                      ),
-                    ),
-                  ],
+                  ),
+                SizedBox(width: screenWidth * 0.04),
+                if (categories.isNotEmpty)
+                  _buildDropdownField(
+                    icon: Icons.category_outlined,
+                    hint: 'Categoría',
+                    value: widget.category.text,
+                    items: categories,
+                    onChanged: (value) {
+                      if (value != null) {
+                        setState(() {
+                          widget.category.text = value;
+                        });
+                      }
+                    },
+                  ),
+                SizedBox(width: screenWidth * 0.04),
+                _buildDateSelector(context),
+                _buildDropdownField(
+                  icon: Icons.flag_outlined,
+                  hint: 'Estado',
+                  value: widget.status.text,
+                  items: statusOptions,
+                  onChanged: (value) {
+                    if (value != null) {
+                      setState(() {
+                        widget.status.text = value;
+                      });
+                    }
+                  },
                 ),
-              ),
-              Container(
-                padding: EdgeInsets.symmetric(vertical: screenHeight * 0.01),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: ColorSelector(onColorSelected: (color) {
-                        ref.read(indexColor.notifier).state = color.index;
-                        ref.read(selectColor.notifier).state = color.color;
-                      }),
-                    ),
-                  ],
+                SizedBox(width: screenWidth * 0.04),
+                _buildDropdownField(
+                  icon: Icons.priority_high_outlined,
+                  hint: 'Prioridad',
+                  value: widget.priority.text,
+                  items: priorityOptions,
+                  onChanged: (value) {
+                    if (value != null) {
+                      setState(() {
+                        widget.priority.text = value;
+                      });
+                    }
+                  },
                 ),
-              ),
-            ],
-          );
+                SizedBox(width: screenWidth * 0.04),
+                SizedBox(
+                    width: screenWidth * 0.4,
+                    child: ColorSelector(onColorSelected: (color) {
+                      ref.read(indexColor.notifier).state = color.index;
+                      ref.read(selectColor.notifier).state = color.color;
+                    })),
+                SizedBox(width: screenWidth * 0.04),
+              ],
+            ));
   }
 
   void _showSelector(context, List<String> items, String title,
@@ -200,6 +198,10 @@ class _GradeOptionsWidgetState extends ConsumerState<GradeOptionsWidget> {
         uniqueItems.contains(value) ? value : uniqueItems.firstOrNull;
 
     return Container(
+      constraints: BoxConstraints(
+        minWidth: screenWidth * 0.3, // Set minimum width
+        maxWidth: screenWidth * 0.45, // Set maximum width
+      ),
       decoration: BoxDecoration(
         color: Color(0xFFD6EAF8).withAlpha(50),
       ),
@@ -245,14 +247,18 @@ class _GradeOptionsWidgetState extends ConsumerState<GradeOptionsWidget> {
     final double screenWidth = screenSize.width;
     final double screenHeight = screenSize.height;
 
-    return InkWell(
-      onTap: () => _selectDate(context),
-      child: Container(
-        decoration: BoxDecoration(
-          color: Color(0xFFD6EAF8).withAlpha(50),
-        ),
-        padding: EdgeInsets.symmetric(
-            horizontal: screenWidth * 0.03, vertical: screenHeight * 0.015),
+    return Container(
+      constraints: BoxConstraints(
+        minWidth: screenWidth * 0.3, // Set minimum width
+        maxWidth: screenWidth * 0.45, // Set maximum width
+      ),
+      decoration: BoxDecoration(
+        color: Color(0xFFD6EAF8).withAlpha(50),
+      ),
+      padding: EdgeInsets.symmetric(
+          horizontal: screenWidth * 0.03, vertical: screenHeight * 0.015),
+      child: InkWell(
+        onTap: () => _selectDate(context),
         child: Row(
           children: [
             Icon(Icons.calendar_today,
