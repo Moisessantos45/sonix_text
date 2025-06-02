@@ -47,6 +47,18 @@ final GoRouter appRouter = GoRouter(
               });
         }),
     GoRoute(
+        path: "/search_note_link/:fromId",
+        pageBuilder: (context, state) {
+          final fromId = state.pathParameters['fromId'] ?? "";
+          return CustomTransitionPage(
+              key: state.pageKey,
+              child: ScreenSearchNoteLink(fromId: fromId),
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                return FadeTransition(opacity: animation, child: child);
+              });
+        }),
+    GoRoute(
         path: "/progress",
         pageBuilder: (context, state) => CustomTransitionPage(
             key: state.pageKey,
