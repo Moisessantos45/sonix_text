@@ -16,11 +16,12 @@ class NoteLinksNotifier extends StateNotifier<List<NoteLinksModel>> {
 
   NoteLinksNotifier(this._dbRepository) : super([]);
 
-  Future<void> getNoteLinks() async {
-    final noteLinks = await _dbRepository.getAll(_table);
-    state = [
-      ...noteLinks.where((e) => e["id"] != null).map(NoteLinksModel.fromJson)
-    ];
+  Future<void> getNoteLinks(String id) async {
+    final noteLinks = await _dbRepository.executeQuery(
+      'SELECT * FROM $_table WHERE from_id = ? OR to_id = ?',
+      [id, id],
+    );
+    state = noteLinks.map(NoteLinksModel.fromJson).toList();
   }
 
   Future<void> addNoteLink(NoteLinksModel noteLink) async {
@@ -36,5 +37,39 @@ class NoteLinksNotifier extends StateNotifier<List<NoteLinksModel>> {
   Future<void> deleteNoteLink(int id) async {
     await _dbRepository.remove(_table, id);
     state = state.where((e) => e.id != id).toList();
+  }
+}
+
+final noteLinksFilterProvider =
+    StateNotifierProvider<NoteLinksFilterNotifier, List<NoteLinksModel>>((ref) {
+  final repository = ref.watch(dbRepositoryProvider);
+  return NoteLinksFilterNotifier(repository);
+});
+
+class NoteLinksFilterNotifier extends StateNotifier<List<NoteLinksModel>> {
+  final DbRepository _dbRepository;
+  final String _table = 'note_links';
+  String fromId = '';
+
+  NoteLinksFilterNotifier(this._dbRepository) : super([]) {
+    filterByFromId();
+  }
+
+  void setFromId(String id) {
+    fromId = id;
+    filterByFromId();
+  }
+
+  Future<void> filterByFromId() async {
+    if (fromId.isEmpty) {
+      final allLinks = await _dbRepository.getAll(_table, limit: 30);
+      state = allLinks.map(NoteLinksModel.fromJson).toList();
+    } else {
+      final allLinks = await _dbRepository.executeQuery(
+        'SELECT * FROM $_table WHERE from_id = ?',
+        [fromId],
+      );
+      state = allLinks.map(NoteLinksModel.fromJson).toList();
+    }
   }
 }
